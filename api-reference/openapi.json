@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "https://api.lmnr.ai/api/v1"
+      "url": "https://api.lmnr.ai/v1"
     }
   ],
   "security": [
@@ -19,7 +19,7 @@
     }
   ],
   "paths": {
-    "endpoint/run": {
+    "/endpoint/run": {
       "post": {
         "tags": [
           "api::endpoints"
@@ -42,8 +42,8 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": {
-                    "$ref": "#/components/schemas/Message"
+                  "properties": {
+                    "{Name of output node}": {"$ref": "#/components/schemas/Message"}
                   }
                 }
               }
@@ -54,7 +54,170 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
     "schemas": {
+      "InstructNodeMetaLog": {
+        "type": "object",
+        "properties": {
+          "semanticCacheEnabled": {
+            "type": "boolean"
+          },
+          "semanticCacheRetrieved": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "inputTokenCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "outputTokenCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalTokenCount": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": ["semanticCacheEnabled", "inputTokenCount", "outputTokenCount", "totalTokenCount"]
+      },
+      "ChatNodeMetaLog": {
+        "type": "object",
+        "properties": {
+          "semanticCacheEnabled": {
+            "type": "boolean"
+          },
+          "semanticCacheRetrieved": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "inputMessageCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "inputTokenCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "outputTokenCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalTokenCount": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": ["semanticCacheEnabled", "inputMessageCount", "inputTokenCount", "outputTokenCount", "totalTokenCount"]
+      },
+      "AgentNodeMetaLog": {
+        "type": "object",
+        "properties": {
+          "stepsThreadId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mainThreadId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "steps": {
+            "type": "object"
+          }
+        },
+        "required": ["stepsThreadId", "mainThreadId", "steps"]
+      },
+      "MetaLog": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/InstructNodeMetaLog"
+          },
+          {
+            "$ref": "#/components/schemas/ChatNodeMetaLog"
+          },
+          {
+            "$ref": "#/components/schemas/AgentNodeMetaLog"
+          }
+        ]
+      },
+      "ThreadChatMessage": {
+        "type": "object",
+        "properties": {
+          "thread_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "role": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "required": ["role", "content"]
+      },
+      "ChatMessage": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": ["role", "content"]
+      },
+      "ConditionedValue": {
+        "type": "object",
+        "properties": {
+          "condition": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": ["condition", "value"]
+      },
+      "NodeInput": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/schemas/ThreadChatMessage"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatMessage"
+            }
+          },
+          {
+            "$ref": "#/components/schemas/ConditionedValue"
+          }
+        ]
+      },
       "GraphRequest": {
         "type": "object",
         "required": [
@@ -63,7 +226,8 @@
         ],
         "properties": {
           "endpoint": {
-            "type": "string"
+            "type": "string",
+            "description": "Name of the endpoint to be called"
           },
           "inputs": {
             "type": "object",
@@ -71,12 +235,13 @@
               "$ref": "#/components/schemas/NodeInput"
             }
           },
-          "model_api_keys": {
+          "modelApiKeys": {
             "type": "object",
             "additionalProperties": {
               "type": "string"
             },
-            "nullable": true
+            "nullable": true,
+            "description": "The key is the provider name such as 'openai' and the value is the api key"
           }
         }
       },
@@ -94,11 +259,11 @@
           "nodeType"
         ],
         "properties": {
-          "endTime": {
-            "$ref": "#/components/schemas/DateTime"
-          },
           "id": {
             "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/NodeInput"
           },
           "inputMessages": {
             "type": "array",
@@ -122,7 +287,8 @@
             "nullable": true
           },
           "nodeId": {
-            "$ref": "#/components/schemas/Uuid"
+            "type": "string",
+            "format": "uuid"
           },
           "nodeName": {
             "type": "string"
@@ -131,10 +297,10 @@
             "type": "string"
           },
           "startTime": {
-            "$ref": "#/components/schemas/DateTime"
+            "type": "string"
           },
-          "value": {
-            "$ref": "#/components/schemas/NodeInput"
+          "endTime": {
+            "type": "string"
           }
         }
       }

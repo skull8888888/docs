@@ -1,4 +1,10 @@
 ---
-title: 'Endpoint Call'
+title: 'Endpoint Run'
 openapi: 'POST /endpoint/run'
 ---
+
+### description
+
+You can send request with various inputs. Inputs can be of any type such as string, array of strings, ThreadChatMessage, ChatMessage, ConditionedValue [(Check OpenAPI schemas)](https://github.com/skull8888888/docs/blob/main/api-reference/openapi.json).
+
+The response is an object. Its keys are the names of the output nodes, and the values are of type Message [(Check OpenAPI schemas)](https://github.com/skull8888888/docs/blob/main/api-reference/openapi.json).
