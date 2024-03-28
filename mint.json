@@ -2,10 +2,10 @@
   "$schema": "https://mintlify.com/schema.json",
   "name": "Starter Kit",
   "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
+    "dark": "/logo/laminar-white.svg",
+    "light": "/logo/laminar.svg"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.png",
   "colors": {
     "primary": "#0D9373",
     "light": "#07C983",
@@ -34,14 +34,9 @@
   ],
   "anchors": [
     {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "https://mintlify.com/docs"
-    },
-    {
       "name": "Community",
-      "icon": "slack",
-      "url": "https://mintlify.com/community"
+      "icon": "discord",
+      "url": "https://discord.gg/nNFUUDAKub"
     },
     {
       "name": "Blog",
@@ -59,14 +54,20 @@
       ]
     },
     {
-      "group": "Essentials",
+      "group": "Mintlify Essentials",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
+        "mintlify-essentials/markdown",
+        "mintlify-essentials/code",
+        "mintlify-essentials/images",
+        "mintlify-essentials/settings",
+        "mintlify-essentials/navigation",
+        "mintlify-essentials/reusable-snippets"
+      ]
+    },
+    {
+      "group": "laminar",
+      "pages": [
+        "laminar/pipeline-builder"
       ]
     },
     {
@@ -82,5 +83,7 @@
       ]
     }
   ],
-  "footerSocials": {}
+  "footerSocials": {
+    "discord": "https://discord.gg/nNFUUDAKub"
+  }
 }
