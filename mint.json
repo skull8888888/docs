@@ -15,6 +15,17 @@
       "to": "#07C983"
     }
   },
+  "openapi": ["/api-reference/openapi.json"],
+  "topbarLinks": [
+    {
+      "name": "Support",
+      "url": "mailto:info.lmnr.ai@gmail.com"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Dashboard",
+    "url": "https://www.lmnr.ai/projects"
+  },
   "tabs": [
     {
       "name": "API Reference",
@@ -26,11 +37,6 @@
       "name": "Community",
       "icon": "discord",
       "url": "https://discord.gg/nNFUUDAKub"
-    },
-    {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
     }
   ],
   "navigation": [
@@ -66,11 +72,9 @@
       ]
     },
     {
-      "group": "Endpoint Examples",
+      "group": "Endpoints",
       "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "api-reference/endpoint/endpoint_run"
       ]
     }
   ],

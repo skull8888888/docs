@@ -1,16 +1,16 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.0.3",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
+    "title": "laminar",
+    "description": "",
     "license": {
-      "name": "MIT"
+      "name": ""
     },
-    "version": "1.0.0"
+    "version": "0.1.0"
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "https://api.lmnr.ai/v1"
     }
   ],
   "security": [
@@ -19,54 +19,17 @@
     }
   ],
   "paths": {
-    "/plants": {
-      "get": {
-        "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
+    "/endpoint/run": {
       "post": {
-        "description": "Creates a new plant in the store",
+        "tags": [
+          "api::endpoints"
+        ],
+        "operationId": "run_endpoint_graph",
         "requestBody": {
-          "description": "Plant to add to the store",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/GraphRequest"
               }
             }
           },
@@ -74,54 +37,14 @@
         },
         "responses": {
           "200": {
-            "description": "plant response",
+            "description": "Endpoint run result",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "{Name of output node}": {"$ref": "#/components/schemas/Message"}
+                  }
                 }
               }
             }
@@ -131,64 +54,255 @@
     }
   },
   "components": {
-    "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
-          }
-        }
-      }
-    },
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "InstructNodeMetaLog": {
+        "type": "object",
+        "properties": {
+          "semanticCacheEnabled": {
+            "type": "boolean"
+          },
+          "semanticCacheRetrieved": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "inputTokenCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "outputTokenCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalTokenCount": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": ["semanticCacheEnabled", "inputTokenCount", "outputTokenCount", "totalTokenCount"]
+      },
+      "ChatNodeMetaLog": {
+        "type": "object",
+        "properties": {
+          "semanticCacheEnabled": {
+            "type": "boolean"
+          },
+          "semanticCacheRetrieved": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "inputMessageCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "inputTokenCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "outputTokenCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalTokenCount": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": ["semanticCacheEnabled", "inputMessageCount", "inputTokenCount", "outputTokenCount", "totalTokenCount"]
+      },
+      "AgentNodeMetaLog": {
+        "type": "object",
+        "properties": {
+          "stepsThreadId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mainThreadId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "steps": {
+            "type": "object"
+          }
+        },
+        "required": ["stepsThreadId", "mainThreadId", "steps"]
+      },
+      "MetaLog": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/InstructNodeMetaLog"
+          },
+          {
+            "$ref": "#/components/schemas/ChatNodeMetaLog"
+          },
+          {
+            "$ref": "#/components/schemas/AgentNodeMetaLog"
+          }
+        ]
+      },
+      "ThreadChatMessage": {
+        "type": "object",
+        "properties": {
+          "thread_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "role": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "required": ["role", "content"]
+      },
+      "ChatMessage": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": ["role", "content"]
+      },
+      "ConditionedValue": {
+        "type": "object",
+        "properties": {
+          "condition": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": ["condition", "value"]
+      },
+      "NodeInput": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/schemas/ThreadChatMessage"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatMessage"
+            }
+          },
+          {
+            "$ref": "#/components/schemas/ConditionedValue"
+          }
+        ]
+      },
+      "GraphRequest": {
+        "type": "object",
+        "required": [
+          "endpoint",
+          "inputs"
+        ],
+        "properties": {
+          "endpoint": {
+            "type": "string",
+            "description": "Name of the endpoint to be called"
+          },
+          "inputs": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/NodeInput"
+            }
+          },
+          "modelApiKeys": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "nullable": true,
+            "description": "The key is the provider name such as 'openai' and the value is the api key"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "value",
+          "inputs",
+          "inputMessages",
+          "startTime",
+          "endTime",
+          "nodeId",
+          "nodeName",
+          "nodeType"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/NodeInput"
+          },
+          "inputMessages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Message"
+            },
+            "description": "all input messages to this node; accumulates previous messages too"
+          },
+          "inputs": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/NodeInput"
+            }
+          },
+          "metaLog": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MetaLog"
+              }
+            ],
+            "nullable": true
+          },
+          "nodeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nodeName": {
+            "type": "string"
+          },
+          "nodeType": {
+            "type": "string"
+          },
+          "startTime": {
+            "type": "string"
+          },
+          "endTime": {
+            "type": "string"
+          }
+        }
       }
     }
   }
