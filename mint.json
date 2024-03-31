@@ -5,7 +5,7 @@
     "dark": "/logo/laminar-white.svg",
     "light": "/logo/laminar.svg"
   },
-  "favicon": "/favicon.png",
+  "favicon": "/favicon-doc.png",
   "colors": {
     "primary": "#0D9373",
     "light": "#07C983",
@@ -52,9 +52,17 @@
         "pipeline/introduction",
         "pipeline/working-with-nodes",
         "pipeline/templates-dynamic-inputs",
+        "pipeline/model-api-keys",
         "pipeline/specific-nodes",
         "pipeline/run-save-deploy",
         "pipeline/semantic-routing"
+      ]
+    },
+    {
+      "group": "Endpoints",
+      "pages": [
+        "endpoints/introduction",
+        "endpoints/checks"
       ]
     },
     {
@@ -64,7 +72,7 @@
       ]
     },
     {
-      "group": "Endpoints",
+      "group": "Endpoints - API",
       "pages": [
         "api-reference/endpoint/endpoint_run"
       ]
