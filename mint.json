@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "laminar docs",
   "logo": {
     "dark": "/logo/laminar-white.svg",
     "light": "/logo/laminar.svg"
@@ -41,28 +41,20 @@
   ],
   "navigation": [
     {
-      "group": "Get Started",
+      "group": "Getting started",
       "pages": [
-        "introduction",
-        "quickstart",
-        "development"
+        "introduction"
       ]
     },
     {
-      "group": "Mintlify Essentials",
+      "group": "Pipeline",
       "pages": [
-        "mintlify-essentials/markdown",
-        "mintlify-essentials/code",
-        "mintlify-essentials/images",
-        "mintlify-essentials/settings",
-        "mintlify-essentials/navigation",
-        "mintlify-essentials/reusable-snippets"
-      ]
-    },
-    {
-      "group": "laminar",
-      "pages": [
-        "laminar/pipeline-builder"
+        "pipeline/introduction",
+        "pipeline/working-with-nodes",
+        "pipeline/templates-dynamic-inputs",
+        "pipeline/specific-nodes",
+        "pipeline/run-save-deploy",
+        "pipeline/semantic-routing"
       ]
     },
     {
