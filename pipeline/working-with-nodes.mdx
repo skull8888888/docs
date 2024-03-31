@@ -9,7 +9,7 @@ Every node has a name. This:
 - Is required for proper integration with datasets and evaluations
 - Is a utility for you when analyzing logs and traces.
 
-All nodes names within a pipeline must be unique. Pipeline execution itself can run fine with repeated node names, but other functionality may be impaired.
+All nodes names within a pipeline **must be unique**. Pipeline execution itself can run fine with repeated node names, but other functionality may be impaired.
 
 ## Connecting nodes
 
@@ -34,14 +34,15 @@ Only handles of the same type can be connected to each other.
 
 ## Input and Output nodes
 
-Input and Output nodes are special. They "define" the API once you deploy the pipeline. That is, your request to a Laminar endpoint API must send all inputs in a map following the pattern `"inputNodeName": "inputValue"`. Similarly, the response message contains a map from each output node's name to the output result of that node. Read more in [api reference](/api-reference/endpoint/endpoint_run).
+Input and Output nodes are special. They "define" the API once you deploy the pipeline. That is, your request to a [Laminar endpoint](/api-reference/endpoint/endpoint_run) API must send all inputs in a map following the pattern `"inputNodeName": "inputValue"`. Similarly, the response message contains a map from each output node's name to the output result of that node. Read more in [api reference](/api-reference/endpoint/endpoint_run).
 
-In addition, whenever you drag and drop a new input node, an input field will appear in the sidebar on the left. You must fill this field in in order to run the pipeline.
+In addition, whenever you drag and drop a new input node, an input field will appear in the sidebar on the left. You must fill this field in order to run the pipeline.
 
 For your convenience, upon new connection, input node changes its name to match the handle it is being connected to.
 
 ### Input types
 
-Similar to node handles, an input node has a type, which defines the type of its handle as well. For example, `StringList` input node produces a `StringList` results and can be connected only to handles expecting `StringList` value, e.g. Semantic Search's `query` handle.
+An input node has a type, which defines the type of output it produces and the type for its output handle as well.
+For example, `StringList` input node produces a `StringList` output and can be connected only to input handles expecting `StringList` value, e.g. Semantic Search's `query` handle.
 
 For your convenience, upon new connection, an unconnected input node changes its type and name to follow the type and name of a handle it is being connected to.
