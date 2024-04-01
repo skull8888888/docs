@@ -2,6 +2,15 @@
 title: 'Working with nodes'
 ---
 
+## Overview
+
+There can be various types of nodes.
+We first suggest to read the general instructions on how to work with nodes here, and then jump
+to the specific instructions on working with each particular node
+such as [Instruct node](/nodes/chat-instruct-llm-nodes#instruct-node),
+[Chat node](/nodes/chat-instruct-llm-nodes#chat-node),
+[Semantic Router node](/nodes/semantic-router), etc.
+
 ## Naming nodes
 
 Every node has a name. This:
@@ -11,13 +20,20 @@ Every node has a name. This:
 
 All nodes names within a pipeline **must be unique**. Pipeline execution itself can run fine with repeated node names, but other functionality may be impaired.
 
-## Connecting nodes
+## Connecting nodes – Handles
 
-Input handles appear on the left side of a node; output handles are on the right side of a node. Depending on the node type, there can be 0 or more input handles and 0 or more output handles. Connect the nodes by dragging a connection from one node's output handle to another node's input handle.
+You can use Handles to connect nodes, which are small holes on the left or right side of each node.
+Connect the nodes by dragging a connection from one node's output handle to another node's input handle.
+
+Input handles appear on the left side of a node; output handles are on the right side of a node.
+Depending on the node type, there can be 0 or more input handles and 0 or more output handles.
+
 
 <img height="300" src="/images/pipeline-builder/connected-nodes.png" alt="input, semantic search, and output nodes connected to each other"/>
 
-Each input handle must take exactly 1 connection, however an output handle can be connected to many other nodes. In other words, one node's output can serve as an input to multiple nodes, but not the other way around.
+Each input handle must take exactly 1 connection, however an output handle can be connected to many other nodes.
+
+In other words, one node's output can serve as an input to multiple nodes, but not the other way around.
 
 <img height="300" src="/images/pipeline-builder/multi-node-output-connection.png" alt="input, 2 semantic search, and 2 output nodes connected to each other, such that one input node serves as input to two semantic search nodes"/>
 
@@ -25,24 +41,24 @@ Each input handle must take exactly 1 connection, however an output handle can b
 
 Depending on the data the node expects, there are different types of handles.
 
-- String – basic text input
-- StringList – JSON array of strings, e.g. `["Hello", "World"]`
-- ChatMessageList – JSON array of `ChatMessage` objects in chronological order of the chat conversation. `ChatMessage` has 2 required fields: `role` and `content`. `role` is a string, normally `"user"`, `"assistant"`, or `"system"`, but may vary depending on the LLM provider. `content` is string content of a message.
+- **String** – basic text input
+- **StringList** – JSON array of strings, e.g. `["Hello", "World"]`
+- **ChatMessageList** – JSON array of `ChatMessage` objects in chronological order of the chat conversation. `ChatMessage` has 2 required fields: `role` and `content`. `role` is a string, normally `"user"`, `"assistant"`, or `"system"`, but may vary depending on the LLM provider. `content` is string content of a message.
 - \[DEPRECATED\] ~~ThreadChatMessage – a JSON object, same as `ChatMessage` but with an optional field `threadId`.~~ This was used in the agent node, currently being replaced by agentic behaviour of the builder flow itself.
 
 Only handles of the same type can be connected to each other.
 
-## Input and Output nodes
+## Dynamic inputs
 
-Input and Output nodes are special. They "define" the API once you deploy the pipeline. That is, your request to a [Laminar endpoint](/api-reference/endpoint/endpoint_run) API must send all inputs in a map following the pattern `"inputNodeName": "inputValue"`. Similarly, the response message contains a map from each output node's name to the output result of that node. Read more in [api reference](/api-reference/endpoint/endpoint_run).
+For relevant nodes, i.e. [Chat](/nodes/chat-instruct-llm-nodes#chat-node) and [Instruct](/nodes/chat-instruct-llm-nodes#instruct-node),
+we allow the system message to be templated with the user input for each call.
+This is achieved with enclosing your `{{variables}}` in double curly braces, a.k.a moustache syntax.
+To start, simply enclose a word in your node's instruction/system message field, and a new handle of type `String`,
+and named with that enclosed word will appear on the left hand side of the node.
 
-In addition, whenever you drag and drop a new input node, an input field will appear in the sidebar on the left. You must fill this field in order to run the pipeline.
-
-For your convenience, upon new connection, input node changes its name to match the handle it is being connected to.
-
-### Input types
-
-An input node has a type, which defines the type of output it produces and the type for its output handle as well.
-For example, `StringList` input node produces a `StringList` output and can be connected only to input handles expecting `StringList` value, e.g. Semantic Search's `query` handle.
-
-For your convenience, upon new connection, an unconnected input node changes its type and name to follow the type and name of a handle it is being connected to.
+<Frame caption="Including {{topic}} dynamic input in instruction results in creation of 'topic' input handle">
+<img
+    height="300"
+    src="/images/pipeline-builder/string-template-simple.png" alt="instruct node with the word 'topic' enclosed in it double curly braces"
+    />
+</Frame>
