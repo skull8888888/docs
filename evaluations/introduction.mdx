@@ -1,5 +1,42 @@
 ---
-title: Evaluations
+title: Introduction
+description: Evaluate the correctness of the produced results.
 ---
 
-Evaluate the correctness of your pipeline
+## Concept
+
+Evaluation is a concept of running a given pipeline version against a given dataset. For an evaluation to run correctly, datapoints in a dataset must contain keys identical to the pipeline's input and output node names. For example, if a pipeline contains has inputs `"colour"`  and `"season"`, then evaluation run would look for keys `"colour"` and `"season"` in every datapoint, and substitute the respective pipeline inputs with the values of these keys in the datapoints.
+
+You can run the same evaluation against different pipeline versions.
+
+### Evaluations as tests
+
+One major goal of evaluations is to ensure the correctness of the generated outputs. To do this, evaluations can be run as tests. Then, for every datapoint in the evaluation's dataset, actual outputs of the execution will be compared to the corresponding key in that datapoint. For example, if the pipeline has an output node named `"recommendation"`, then, in every datapoint, the 'expected' output will be the value of the key `"recommendation"`. The output is matched against it's expected value using one of the [Matchers](/evaluations/matchers) and the score is given. For each run, the average evaluation score is also computed.
+
+## Creating an evaluation
+
+1. Go to evaluations page in the navbar <img src="images/evaluations/navbar-evaluations.png" height="200"/>
+1. Click "New evaluation" at the top of the page
+1. Give the evaluation a name
+1. Select the dataset
+1. Select and configure a [matcher](/evaluations/matchers)
+
+## Running an evaluation
+
+1. From the evaluations page, click on an evaluation
+1. In the evaluation page, click "Run evaluation"
+1. Select the pipeline and the version you would like to test
+1. IMPORTANT: If your pipeline makes LLM API calls, make sure that all API keys are set in the API keys page. ([Read more](/pipeline/model-api-keys))
+1. Click run evaluation
+1. The result will appear in the page.
+
+Note, that evaluation will run only against the datapoints that have all required input keys to fill in the pipeline's input nodes.
+
+### Status and results of the evaluation
+
+Possible statuses of evaluation jobs:
+- Running
+- Success
+- Error
+
+Where error means an error executing the pipeline version.

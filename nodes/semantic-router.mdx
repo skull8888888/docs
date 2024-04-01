@@ -11,7 +11,7 @@ Semantic router node takes in 1 string input and can route it to one of the outp
 
 This is the concept of classification of text in the embedding space based on the proximity to the centroid of each route.
 
-When you run a pipeline with semantic router node, it embeds all examples in each route, and then clusters them together and store the "coordinates" of the "centroid" of each cluster. The input of the pipeline is also be embedded. Then, semantic distance between the input's embedding and the centorid embeddings is calculated. The closest centroid is selected, and the output is directed to that route.
+When you run a pipeline with semantic router node, it embeds all examples in each route, and then clusters them together and stores the "coordinates" of the "centroid" of each cluster. The input of the pipeline is also be embedded. Then, semantic distance between the input's embedding and the centorid embeddings is calculated. The closest centroid is selected, and the output is directed to that route.
 
 <Card
   title="Example"
@@ -28,6 +28,6 @@ When you run a pipeline with semantic router node, it embeds all examples in eac
 
 ## Example use
 
-The pipeline in the screenshot below will only keep the names of desserts for a simple recipe generator
+The pipeline in the picture below will only keep the names of desserts for a simple recipe generator
 
 <img height="400" src="/images/pipeline-builder/semantic-router-example.png" alt="Pipeline with three semantic routes"/>

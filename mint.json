@@ -18,8 +18,8 @@
   "openapi": ["/api-reference/openapi.json"],
   "topbarLinks": [
     {
-      "name": "Support",
-      "url": "mailto:info.lmnr.ai@gmail.com"
+      "name": "Contact support",
+      "url": "mailto:founders@lmnr.ai"
     }
   ],
   "topbarCtaButton": {
@@ -71,6 +71,13 @@
       "pages": [
         "endpoints/introduction",
         "endpoints/checks"
+      ]
+    },
+    {
+      "group": "Evaluations",
+      "pages": [
+        "evaluations/introduction",
+        "evaluations/matchers"
       ]
     },
     {
