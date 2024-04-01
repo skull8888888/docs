@@ -51,11 +51,19 @@
       "pages": [
         "pipeline/introduction",
         "pipeline/working-with-nodes",
-        "pipeline/templates-dynamic-inputs",
         "pipeline/model-api-keys",
-        "pipeline/specific-nodes",
-        "pipeline/run-save-deploy",
-        "pipeline/semantic-routing"
+        "pipeline/run-save-deploy"
+      ]
+    },
+    {
+      "group": "Nodes",
+      "pages": [
+        "pipeline/working-with-nodes",
+        "nodes/input-output",
+        "nodes/string-template",
+        "nodes/chat-instruct-llm-nodes",
+        "nodes/semantic-search",
+        "nodes/semantic-router"
       ]
     },
     {
