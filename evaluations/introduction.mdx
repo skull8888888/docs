@@ -5,13 +5,13 @@ description: Evaluate the correctness of the produced results.
 
 ## Concept
 
-Evaluation is a concept of running a given pipeline version against a given dataset. For an evaluation to run correctly, datapoints in a dataset must contain keys identical to the pipeline's input and output node names. For example, if a pipeline contains has inputs `"colour"`  and `"season"`, then evaluation run would look for keys `"colour"` and `"season"` in every datapoint, and substitute the respective pipeline inputs with the values of these keys in the datapoints.
+Evaluation is a concept of running a given pipeline version against a given dataset. For an evaluation to run correctly, datapoints in a dataset must contain keys identical to the pipeline's input node names. For example, if a pipeline has inputs `"colour"`  and `"season"`, then evaluation run would look for keys `"colour"` and `"season"` in every datapoint, and substitute the respective pipeline inputs with the values of these keys in the datapoints when running the pipeline.
 
 You can run the same evaluation against different pipeline versions.
 
 ### Evaluations as tests
 
-One major goal of evaluations is to ensure the correctness of the generated outputs. To do this, evaluations can be run as tests. Then, for every datapoint in the evaluation's dataset, actual outputs of the execution will be compared to the corresponding key in that datapoint. For example, if the pipeline has an output node named `"recommendation"`, then, in every datapoint, the 'expected' output will be the value of the key `"recommendation"`. The output is matched against it's expected value using one of the [Matchers](/evaluations/matchers) and the score is given. For each run, the average evaluation score is also computed.
+One major goal of evaluations is to ensure the correctness of the generated outputs. To do this, evaluations can be run as tests. Then, for every datapoint in the evaluation's dataset, actual outputs of the execution will be compared to the corresponding key in that datapoint. For example, if the pipeline has an output node named `"recommendation"`, then, in every datapoint, the 'expected' output will be the value of the key `"recommendation"`. The output is matched against its expected value using one of the [Matchers](/evaluations/matchers) and the score is produced. For each run of the evaluation, the average evaluation score across all datatpoints is also computed.
 
 ## Creating an evaluation
 
