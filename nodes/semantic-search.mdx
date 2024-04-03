@@ -4,8 +4,82 @@ title: "Semantic Search"
 
 ## Semantic Search node
 
-Semantic search allows you to search over uploaded files or over the datasets you create. 
+Semantic search allows you to search over uploaded files or over the datasets you create.
 
-`Threshold` means minimal semantic similarity threshold for a search result to be selected.
+## Configuration
 
-`Limit` is the maximum number of contextы with similarity over threshold to be returned.
+### Threshold
+
+`Threshold` represents minimal semantic similarity between the query and the search result for it to be selected. Valid range: `0.0` - `1.0`. For example, if the threshold is set at `0.42`, only the contexts with similarity above or equal to `0.42` to the search query will be selected
+
+### Limit
+
+`Limit` is the maximum number of contexts with similarity over threshold to be returned. Valid range: non-negative integers.
+
+### Template
+
+Similar to the [string template node](/nodes/string-template) or [instruct and chat nodes](/nodes/chat-instruct-llm-nodes), you can add a template with `{{moustache syntax}}` over your variables. Here, unlike in the other nodes mentioned, this controls the format of the output, not the input. You can add any keys to the template to get the data from the dataset except the reserved keys.
+
+#### Reserved keys
+
+- `relevance_index` - a positive int representing the order in the list of contexts ordered by similarity to the query. 1 means this content is the most similar
+- `content` - entire contents of the data. For file: the relevant chunk. For dataset: the content of the column the dataset is indexed/embedded on
+
+## Output
+
+The output of a semantic search node is a single string of all rendered (with each variable name replaced by its value) templates joined via a newline character `\n`.
+
+## Examples
+
+### Example template for searching over files
+
+### Template
+
+```
+[{{relevance_index}}]
+
+{{content}}
+
+---
+
+```
+
+#### Rendered output
+
+```
+[1]
+
+This portion of the file is the most relevant
+
+---
+
+[2]
+
+This portion of the file is a little bit less relevant
+
+---
+
+```
+
+### Example template for searching over datasets.
+
+This will search over a dataset that has keys `short_description` and `price` for a list of products.
+
+#### Template
+
+```
+{{relevance_index}}. {{short_description}}
+Price: {{price}}
+
+```
+
+#### Output
+
+```
+1. This is the best frying pan you can find in household shops.
+Price: $25.99
+
+2. The frying pan everyone must get!
+Price: $14.49
+
+```
