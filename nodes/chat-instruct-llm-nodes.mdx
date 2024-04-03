@@ -7,7 +7,7 @@ description: "Specifications for LLM nodes: Instruct node and Chat node"
 
 Instruct node takes an instruction and executes it against the selected model (e.g. `gpt-3.5-turbo-16k`).
 
-The instruction can be templated, by adding dynamic input variables inside the double-curly braces.
+The instruction can be templated, by adding [dynamic input](/pipeline/working-with-nodes#dynamic-inputs) variables inside the double-curly braces.
 
 Any node can be connected to the template variable's handle, if its output is of string type.
 
@@ -23,15 +23,16 @@ For your convenience, there is a Prompt Copilot, where you can improve and polis
 
 Chat node takes a list of chat messages (`ChatMessageList`), optional system message, and completes the chat against the selected model (e.g. `claude-3-sonnet`).
 
-The system message is a convenient way to add a message with role `"system"` to the beginning of the chat message. It can be templated, by adding dynamic input variables inside the double-curly braces.
+The system message is a convenient way to add a message with role `"system"` to the beginning of the chat message.
+
+It can be templated, by adding [dynamic input](/pipeline/working-with-nodes#dynamic-inputs) variables inside the double-curly braces.
 
 Any node can be connected to the template variable's handle, if its output is of string type.
 
-Chat message list is expected to have user and assistant messages [(Read more)](/pipeline/working-with-nodes#handle-types)
+For example, system message can be `"Imagine you're an expert in political sciences"` (without any variables) or `"Imagine you're an expert on {{topic}}"` (with variables).
 
-For example, system message can be `"Imagine you're an expert in political sciences"` (without any variables) or `"Imagine you're an expert on {{subject}}"` (with variables).
-
-The list of chat messages is an array, where usually messages with `"user"` role and `"assistant"` role alternate.
+The list of chat messages is an array of messages, where each message has `"role"` and `"content"` fields.
+Usually messages with `"user"` role and `"assistant"` role alternate. [(Read more)](/pipeline/working-with-nodes#handle-types)
 
 For your convenience, there is a Prompt Copilot, where you can improve and polish your prompt, located right on the node.
 
@@ -39,15 +40,15 @@ For your convenience, there is a Prompt Copilot, where you can improve and polis
 <img height="200" src="/images/pipeline-builder/chat-imagine-expert.png" alt="Chat node with one template input in doubly curly braces and messages input"/>
 </Frame>
 
-Additionally, if you enable dataset-based Semantic Cache, then for each execution, it will try to see if cache's dataset has items,
+Additionally, if you enable [dataset-based Semantic Cache](/datasets/introduction#use-case-semantic-search), then for each execution, it will try to see if cache's dataset has items,
 which are semantically similar to chat message list, and are above specified semantic siilarity threshold.
 
 To use semantic cache, do the following:
 1. Toggle the "Semantic cache" switch to turn it on.
 2. Set the semantic similarity threshold to value from 0 to 1
 (1 means 100% similarity and can almost never be achieved due to possible non-deterministic behaviour of embedding models).
-3. Select the cache dataset. 
-If there is no dataset, go to "datasets" page and create dataset. Datapoints can be uploaded from files or Endpoint logs.
+3. Select the cache [dataset](/datasets/introduction).
+If there is no dataset, go to "datasets" page and create dataset. Datapoints can be uploaded [from files or Endpoint logs](/datasets/introduction#adding-datapoints).
 4. Select the output key. If cache hit happens, the node's output is the value of this column from the dataset's datapoints table.
 
 Note that semantic similarity is currently checked only based on the chat message list.

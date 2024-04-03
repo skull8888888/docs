@@ -74,6 +74,12 @@
       ]
     },
     {
+      "group": "Datasets",
+      "pages": [
+        "datasets/introduction"
+      ]
+    },
+    {
       "group": "Evaluations",
       "pages": [
         "evaluations/introduction",

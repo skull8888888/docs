@@ -50,11 +50,11 @@ Only handles of the same type can be connected to each other.
 
 ## Dynamic inputs
 
-For relevant nodes, i.e. [Chat](/nodes/chat-instruct-llm-nodes#chat-node) and [Instruct](/nodes/chat-instruct-llm-nodes#instruct-node),
+For relevant nodes, e.g. [Chat](/nodes/chat-instruct-llm-nodes#chat-node) and [Instruct](/nodes/chat-instruct-llm-nodes#instruct-node),
 we allow the system message to be templated with the user input for each call.
 This is achieved with enclosing your `{{variables}}` in double curly braces, a.k.a moustache syntax.
-To start, simply enclose a word in your node's instruction/system message field, and a new handle of type `String`,
-and named with that enclosed word will appear on the left hand side of the node.
+To start, simply enclose a word in your node's instruction/system message field. After that, a new input handle of type `String`, named with that enclosed word,
+will appear on the left hand side of the node.
 
 <Frame caption="Including {{topic}} dynamic input in instruction results in creation of 'topic' input handle">
 <img
