@@ -1,0 +1,97 @@
+---
+title: Evaluators
+description: Grade the pipeline output in place or against a target
+---
+## Evaluator metadata
+
+An evaluator may have optional metadata field associated to it. This is intended to store information that is common across all datapoints, i.e. global to the entire evaluator. For example, for regex evaluator, the regular expression pattern is stored in its metadata.
+
+## Evaluator types
+
+Available matcher types are:
+- Exact
+- Regex
+- Semantic similarity
+- Pipeline-based
+
+## Exact evaluator
+
+This is the simplest evaluator that checks two strings for exact equality. It does NOT trim/strip any surrounding whitespaces. It is also case-sensitive.
+
+### Requires target data?
+
+Yes
+
+### Scoring:
+
+If two strings are identical, score of `1.0`. Otherwise, score of `0.0`.
+
+### Examples
+
+|Target data       | Actual data  | score
+|------------------|--------------|------
+|`"Hello!"`        | `"Hello!"`   | `1.0`
+|`"Hello, world!"` | `"Hello!"`   | `0.0`
+|`"Hello!"`        | `"hello!"`   | `0.0`
+|`"Hello!"`        | `"Hello!\n"` | `0.0`
+
+## Regex matcher
+
+Matches all points against the matcher's regular expression pattern.
+
+### Requires target data?
+
+No
+
+### Scoring
+
+If there is a match of the matcher's regex in the given text, score of `1.0`. Otherwise, score of `0.0`.
+
+### Examples
+
+|Regex (in evaluator metadata) | Actual data      | score
+|------------------------------|------------------|------
+| `"\w+!"`                     |`"Hello!"`        | `1.0`
+| `"Hel+o, \w+!"`              |`"Hello, world!"` | `1.0`
+| `"\d+"`                      |`"Hello!"`        | `0.0`
+
+
+## Semantic similarity evaluator
+
+Compares two strings based on their semantic similarity in the embedding space.
+
+### Requires target data?
+
+Yes
+
+### Scoring
+
+Cosine similarity between two embedding vectors for the input in the range of `0.0` - `1.0`. To be more specific, it computes the cosine of the angle between two embedding vectors, adds 1 and divides the result by 2.
+
+### Examples
+
+These are two gpt-3.5-turbo-16k generated hokkus about cheese, and one example of dissimilar strings
+
+|Target data       | Actual data    | score
+|------------------|----------------|------
+|`"In creamy embrace,\nMelted dreams upon my tongue,\nCheese, my mouth's delight"`| `"Milky moon unfolds,\nCascading curds, divine treat,\nCheese dreams weave their spell"` | `0.803100049495697`
+|`"Soft as clouds, it rests,\nGouda melts on eager tongue,\nCheese dreams come alive."` | `"Melted on bread's crust,\nSavoring bliss, taste transcends,\nCheese's golden touch."` | `0.7639690637588501`
+|`"Roses are red"`        | `"Are you gonna buy a flight ticket?"`     | `0.4335864782333374`
+
+## Pipeline-based evaluator
+
+Run another pipeline that will assess the outputs of the pipeline being evaluated. This is useful when grading for less intuitive metrics or generally using an LLM to assess an LLM.
+
+IMPORTANT: you need to make sure that input node names in the evaluator pipeline match exactly the output node names of the pipeline being evaluated. It is fine if there are less inputs than provided outputs, but the evaluation will not run if there are less outputs than required inputs
+
+### Requires target data?
+
+No
+
+### Scoring
+
+Not enforced, configurable to anything at the output pipeline level
+
+### Examples
+
+An example of evaluation pipeline with screenshots to be added soon.

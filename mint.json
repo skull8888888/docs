@@ -83,7 +83,7 @@
       "group": "Evaluations",
       "pages": [
         "evaluations/introduction",
-        "evaluations/matchers"
+        "evaluations/evaluators"
       ]
     },
     {
