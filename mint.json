@@ -62,7 +62,7 @@
         "nodes/input-output",
         "nodes/string-template",
         "nodes/LLM",
-        "nodes/Unify",
+        "nodes/unify",
         "nodes/semantic-search",
         "nodes/semantic-router"
       ]
