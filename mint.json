@@ -51,7 +51,7 @@
       "pages": [
         "pipeline/introduction",
         "pipeline/working-with-nodes",
-        "pipeline/model-api-keys",
+        "pipeline/env-variables",
         "pipeline/run-save-deploy"
       ]
     },
@@ -61,7 +61,8 @@
         "pipeline/working-with-nodes",
         "nodes/input-output",
         "nodes/string-template",
-        "nodes/chat-instruct-llm-nodes",
+        "nodes/LLM",
+        "nodes/Unify",
         "nodes/semantic-search",
         "nodes/semantic-router"
       ]

@@ -1,0 +1,53 @@
+---
+title: "Unify node"
+description: "Specifications for Unify node"
+---
+
+## Unify node
+
+Unify node executes a prompt and optional chat messages against a selected model by using [Unify](https://unify.ai/)'s chat completion API.
+
+Unify is LLM router service, which allows to access a broad range of LLMs hosted on different providers.
+You can select the desired model and any of the available providers for that model to execute your requests on.
+Model can be selected by checking Unify's model [benchmarks](https://unify.ai/benchmarks)
+
+Cool feature of Unify is [dynamic routing](https://unify.ai/docs/concepts/runtime_routing.html). Instead of selecting provider, you can select a metric to optimize on,
+such as `lowest-ttft` and Unify will select the right provider for you.
+
+On top of that, the only API key you need is `UNIFY_API_KEY`.
+Generate an API key after registering at [Unify](https://unify.ai/) and then add it in Laminar's [env variables](/pipeline/env-variables) page.
+After that, you can access any model you want just by selecting it on the node. No need to spend your time to register and issue API keys for various models at different providers each time you want to switch the model or provider.
+
+## How it works
+
+The Unify node follows the standard practice of sending messages to an LLM's chat completion (or similar) API, where the first message
+is the `"system"` message and the rest of the messages are alternating between messages with `"user"` and `"assistant"` roles.
+
+Message with `"system"` role will come from the "Prompt" on the node.
+
+For sending `"user"` and `"assistant"` messages, you can enable the "Chat messages" and connect a node, which has output of "ChatMessageList" type. "ChatMessageList" is
+expected to contain a messages with `"user"` and `"assistant"` roles. [(Read more)](/pipeline/working-with-nodes#handle-types)
+
+<Frame caption="Unify node with Chat messages">
+<img height="300" src="/images/pipeline-builder/unify-with-chat-messages.png" alt="Unify node"/>
+</Frame>
+
+## Prompt
+
+The prompt can be templated, by adding [dynamic input](/pipeline/working-with-nodes#dynamic-inputs) variables inside the double-curly braces.
+
+Any node can be connected to the template variable's handle, if its output is of string type.
+
+For example, prompt can be `"Generate random variable"` (without any dynamic inputs) or `"Write a poem about {{subject}}, use the following words in a poem: {{words}}"` (with `subject` and `words` as dynamic inputs).
+
+<Frame>
+<img height="300" src="/images/pipeline-builder/unify-write-poem.png" alt="Unify node with two template inputs in doubly curly braces"/>
+</Frame>
+
+## Model
+
+Unify has a really wide range of models to run and you can select the model by setting the following configs right on the node:
+- Model name: Select any model or type manually after selecting `-type manually-`
+- Provider: Select any provider or type manually after selecting `-type-manually-`. [Dynamically routed](https://unify.ai/docs/concepts/runtime_routing.html) provider can be selected here.
+- Uploaded by: Type the uploader of the model, if applicable for the provider.
+- Thresholds: Add thresholds for dynamic routing by entering the numeric value and its name.
