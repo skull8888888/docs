@@ -1,0 +1,32 @@
+---
+title: "LLM node"
+description: "Specifications for LLM node"
+---
+
+## LLM node
+
+LLM node executes a prompt and optional chat messages against a selected model (e.g. `gpt-3.5-turbo-16k`).
+
+It follows the standard practice of sending messages to an LLM's chat completion (or similar) API, where the first message
+is the `"system"` message and the rest of the messages are alternating between messages with `"user"` and `"assistant"` roles.
+
+Prompt is sent as the message with `"system"` role.
+
+You can enable the "Chat messages" and connect a node, which has output of "ChatMessageList" type. "ChatMessageList" is
+expected to contain a messages with `"user"` and `"assistant"` roles. [(Read more)](/pipeline/working-with-nodes#handle-types)
+
+<Frame caption="LLM node with Chat messages">
+<img height="300" src="/images/pipeline-builder/llm-with-chat-messages.png" alt="LLM node"/>
+</Frame>
+
+## Prompt
+
+The prompt can be templated, by adding [dynamic input](/pipeline/working-with-nodes#dynamic-inputs) variables inside the double-curly braces.
+
+Any node can be connected to the template variable's handle, if its output is of string type.
+
+For example, prompt can be `"Generate random variable"` (without any dynamic inputs) or `"Write a poem about {{subject}}, use the following words in a poem: {{words}}"` (with `subject` and `words` as dynamic inputs).
+
+<Frame>
+<img height="300" src="/images/pipeline-builder/llm-write-poem.png" alt="LLM node with two template inputs in doubly curly braces"/>
+</Frame>

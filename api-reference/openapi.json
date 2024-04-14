@@ -61,32 +61,7 @@
       }
     },
     "schemas": {
-      "InstructNodeMetaLog": {
-        "type": "object",
-        "properties": {
-          "semanticCacheEnabled": {
-            "type": "boolean"
-          },
-          "semanticCacheRetrieved": {
-            "type": "boolean",
-            "nullable": true
-          },
-          "inputTokenCount": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "outputTokenCount": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "totalTokenCount": {
-            "type": "integer",
-            "format": "int64"
-          }
-        },
-        "required": ["semanticCacheEnabled", "inputTokenCount", "outputTokenCount", "totalTokenCount"]
-      },
-      "ChatNodeMetaLog": {
+      "LLMNodeMetaLog": {
         "type": "object",
         "properties": {
           "semanticCacheEnabled": {
@@ -111,37 +86,61 @@
           "totalTokenCount": {
             "type": "integer",
             "format": "int64"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "approximate_cost": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
           }
         },
-        "required": ["semanticCacheEnabled", "inputMessageCount", "inputTokenCount", "outputTokenCount", "totalTokenCount"]
+        "required": ["semanticCacheEnabled", "inputMessageCount", "inputTokenCount", "outputTokenCount", "totalTokenCount", "prompt"]
       },
-      "AgentNodeMetaLog": {
+      "UnifyNodeMetaLog": {
         "type": "object",
         "properties": {
-          "stepsThreadId": {
-            "type": "string",
-            "format": "uuid"
+          "inputMessageCount": {
+            "type": "integer",
+            "format": "int64"
           },
-          "mainThreadId": {
-            "type": "string",
-            "format": "uuid"
+          "inputTokenCount": {
+            "type": "integer",
+            "format": "int64"
           },
-          "steps": {
-            "type": "object"
+          "outputTokenCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalTokenCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "approximate_cost": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "request_model": {
+            "type": "string"
+          },
+          "response_model": {
+            "type": "string"
           }
         },
-        "required": ["stepsThreadId", "mainThreadId", "steps"]
+        "required": ["inputMessageCount", "inputTokenCount", "outputTokenCount", "totalTokenCount", "prompt", "request_model", "response_model"]
       },
       "MetaLog": {
         "oneOf": [
           {
-            "$ref": "#/components/schemas/InstructNodeMetaLog"
+            "$ref": "#/components/schemas/LLMNodeMetaLog"
           },
           {
-            "$ref": "#/components/schemas/ChatNodeMetaLog"
-          },
-          {
-            "$ref": "#/components/schemas/AgentNodeMetaLog"
+            "$ref": "#/components/schemas/UnifyNodeMetaLog"
           }
         ]
       },
@@ -222,12 +221,13 @@
         "type": "object",
         "required": [
           "endpoint",
-          "inputs"
+          "inputs",
+          "env"
         ],
         "properties": {
           "endpoint": {
             "type": "string",
-            "description": "Name of the endpoint to be called"
+            "description": "Name of the endpoint to be called. Not to be confused with the pipeline version name."
           },
           "inputs": {
             "type": "object",
@@ -235,13 +235,12 @@
               "$ref": "#/components/schemas/NodeInput"
             }
           },
-          "modelApiKeys": {
+          "env": {
             "type": "object",
             "additionalProperties": {
               "type": "string"
             },
-            "nullable": true,
-            "description": "The key is the provider name such as 'openai' and the value is the api key"
+            "description": "The keys are env variables such as OPENAI_API_KEY, POSTGRES_URL, etc."
           }
         }
       },

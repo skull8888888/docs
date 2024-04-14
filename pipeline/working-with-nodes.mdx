@@ -7,8 +7,8 @@ title: 'Working with nodes'
 There can be various types of nodes.
 We first suggest to read the general instructions on how to work with nodes here, and then jump
 to the specific instructions on working with each particular node
-such as [Instruct node](/nodes/chat-instruct-llm-nodes#instruct-node),
-[Chat node](/nodes/chat-instruct-llm-nodes#chat-node),
+such as [LLM node](/nodes/LLM),
+[Semantic Search node](/nodes/semantic-search),
 [Semantic Router node](/nodes/semantic-router), etc.
 
 ## Naming nodes
@@ -42,21 +42,19 @@ In other words, one node's output can serve as an input to multiple nodes, but n
 Depending on the data the node expects, there are different types of handles.
 
 - **String** – basic text input
-- **StringList** – JSON array of strings, e.g. `["Hello", "World"]`
 - **ChatMessageList** – JSON array of `ChatMessage` objects in chronological order of the chat conversation. `ChatMessage` has 2 required fields: `role` and `content`. `role` is a string, normally `"user"`, `"assistant"`, or `"system"`, but may vary depending on the LLM provider. `content` is string content of a message.
-- \[DEPRECATED\] ~~ThreadChatMessage – a JSON object, same as `ChatMessage` but with an optional field `threadId`.~~ This was used in the agent node, currently being replaced by agentic behaviour of the builder flow itself.
 
 Only handles of the same type can be connected to each other.
 
 ## Dynamic inputs
 
-For relevant nodes, e.g. [Chat](/nodes/chat-instruct-llm-nodes#chat-node) and [Instruct](/nodes/chat-instruct-llm-nodes#instruct-node),
+For relevant nodes, e.g. [LLM node](/nodes/LLM) and [Unify node](/nodes/unify),
 we allow the system message to be templated with the user input for each call.
 This is achieved with enclosing your `{{variables}}` in double curly braces, a.k.a moustache syntax.
-To start, simply enclose a word in your node's instruction/system message field. After that, a new input handle of type `String`, named with that enclosed word,
+To start, simply enclose a word in your node's "prompt" field in doubly curly braces. After that, a new input handle of type `String`, named with that enclosed word,
 will appear on the left hand side of the node.
 
-<Frame caption="Including {{topic}} dynamic input in instruction results in creation of 'topic' input handle">
+<Frame caption="Including {{topic}} dynamic input in prompt results in creation of 'topic' input handle">
 <img
     height="300"
     src="/images/pipeline-builder/string-template-simple.png" alt="instruct node with the word 'topic' enclosed in it double curly braces"
