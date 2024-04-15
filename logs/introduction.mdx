@@ -1,0 +1,34 @@
+---
+title: Introduction
+description: Logging basics
+---
+
+## Concept
+
+All of the [Endpoint](/endpoints/introduction) executions called via laminar API are logged. For every run, the entire execution trace is logged, so the information you can see in logs includes, but is not limited to:
+
+- Total execution time
+- Total execution tokens and cost
+- Outputs of every node in the pipeline
+- Execution time of every node in the pipeline
+- Execution cost of every node in the pipeline
+
+## Accessing logs
+
+1. Go to the logs page from the navbar
+1. Select the endpoint that you want to examine
+1. Click "Filter by pipeline versions" if you want to see logs of only certain versions
+
+<Frame caption="Example Logs page">
+<img height="300" src="/images/logs/logs-page.png" alt="Screenshot of the logs page"/>
+</Frame>
+
+### Viewing more details
+
+Simply click on any of the rows in the logs page and you will see the details in the sidebar.
+
+<Frame caption="Example log details">
+<img height="300" src="/images/logs/logs-sidebar.png" alt="Screenshot of the logs sidebar"/>
+</Frame>
+
+To expand any of the cards, click the arrows icon on it, and you will see the full output and metadata.

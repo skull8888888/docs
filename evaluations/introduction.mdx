@@ -5,7 +5,14 @@ description: Evaluate the correctness of the produced results.
 
 ## Concept
 
-Evaluation is a concept of running a given pipeline version against a given dataset and then evaluating the outputs of the pipeline. For an evaluation to run correctly, datapoints in a dataset must contain keys identical to the pipeline's input node names. For example, if a pipeline has inputs `"colour"`  and `"season"`, then evaluation run would look for keys `"colour"` and `"season"` in every datapoint, and substitute the respective pipeline inputs with the values of these keys in the datapoints when running the pipeline.
+Evaluation is a concept of running a given pipeline version against a given dataset and then evaluating the outputs of the pipeline.
+
+For every datapoint in the dataset:
+1. For the pipeline being tested, inputs are filled in with the values from the dataset, corresponding to the input node names.
+For example, if a pipeline has inputs `"colour"`  and `"season"`, then evaluation run would look for keys `"colour"` and `"season"` in every datapoint, and substitute the respective pipeline inputs with the values of these keys in the datapoints when running the pipeline.
+1. The pipeline is run. All env variables must be set for this to succeed.
+1. All outputs of the pipeline are extracted and fed to the evaluator alongside.
+1. The evaluator evaluates the outputs and optionally uses the values from the datapoint (using output name) if it needs target data.
 
 You can run the same evaluation against different pipelines and pipeline versions.
 
@@ -22,7 +29,7 @@ Consider the following dataset:
 | brown  | autumn | brown mid-heal shoes for a casual office look
 | yellow | summer | light yellow dress for a beach party look
 
-And the pipeline that takes inputs `colour` and `season`, and produces a look recommendation.
+And the pipeline that takes inputs `colour` and `season`, and produces a look recommendation with output name `recommendation`.
 
 You could evaluate the similarity of the pipeline outputs to the ground truth recommendations you have above. This means that your evaluation requires target data. You will need to make sure that the ground truth data column matches the output node name of the pipeline you are testing.
 

@@ -12,7 +12,7 @@ Dataset can be created by going to Datasets page and pressing "New dataset".
 
 In this page, you can learn how to use datasets for semantic cache/search, how to use for evaluations, and how to add datapoints.
 
-## Use-case: Semantic Search
+## Use case: Semantic Search
 
 Datasets can be used as a datasource for semantic search. Semantic search is used in the following places:
 1. [LLM node](/nodes/LLM)'s semantic cache
@@ -39,29 +39,9 @@ To do that, press "Index/Re-index", select the column name, and press "Index".
 
 If you don't index the dataset, the semantic search won't be able to find the data from the dataset.
 
-## Use-case: Evaluations
+## Use case: Evaluations
 
 Datasets can be used for [Evaluations](/evaluations/introduction) to specify expected inputs and outputs.
 
 For that, you'll need to name the Input and Output nodes in the pipeline to be evaluated same to the columns in the dataset.
 Input node must have the same name with the input data's column name, and Output node must have the same name with expected output's column name.
-
-## Adding datapoints
-
-To add datapoints, press "Add datapoints".
-
-<Frame caption="Add datapoints button in datasets page">
-<img height="200" src="/images/datasets/add-datapoints.png" />
-</Frame>
-
-You can add datapoints from 2 sources:
-1. **JSONL file.**
-Note that the values are expected to be flattened inside the file, i.e. there are no nested keys.
-2. **Endpoint logs.**
-After you deploy the pipeline to Endpoint, each API call to deployed pipeline is logged to Logs.
-After that, you can upload the datapoints from logs by selecting the Endpoint, its Pipeline Version, and its node, from which the logs will be uploaded.
-Note that can simply select "All" and not select any particular node, if you want to upload the logs based on whole pipeline's Input and Output nodes.
-
-<Frame caption="Select endpoint name, pipeline version, and node id to upload datapoints from logs.">
-<img width="400" src="/images/datasets/datapoints-from-logs.png" />
-</Frame>

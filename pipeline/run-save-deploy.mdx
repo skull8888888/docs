@@ -10,23 +10,23 @@ You can run the pipeline right from the builder screen to test pipeline executio
 - Pipeline has at least one output node
 - All nodes and handles are connected
 - All inputs are non-empty in the left sidebar
-- If your pipeline requires environment variables, set then in [env variables](/pipeline/env-variables) page.
+- All required variables are set in [env variables](/pipeline/env-variables) page.
 
 Simply click "Run" near pipeline execution, and you'll see the outputs in the bottom drawer once the execution completes.
 
-NOTE: executions are not logged for your workshop experiments. We only log deployed pipeline executions, i.e. when a pipeline is called via laminar API.
+NOTE: execution logs are not stored for your workshop experiments. We only log deployed pipeline executions, i.e. when a pipeline is called via laminar API.
 
 <img height="300" src="/images/pipeline-builder/run-result-simple.png" alt="execution result of a simple input-instruct-output pipeline"/>
 
 ### Running multiple executions in parallel.
 
-You may want to experiment with different prompts or dynamic inputs in parallel, to better assess the performance of your model at the same time. Here are some simple step to do this with laminar:
+You may want to experiment with different prompts or dynamic inputs in parallel in order to better assess the performance of your model at the same time. Here are some simple step to do this with laminar:
 
 1. Build your pipeline
 1. Click "Add parallel execution" in the left sidebar. Click it as many more times as you want!
 1. Don't worry you can unstage an execution if you've added one by mistake
 1. IMPORTANT: make sure to fill in all the inputs for all executions on the left
-1. Hit "Run" and all your calls will be made in parallel.
+1. Click "Run" and all your calls will be made in parallel.
 1. Compare and study your results in the bottom drawer.
 1. Repeat and have fun.
 
@@ -40,8 +40,8 @@ You don't have to, pipelines are saved automatically! You still can click "Save"
 
 Once you are happy with your pipeline and ready to use it in external applications, be it testing or production, you can deploy your pipeline version to an endpoint. This will create a snapshot of the pipeline in the current state and link an endpoint to it.
 
-1. Make sure you are happy with all node names, especially inputs ans outputs. See [Naming nodes](/pipeline/working-with-nodes/#naming-nodes).
-1. If your endpoint has checks of type "Evaluation", then make sure all required [env variables](/pipeline/env-variables) are set.
+1. Make sure you are happy with all node names, especially inputs and outputs. Remember, node names must be unique. See [Naming nodes](/pipeline/working-with-nodes/#naming-nodes).
+1. If your endpoint has checks of type "Evaluation", then make sure all [env variables](/pipeline/env-variables) required for the evaluation to run are set. This includes variables for the current pipeline and variables needed by the evaluation itself, if any.
 1. Click "Deploy" at the top of the page.
 1. Name this deployment so that you can identify it in the history in the future.
 1. Choose an endpoint to deploy your pipeline to or (soon) create a new endpoint from the same page.

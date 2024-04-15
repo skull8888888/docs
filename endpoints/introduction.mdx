@@ -6,6 +6,10 @@ title: Introduction
 
 Endpoints live inside projects and have externally accessible names. You can call endpoints from your applications via [laminar api](/api-reference/introduction). Every endpoint has exactly one target pipeline version. This is the flow that will be executed every time the endpoint is called from the API.
 
+## Name restriction
+
+Because the endpoints must be accessible externally via the laminar API, **endpoint names must be unique in the project**.
+
 ## Deployment flow
 
 1. User clicks deploy from the pipeline editing page and selects the endpoint.
@@ -13,3 +17,4 @@ Endpoints live inside projects and have externally accessible names. You can cal
 1. That version becomes the candidate version for this endpoint.
 1. Checks execution kicks off.
 1. If checks are passed correctly, the existing target pipeline version is 'retired', and the candidate version is 'promoted' to the target of the endpoint.
+    - If checks fail, however, the candidate version is stored in the endpoints history, and the endpoint remains at its latest target pipeline version, i.e. no update happens.

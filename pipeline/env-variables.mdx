@@ -22,7 +22,7 @@ To add a key do the following:
 3. Enter the value.
 4. Press "Add" in the dialog.
 
-Note that some nodes such as, for example, LLM node have pre-defined env variables.
+Note that some nodes, such as, for example, LLM node, have pre-defined env variables.
 For other nodes, if there's an option in a pipeline builder's particular node to set a name for env variable, you can set it on the node and add a custom variable with such name.
 
 <Frame caption="Dialog for selecting env variable name and filling out its value">
@@ -41,4 +41,4 @@ For other nodes, if there's an option in a pipeline builder's particular node to
 Laminar never stores your env variables.
 The keys are stored in your browser's storage and are used for pipeline runs in the "pipelines" page and evaluation jobs, triggered manually by the user.
 
-When you call an Endpoint, the variables set in this page are not used. For each endpoint call, you'll need to pass `env` in the payload.
+When you call an Endpoint, the variables set in this page are not used. For each endpoint call, you'll need to pass `env` in the payload. See [api reference](/api-reference/endpoint/endpoint_run) for more information.

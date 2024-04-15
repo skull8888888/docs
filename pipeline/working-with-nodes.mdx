@@ -22,7 +22,7 @@ All nodes names within a pipeline **must be unique**. Pipeline execution itself 
 
 ## Connecting nodes – Handles
 
-You can use Handles to connect nodes, which are small holes on the left or right side of each node.
+To connect nodes, use Handles, which are small holes on the left or right side of each node.
 Connect the nodes by dragging a connection from one node's output handle to another node's input handle.
 
 Input handles appear on the left side of a node; output handles are on the right side of a node.
@@ -45,6 +45,10 @@ Depending on the data the node expects, there are different types of handles.
 - **ChatMessageList** – JSON array of `ChatMessage` objects in chronological order of the chat conversation. `ChatMessage` has 2 required fields: `role` and `content`. `role` is a string, normally `"user"`, `"assistant"`, or `"system"`, but may vary depending on the LLM provider. `content` is string content of a message.
 
 Only handles of the same type can be connected to each other.
+
+### Conditional output handles
+
+For some nodes, including [Semantic Router node](/nodes/semantic-router), the result of the node execution (and hence the entire pipeline flow) will be directed to just one of the outputs. The selection depends on the node configuration and on the input data it receives.
 
 ## Dynamic inputs
 

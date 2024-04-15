@@ -1,0 +1,29 @@
+---
+title: 'Adding data'
+---
+
+To add datapoints, press "Add datapoints".
+
+<Frame caption="Add datapoints button in datasets page">
+<img height="200" src="/images/datasets/add-datapoints.png" />
+</Frame>
+
+You can add datapoints from 2 sources.
+
+### 1. File upload
+Supported file formats are: `.csv`, `.json`, `.jsonl`.
+- csv - **header is required**, default separator and minimal quoting are assumed. If a row has an empty value or less values than headers, missing values will be filled with empty strings.
+- json - the file must contain **one array** of objects, each with primitive (string, number, boolean, null) values
+- jsonlines - each line must contain an object, each with primitive (string, number, boolean, null) values
+
+If there is an error parsing the file, no datapoints will be added.
+If a single value in the file does not conform to format, it will be silently ignored.
+
+### 2. Endpoint logs
+After you deploy the pipeline to Endpoint, each API call to deployed pipeline is logged to Logs.
+After that, you can upload the datapoints from logs by selecting the Endpoint, its Pipeline Version, and its node, from which the logs will be uploaded.
+Note that can simply select "All" and not select any particular node, if you want to upload the logs based on whole pipeline's Input and Output nodes.
+
+<Frame caption="Select endpoint name, pipeline version, and node ids to upload datapoints from logs.">
+<img width="400" src="/images/datasets/datapoints-from-logs.png" />
+</Frame>

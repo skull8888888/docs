@@ -2,9 +2,10 @@
 title: Evaluators
 description: Grade the pipeline output in place or against a target
 ---
+
 ## Evaluator metadata
 
-An evaluator may have optional metadata field associated to it. This is intended to store information that is common across all datapoints, i.e. global to the entire evaluator. For example, for regex evaluator, the regular expression pattern is stored in its metadata.
+An evaluator may have optional metadata field associated to it. This is intended to store information that is common across all datapoints, i.e. global to the entire evaluator. For example, for regex evaluator, the regular expression pattern is stored in its metadata. Evaluator metadata is configured when you create or update
 
 ## Evaluator types
 
@@ -14,17 +15,21 @@ Available matcher types are:
 - Semantic similarity
 - Pipeline-based
 
-## Exact evaluator
+## Exact matcher
 
 This is the simplest evaluator that checks two strings for exact equality. It does NOT trim/strip any surrounding whitespaces. It is also case-sensitive.
 
 ### Requires target data?
 
-Yes
+Yes.
+
+### Metadata
+
+No.
 
 ### Scoring:
 
-If two strings are identical, score of `1.0`. Otherwise, score of `0.0`.
+If two strings are identical, score of `1.0`. Otherwise, score of `0.0`. The score is then averaged for all outputs of the pipeline.
 
 ### Examples
 
@@ -41,11 +46,15 @@ Matches all points against the matcher's regular expression pattern.
 
 ### Requires target data?
 
-No
+No.
+
+### Metadata
+
+Regex pattern
 
 ### Scoring
 
-If there is a match of the matcher's regex in the given text, score of `1.0`. Otherwise, score of `0.0`.
+If there is a match of the matcher's regex in the given text, score of `1.0`. Otherwise, score of `0.0`. The score is then averaged for all outputs of the pipeline.
 
 ### Examples
 
@@ -62,11 +71,17 @@ Compares two strings based on their semantic similarity in the embedding space.
 
 ### Requires target data?
 
-Yes
+Yes.
+
+### Metadata
+
+No.
 
 ### Scoring
 
 Cosine similarity between two embedding vectors for the input in the range of `0.0` - `1.0`. To be more specific, it computes the cosine of the angle between two embedding vectors, adds 1 and divides the result by 2.
+
+The score is then averaged for all outputs of the pipeline.
 
 ### Examples
 
@@ -86,12 +101,53 @@ IMPORTANT: you need to make sure that input node names in the evaluator pipeline
 
 ### Requires target data?
 
-No
+No.
+
+### Metadata
+
+Version id of the evaluator pipeline version.
 
 ### Scoring
 
-Currently, has to be a number only, so we can parse it and use further for scoring purposes. Make sure you try to correctly format the output value so it doesn't contain redundant info.
+Currently, has to be a number only, so laminar can parse it and use further for scoring purposes.
 
-### Examples
+Make sure you try to correctly format the output value of the evaluator pipeline, so it doesn't contain redundant info.
 
-An example of evaluation pipeline with screenshots to be added soon.
+### Example
+
+The pipeline below will evaluate a generic RAG pipeline. It will take user question, retrieved search context, and the LLM response as input, and produce a score on the scale of 1 to 5 based on how relevant to the question the response is.
+
+<Frame caption="Example RAG Evaluator">
+<img height="300" src="/images/evaluations/rag-evaluator-pipeline.png" alt="Screenshot RAG Evaluator"/>
+</Frame>
+
+The prompt used:
+
+<code>
+You are given the user's question, retrieved search context and the
+RAG flow output. Evaluate on the scale of 1 to 5, how relevant is the
+RAG flow output to the user's question. The score represents the fraction
+of claims in the output that are relevant to the question over total claims
+in the output. A high score means most retrieved content directly answers
+the question. A low score indicates excess or irrelevant information.
+
+You MUST produce the answer in the following format:
+
+\`\`\`
+
+\{
+
+"score": a single integer between 1 and 5 inclusive,
+
+"reasoning": explanation to why you gave this score 
+
+\}
+
+\`\`\`
+
+User's question: \{\{question\}\};
+
+Retrieved context: \{\{search\}\};
+
+RAG output: \{\{answer\}\}
+</code>
