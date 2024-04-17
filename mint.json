@@ -68,6 +68,12 @@
       ]
     },
     {
+      "group": "Guardrails",
+      "pages": [
+        "nodes/zenguard"
+      ]
+    },
+    {
       "group": "Endpoints",
       "pages": [
         "endpoints/introduction",
