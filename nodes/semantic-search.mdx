@@ -18,16 +18,29 @@ Semantic search allows you to search over uploaded files or over the datasets yo
 
 ### Template
 
-Similar to the [string template node](/nodes/string-template) or [LLM node](/nodes/LLM), you can add a template with `{{moustache syntax}}` over your variables. Here, unlike in the other nodes mentioned, this controls the format of the output, not the input. You can add any keys to the template to get the data from the dataset except the reserved keys.
+You can control the output through a template where keys are placed into `{{moustache syntax}}`.
+This template is applied to every content retrieved by semantic search. 
 
-#### Reserved keys
+All retrieved contents, rendered according to template, are joined via a newline character `\n`.
 
-- `relevance_index` - a positive int representing the order in the list of contexts ordered by similarity to the query. 1 means this content is the most similar
-- `content` - entire contents of the data. For file: the relevant chunk. For dataset: the content of the column the dataset is indexed/embedded on
+The keys that can de used in a template are different for file datasources and dataset datasources and are described in the next sections.
+Also, you can check [examples](/nodes/semantic-search#examples) below.
+
+#### Files' reserved keys
+
+- `relevance_index` - An index, which starts from 1, representing the order in the list of retrieved contents ordered by similarity to the query. 1 means this content is the most semantically similar.
+- `content` - The relevant retrieved chunk.
+- `page_content` - The content of the whole page, which contains the `content` chunk. 
+- `page_number` - The number of the page, which contains the `content` chunk. Only applicable to file formats which are divided into pages, e.g. PDF. 0 for files with no pages.
+
+#### Datasets' keys
+
+- `relevance_index` - An index, which starts from 1, representing the order in the list of retrieved contents ordered by similarity to the query. 1 means this content is the most semantically similar.
+- Additionally, you can select any column name from your dataset as a key.
 
 ## Output
 
-The output of a semantic search node is a single string of all rendered (with each variable name replaced by its value) templates joined via a newline character `\n`.
+The output of a semantic search node is a single string of all rendered (with each key replaced by its value) templates joined via a newline character `\n`.
 
 ## Examples
 
