@@ -1,0 +1,34 @@
+---
+title: Introduction
+---
+
+import SemanticSearchFileUploadSnippet from '/snippets/semantic-search-file-upload-snippet.mdx'
+
+## Concept
+
+This page now serves to manage the files which serve as a source for embeddings to vector database,
+i.e. source of data for semantic search.
+
+As we know, for doing semantic search over the file, it is required to chunk the file, and generate embeddings based on the chunks,
+which are then getting inserted into the vector database.
+
+Each tier at Laminar has a limited number of embeddings per month. So it's best to re-use the embeddings which have been generated before.
+So in case you have 2 different nodes using embeddings from the same file, re-use the file from "files" page rather than uploading the file again and, hence, generating same embeddings again.
+
+File can be uploaded by going to "files" page and clicking "New file". When file is selected, it automatically gets uploaded and embeddings are generated.
+We currently use our default chunking algorithm and model, however, if you need a personalized one, please contact us. We're already working on it.
+
+## Use case: Semantic Search datasource
+
+We mainly created "files" page, so that you re-use them as a [datasource](/nodes/semantic-search#datasources) in Semantic Search node.
+
+[Semantic Search node](/nodes/semantic-search) can have multiple datasources, which can be added by pressing "Add datasource".
+<SemanticSearchFileUploadSnippet />
+
+## About datasets
+
+Note that when you work with [datasets](/datasets/introduction), indexing them requires embeddings' generation too.
+That is managed in the "datasets" page by pressing "Index" button [(Read more)](/datasets/introduction###indexing)
+
+When you add datapoints to datasets from a file, we only extract datapoints, and we do not generate any embeddings behind the scenes.
+If you want to generate embeddings for dataset, this is not done automatically, and requires pressing an "Index" button.

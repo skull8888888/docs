@@ -2,6 +2,8 @@
 title: "Semantic Search"
 ---
 
+import SemanticSearchFileUploadSnippet from '/snippets/semantic-search-file-upload-snippet.mdx'
+
 ## Semantic Search node
 
 Semantic search allows you to search over uploaded files or over the datasets you create.
@@ -10,7 +12,8 @@ Semantic search allows you to search over uploaded files or over the datasets yo
 
 ### Threshold
 
-`Threshold` represents minimal semantic similarity between the query and the search result for it to be selected. Valid range: `0.0` - `1.0`. For example, if the threshold is set at `0.42`, only the contexts with similarity above or equal to `0.42` to the search query will be selected
+`Threshold` represents minimal semantic similarity between the query and the search result for it to be selected. Valid range: `0.0` - `1.0`.
+For example, if the threshold is set at `0.42`, only the contexts with similarity above or equal to `0.42` to the search query will be selected
 
 ### Limit
 
@@ -37,6 +40,16 @@ Also, you can check [examples](/nodes/semantic-search#examples) below.
 
 - `relevance_index` - An index, which starts from 1, representing the order in the list of retrieved contents ordered by similarity to the query. 1 means this content is the most semantically similar.
 - Additionally, you can select any column name from your dataset as a key.
+
+### Datasources
+
+You can click "Add datasource" button and add as many datasources as you want. It means the semantic search will search for the most semantically similar texts among all datasources.
+
+One type of datasources that can be added is a file.
+<SemanticSearchFileUploadSnippet />
+
+Another type of datasources that can be added is a dataset. You can go to "datasets" page, create a dataset, add datapoints, index them, and then use it here [(Read more)](/datasets/introduction###indexing).
+If datapoints are not indexed, then there will be no entries in our vector database to search through.
 
 ## Output
 
