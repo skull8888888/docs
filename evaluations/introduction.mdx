@@ -9,16 +9,16 @@ Evaluation is a concept of running a given pipeline version against a given data
 
 For every datapoint in the dataset:
 1. For the pipeline being tested, inputs are filled in with the values from the dataset, corresponding to the input node names.
-For example, if a pipeline has inputs `"colour"`  and `"season"`, then evaluation run would look for keys `"colour"` and `"season"` in every datapoint, and substitute the respective pipeline inputs with the values of these keys in the datapoints when running the pipeline.
-1. The pipeline is run. All env variables must be set for this to succeed.
-1. All outputs of the pipeline are extracted and fed to the evaluator alongside.
+For example, if a pipeline has inputs `"colour"`  and `"season"`, then evaluation run would look for keys `"colour"` and `"season"` in every datapoint, and substitute the respective pipeline inputs with the values corresponding to these keys in the datapoints when running the pipeline.
+1. The pipeline is run. All [env variables](/pipeline/env-variables) must be set for this to succeed.
+1. All outputs of the pipeline are extracted and fed to the evaluator alongside all values in the datapoint.
 1. The evaluator evaluates the outputs and optionally uses the values from the datapoint (using output name) if it needs target data.
 
 You can run the same evaluation against different pipelines and pipeline versions.
 
 ## Target data
 
-Depending on the evaluator type, it may or may not require target data to run. If the evaluator is intended to compare actual data against some baseline for every input datapoint (e.g. match formatting, compute similarity), it requires target data. If the evalutator can compare the data to a static baseline common across all datapoints (e.g. validate formatting) or can evaluate in place (e.g. pipeline-based with another 'critic' LLM), then it does not require target data. Learn more about whether each evaluator requires target data in [Evaluators](/evaluations/evaluators).
+Depending on the evaluator type, it may or may not require target data to run. If the evaluator is intended to compare actual data against some baseline for every input datapoint (e.g. match formatting, compute similarity), it requires target data. If the evalutator can compare the data to a static baseline common across all datapoints (e.g. validate formatting) or can evaluate in place (e.g. pipeline-based evaluator with another 'critic' LLM), then it does not require target data. Learn more about whether each evaluator requires target data in [Evaluators](/evaluations/evaluators).
 
 ## Example
 

@@ -50,6 +50,7 @@
       "group": "Pipeline",
       "pages": [
         "pipeline/introduction",
+        "pipeline/page-navigation",
         "pipeline/working-with-nodes",
         "pipeline/env-variables",
         "pipeline/run-save-deploy"
@@ -61,10 +62,24 @@
         "pipeline/working-with-nodes",
         "nodes/input-output",
         "nodes/string-template",
+        "nodes/extractor",
         "nodes/LLM",
         "nodes/unify",
         "nodes/semantic-search",
-        "nodes/semantic-router"
+        "nodes/semantic-router",
+        "nodes/format-validator"
+      ]
+    },
+    {
+      "group": "Workspaces",
+      "pages": [
+        "workspaces/introduction"
+      ]
+    },
+    {
+      "group": "Projects",
+      "pages": [
+        "projects/introduction"
       ]
     },
     {
@@ -76,8 +91,7 @@
     {
       "group": "Endpoints",
       "pages": [
-        "endpoints/introduction",
-        "endpoints/checks"
+        "endpoints/introduction"
       ]
     },
     {
@@ -103,7 +117,8 @@
     {
       "group": "Logs",
       "pages": [
-        "logs/introduction"
+        "logs/introduction",
+        "logs/automatic-dataset-writing"
       ]
     },
     {
