@@ -54,13 +54,13 @@ For some nodes, including [Semantic Router node](/nodes/semantic-router), the re
 
 For relevant nodes, e.g. [LLM node](/nodes/LLM) and [Unify node](/nodes/unify),
 we allow the system message to be templated with the user input for each call.
-This is achieved with enclosing your `{{variables}}` in double curly braces, a.k.a moustache syntax.
+This is achieved with enclosing your `{{variables}}` in double curly braces, a.k.a mustache syntax.
 To start, simply enclose a word in your node's "prompt" field in doubly curly braces. After that, a new input handle of type `String`, named with that enclosed word,
 will appear on the left hand side of the node.
 
 <Frame caption="Including {{topic}} dynamic input in prompt results in creation of 'topic' input handle">
 <img
     height="300"
-    src="/images/pipeline-builder/string-template-simple.png" alt="instruct node with the word 'topic' enclosed in it double curly braces"
+    src="/images/pipeline-builder/string-template-simple.png" alt="LLM node with the word 'topic' enclosed in it double curly braces"
     />
 </Frame>

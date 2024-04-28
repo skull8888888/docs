@@ -16,7 +16,9 @@ Simply click "Run" near pipeline execution, and you'll see the outputs in the bo
 
 NOTE: execution logs are not stored for your workshop experiments. We only log deployed pipeline executions, i.e. when a pipeline is called via laminar API.
 
-<img height="300" src="/images/pipeline-builder/run-result-simple.png" alt="execution result of a simple input-instruct-output pipeline"/>
+<Frame caption="execution result of a simple input-LLM-output pipeline">
+  <img height="300" src="/images/pipeline-builder/run-result-simple.png" alt="execution result of a simple input-LLM-output pipeline"/>
+</Frame>
 
 ### Running multiple executions in parallel.
 
@@ -30,11 +32,20 @@ You may want to experiment with different prompts or dynamic inputs in parallel 
 1. Compare and study your results in the bottom drawer.
 1. Repeat and have fun.
 
-<img height="300" src="/images/pipeline-builder/run-result-parallel.png" alt="execution result of a simple input-instruct-output pipeline with three different parallel inputs"/>
+<Frame caption="execution result of a simple input-LLM-output pipeline with three parallel inputs">
+  <img
+    height="300"
+    src="/images/pipeline-builder/run-result-parallel.png"
+    alt="execution result of a simple input-LLM-output pipeline with three parallel inputs"/>
+</Frame>
 
 ## Saving your work
 
 You don't have to, pipelines are saved automatically! You still can click "Save" at the top of the page and all your work will be saved.
+
+### Commit a new version
+
+If you want to store the current pipeline to be able to come back later, click "Commit" at the top of the page, and give this new version a name. This will create a new [workshop pipeline version](/pipeline/introduction#glossary), which you can later choose from the versions dropdown.
 
 ## Deploying a pipeline version
 
