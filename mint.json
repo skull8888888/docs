@@ -102,12 +102,6 @@
       ]
     },
     {
-      "group": "Files",
-      "pages": [
-        "files/introduction"
-      ]
-    },
-    {
       "group": "Datasets",
       "pages": [
         "datasets/introduction",
