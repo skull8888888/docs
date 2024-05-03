@@ -64,7 +64,8 @@
         "nodes/LLM",
         "nodes/unify",
         "nodes/semantic-search",
-        "nodes/semantic-router"
+        "nodes/semantic-router",
+        "nodes/web-search"
       ]
     },
     {

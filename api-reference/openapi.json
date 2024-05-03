@@ -222,7 +222,8 @@
         "required": [
           "endpoint",
           "inputs",
-          "env"
+          "env",
+          "metadata"
         ],
         "properties": {
           "endpoint": {
@@ -241,6 +242,14 @@
               "type": "string"
             },
             "description": "The keys are env variables such as OPENAI_API_KEY, POSTGRES_URL, etc."
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Per-request metadata. Keys are arbitrary strings such as user_id, etc.",
+            "nullable": true
           }
         }
       },
