@@ -21,8 +21,11 @@ If a single value in the file does not conform to format, it will be silently ig
 
 ### 2. Endpoint logs
 After you deploy the pipeline to Endpoint, each API call to deployed pipeline is logged to Logs.
-After that, you can upload the datapoints from logs by selecting the Endpoint, its Pipeline Version, and its node, from which the logs will be uploaded.
-Note that can simply select "All" and not select any particular node, if you want to upload the logs based on whole pipeline's Input and Output nodes.
+After that, you can upload the datapoints from logs by selecting the Endpoint, its Pipeline Version, and the node(s), from which the logs will be uploaded. Each point will have node names as keys, and the corresponding node's outputs as values.
+
+#### 2.1. Automatically writing endpoint logs to datasets.
+
+You can also do the above automatically. Read more in the [logs documentation](/logs/automatic-dataset-writing).
 
 <Frame caption="Select endpoint name, pipeline version, and node ids to upload datapoints from logs.">
 <img width="400" src="/images/datasets/datapoints-from-logs.png" />

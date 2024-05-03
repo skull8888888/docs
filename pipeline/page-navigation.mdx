@@ -1,0 +1,91 @@
+---
+title: 'Navigating the page'
+description: "Tips and basics of getting around Laminar's pipeline page"
+---
+
+## Flow
+
+Flow builder is the main part in the middle of the page, where you can build your pipeline.
+
+### Adding nodes
+
+Drag and drop a node from the right sidebar to add it to the flow
+
+### Removing nodes
+
+Click a wastebin icon in the top of the node to delete it. Alternatively, click on a node and press "Delete" on your keyboard. Be careful, this action will not trigger an "are you sure" dialog and cannot be undone.
+
+### Connecting nodes
+
+Drag and drop from the output handle of one node to the input handle of the other node to connect two nodes. [Read more](/pipeline/working-with-nodes#connecting-nodes-handles).
+
+### Removing connections
+
+Hover over a connection (edge) and click a red cross in its center to delete it. Alternatively, click on a connection (edge) anywhere and press "Delete" on your keyboard.
+
+### Navigating the flow
+
+Click and hold anywhere and move your mouse to move the view. Scroll with the mouse to zoom in and out.
+
+### Node information
+
+The information icon on top of each node will take you to the relevant docs page.
+
+## Header
+
+In the top of the page, there is a header with all the crucial navigation info.
+
+### Navigation info
+
+In the very left, path to the pipeline in the format `project_name / pipelines /  pipeline_name` is shown.
+If you click the word "pipelines", you will be redirected back to the page with all the pipelines within the project.
+
+<img src="/images/pipeline-builder/header-nav.png" alt="screenshot of pipeline header navigation"/>
+
+### Version control
+
+To the right of navigation info, there is a menu for version control. Here you can find:
+
+- Version dropdown to select a version
+- "Commit" button to [create a new workshop version](/pipeline/run-save-deploy#commit-a-new-version).
+- "Save" button to manually save your work to the currently selected version. (Disabled when an endpoint version is selected)
+- "Deploy" button to [deploy to an endpoint](/pipeline/run-save-deploy#deploying-a-pipeline-version). (Unavailable when an endpoint version is selected)
+- A "more" button with other options, including deleting the workshop version. (Unavailable when an endpoint version is selected)
+
+<img src="/images/pipeline-builder/header-version-control.png" alt="screenshot of pipeline header navigation"/>
+
+## Left sidebar
+
+The left sidebar contains basic version info and the inputs control.
+
+<img src="/images/pipeline-builder/pipeline-left-sidebar.png" alt="screenshot of pipeline left sidebar"/>
+
+### Pipeline version info
+
+Contains the version name, and the version uuid for debugging purposes.
+
+### Execution inputs control.
+
+This menu contains fields for the inputs of the pipeline execution. Fill the inputs in and click run.
+You can click "Add parallel execution" to add another group of inputs. This will stage another execution, and when you click run, those will be run in parallel.
+You can click "-" sign on the right of each input group to unstage/remove a parallel execution.
+
+If your input is of type "ChatMessageList", you can manually upload the chat history here. Click "Add message" to append a new message. Click on the "USER" or "ASSISTANT" label to toggle the role. Click the "-" sign to the right of each message to remove it.
+
+<img src="/images/pipeline-builder/chat-message-input.png" alt="screenshot of example chat message list input"/>
+
+## Right sidebar
+
+Right sidebar contains the list of all possible nodes that you can add to the flow. To add a node to the flow, drag it from here and drop it to the flow view in the middle.
+
+## View controls
+
+The icons in the top-right allow you to hide/show the left and right sidebars.
+
+<img src="/images/pipeline-builder/view-controls.png" alt="screenshot of the pipeline view controls buttons"/>
+
+## Bottom drawer
+
+The bottom drawer shows the execution outputs. This includes the outputs of this run and the history of runs of this version. The latter is a minimised version of the [logs page](/logs/introduction).
+
+The bottom drawer pulls up once the execution of the pipeline starts. You can however resize it either using the handle in the middle or the fullscreen button in the top of the drawer.
