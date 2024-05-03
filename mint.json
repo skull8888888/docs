@@ -67,6 +67,7 @@
         "nodes/unify",
         "nodes/semantic-search",
         "nodes/semantic-router",
+        "nodes/web-search",
         "nodes/format-validator"
       ]
     },

@@ -1,0 +1,30 @@
+---
+title: "Web Search"
+---
+
+## Web Search node
+
+Web Search node allows you to search the web. It searches the web, scrapes top results, renders them according to user-specified template, and merges them.
+
+Scraping some pages may fail and it will be silently ignored. However, if scraping failed for all pages, then this node will return an error.
+
+If you plan to pass the output of this node to LLM, then we suggest to use models such as Claude, which have larger context window size.
+
+## Configuration
+
+### Limit
+
+The number of top results returned by the search to be scraped.
+We suggest to put at least 2-3, since sometimes the top result may be irrelevant or it may not contain any useful content.
+
+### Template
+
+You can control the output through a template where keys are placed into `{{moustache syntax}}`.
+This template is applied to every content retrieved by semantic search. 
+
+All retrieved contents, rendered according to template, are joined via a newline character `\n`.
+
+The keys which can be used in the template:
+- `title` - The title of the scraped web page.
+- `url` - The url of the scraped web page.
+- `content` - The whole content of the scraped page. Note that we remove the html boilerplate and try to convert to markdown.
