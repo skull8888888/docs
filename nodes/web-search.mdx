@@ -9,6 +9,10 @@ Web Search node allows you to search the web. It searches the web, scrapes top r
 Scraping some pages may fail and it will be silently ignored. However, if scraping failed for all pages, then this node will return an error.
 
 If you plan to pass the output of this node to LLM, then we suggest to use models such as Claude, which have larger context window size.
+To illustrate, some long Wikipedia-article pages may result in gpt-3.5-turbo failing, since those article are longer than its content window which fits only 16,385 tokens.
+
+Currently, this node uses Google search for searching, so you'll need to provide your google search keys [(Read more)](/nodes/web-search#env-variables). No keys need to be provided for web scraping, since we manage it by ourselves.
+Feel free to contact us at *founders@lmnr.ai* if you need other search or scrape/crawl providers.
 
 ## Configuration
 
@@ -28,3 +32,11 @@ The keys which can be used in the template:
 - `title` - The title of the scraped web page.
 - `url` - The url of the scraped web page.
 - `content` - The whole content of the scraped page. Note that we remove the html boilerplate and try to convert to markdown.
+
+## Env variables
+
+You'll need to set the following variables at [env variables](/pipeline/env-variables) page:
+- `GOOGLE_SEARCH_ENGINE_ID`
+- `GOOGLE_SEARCH_API_KEY`
+
+Go to Google's [Custom Search JSON API docs](https://developers.google.com/custom-search/v1/overview) to learn more on how to issue these keys.
