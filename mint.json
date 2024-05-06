@@ -62,11 +62,13 @@
         "pipeline/working-with-nodes",
         "nodes/input-output",
         "nodes/string-template",
+        "nodes/error-node",
         "nodes/extractor",
         "nodes/LLM",
         "nodes/unify",
         "nodes/semantic-search",
         "nodes/semantic-router",
+        "nodes/router",
         "nodes/web-search",
         "nodes/format-validator"
       ]

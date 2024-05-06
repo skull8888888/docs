@@ -1,0 +1,18 @@
+---
+title: Router
+---
+
+## Router node
+
+Router node sends the input value to one of the output routes, based on the condition input. It has [conditional output handles](/pipeline/working-with-nodes#conditional-output-handles); that is, it will redirect the flow to only one of its outputs.
+
+Unlike [semantic router](/nodes/semantic-router), it is NOT the input that is matched against the route, it is the condition.
+If you still want the input to be both matched and also conditionally sent through to one of the outputs, you can connect both handles to the same output.
+
+Router node requires an exact case-sensitive match between the **route name** and the condition value.
+
+## No match; default route
+
+If router node does not find a match in any of the routes defined, by default it will throw an error.
+
+However, for more customisable error handling, you can enable a default route that will be matched last, if no other matches are found. The name of the default route does not matter, it is there for your convenience.
