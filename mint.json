@@ -68,6 +68,7 @@
         "nodes/unify",
         "nodes/semantic-search",
         "nodes/semantic-router",
+        "nodes/subpipeline",
         "nodes/router",
         "nodes/web-search",
         "nodes/format-validator"
