@@ -1,0 +1,75 @@
+---
+title: 'Tool call node'
+description: 'Call a tool in your local codebase'
+---
+
+## Tool Caling
+
+You can call tools in your local codebase using Laminar.
+The only requirement on the node is that the name of the node must match the tool (function) name in your codebase.
+
+The tool format must match OpenAI's [tool calling format](https://platform.openai.com/docs/api-reference/chat/create#chat-create-tool_choice)
+(See the response example on the right-hand side of the page).
+
+We are currently adding support for converting other provider's tool calling format to OpenAI format, please contact us
+if you'd like us to prioritize any provider.
+
+There are 2 ways to use tool call nodes. Using Laminar's remote debugger, or calling the endpoint through our SDK.
+
+### Laminar remote debugger.
+
+If you want to test a flow that includes a tool call, you can use Laminar remote debugger in
+[NodeJS](https://www.npmjs.com/package/@lmnr-ai/lmnr) or in [Python](https://pypi.org/project/lmnr/).
+
+The overall flow must be the following:
+
+1. Create a pipeline that includes tool call nodes.
+    1. Don't forget to name tool call nodes after your local functions that you would like to call
+1. Run the LaminarRemoteDebugger in your NodeJS or Python code with references to your local functions.
+This will return and print your unique session ID.
+    1. Find specific instructions on how to do that in the SDK docs (README in each package)
+1. Copy the session ID and paste it as an environment variable `DEBUGGER_SESSION_ID` in lmnr.ai workshop in your browser.
+1. Run the pipeline from your browser
+
+### Calling endpoints through SDK
+
+SDK in [NodeJS](https://www.npmjs.com/package/@lmnr-ai/lmnr) or in [Python](https://pypi.org/project/lmnr/) also supports
+running Laminar endpoints. You can deploy your pipeline with a tool call node just like any other pipeline; however,
+when calling the pipeline from your code, make sure to specify the optional parameter `tools`, which is a list of local functions.
+
+Example code snippets:
+
+Python:
+```python
+from lmnr import Laminar, NodeInput
+
+def my_tool(arg1: string, arg2: string) -> NodeInput {
+    return f'{arg1}{arg2}'
+}
+
+l = Laminar('<YOUR_PROJECT_API_KEY>')
+result = l.run(
+    endpoint='my_endpoint_name',
+    inputs={'input_node_name': [{'role': 'user', 'content': 'hello'}]},
+    tools=[my_tool]
+)
+```
+
+SDK
+```javascript
+import { Laminar, NodeInput } from '@lmnr-ai/lmnr';
+
+const myTool = ({arg1, arg2}: {arg1: string, arg2: number}): NodeInput => {
+  // this tool teaches LLMs the beauty of JavaScript!
+  return arg1 + arg2;
+}
+
+const l = new Laminar('<YOUR_PROJECT_API_KEY>');
+const result = await l.run({
+    endpoint: 'my_endpoint_name',
+    inputs: {'input_node_name': [{'role': 'user', 'content': 'hello'}]},
+    tools: [myTool],
+});
+```
+
+Read more on how to use our SDK in each package's readme.

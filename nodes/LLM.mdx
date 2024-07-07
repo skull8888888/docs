@@ -8,7 +8,7 @@ import LLMNodePromptTemplatingSnippet from '/snippets/llm-node-prompt-templating
 
 ## LLM node
 
-LLM node executes a prompt and optional chat messages against a selected model (e.g. `gpt-3.5-turbo-16k`).
+LLM node executes a prompt and optional chat messages against a selected model (e.g. `gpt-3.5-turbo`).
 
 <LLMNodeDescriptionSnippet node_type="LLM" />
 
@@ -28,12 +28,76 @@ LLM node executes a prompt and optional chat messages against a selected model (
 
 ## Supported models
 
-- `gpt-3.5-turbo-16k`
+### OpenAI
+
+- `gpt-3.5-turbo`
+- `gpt-3.5-turbo-16k` (on deprecation path by OpenAI)
 - `gpt-4-turbo-preview`
-- `claude-3-haiku`
-- `claude-3-sonnet`
-- `claude-3-opus`
+- `gpt-4o`
+
+### Anthropic
+
+- `claude-3-haiku` (20240307)
+- `claude-3-sonnet` (20240229)
+- `claude-3-opus` (20240229)
+- `claude-3-5-sonnet` (20240620)
+
+### Groq
+
+- `groq-llama3-8b-8192`
+- `groq-llana3-70b-8192`
+- `groq-mixtral-8x7b-32768`
+- `groq:gemma-7b-it`
+
+### Mistral
+
 - `mistral-small`
 - `mistral-tiny`
 
+### Amazon Bedrock
+
+- `bedrock-anthropic.claude-v2`
+- `bedrock-anthropic.claude-v2:1`
+- `bedrock-anthropic.claude-3-sonnet-20240229-v1:0`
+- `bedrock-anthropic.claude-3-5-sonnet-20240620-v1:0`
+- `bedrock-anthropic.claude-3-haiku-20240307-v1:0`
+- `bedrock-anthropic.claude-3-opus-20240229-v1:0`
+- `bedrock-anthropic.claude-instant-v1`
+
 <Tip>If you cannot see required model in this list, check our [Unify node](/nodes/unify), using which you can access almost any model on any provider in few clicks.</Tip>
+
+## Model params
+
+A JSON input for all additional model params supported by the provider. This could include things like `top_p` and `temperature`.
+Currently, tools must also be specified here (not supported for Bedrock).
+
+## Chat message input and output
+
+If you want to specify history of chat messages as input, turn on the "Chat messages input" toggle.
+If you want the result to be a chat message list, turn on the "Chat messages output" toggle.
+
+## Structured output
+
+For models that do not inherently support JSON structured output format, we offer the functionality on top of it.
+
+In essence, we prompt the model in a special way to give it the definition of the answer schema. We also parse the output to,
+for example, remove any words before or after the JSON we are interested in. If the model fails to respond correctly,
+we add an error message to the chat messages and let the model try again. You can control the number of retry attempts.
+
+To start using the structured output, you must specify the schema in the BAML format and a target for it.
+
+The target must be a enum or a class. Enums are useful to make sure the model answers with just one word, which is helpful in conditional routing.
+
+Classes are useful to specify the JSON. You can nest classes and add enums inside classes.
+
+<Frame>
+  <img
+    height="300"
+    src="/images/pipeline-builder/llm-structured-output.png" alt="LLM node with structured output example"/>
+</Frame>
+
+Read more about BAML syntax here: https://docs.boundaryml.com/docs/syntax/class
+
+## Stream
+
+For models that support streaming output, we can stream the response to you, both in the workshop and when you make endpoint calls.
