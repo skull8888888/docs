@@ -1,0 +1,15 @@
+---
+title: 'Subpipeline'
+---
+
+## Subpipeline node
+
+Subpipeline node can call another pipeline (subpipeline).
+
+First, select pipeline and pipeline version of the pipeline to be used.
+After selection, this node's inputs will be set according to the Input node's of the selected pipeline version.
+Then you can connect the handles.
+
+### Things to consider
+1. Only commit pipeline versions can be used as subpipelines.
+1. For now, only pipeline versions with a single Output node can be used as subpipelines. If you have pipeline with multiple outputs, then only one of those outputs will be used as Subpipeline node's output.

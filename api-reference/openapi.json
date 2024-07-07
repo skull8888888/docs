@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "https://api.lmnr.ai/v1"
+      "url": "https://api.lmnr.ai"
     }
   ],
   "security": [
@@ -19,7 +19,7 @@
     }
   ],
   "paths": {
-    "/endpoint/run": {
+    "/v2/endpoint/run": {
       "post": {
         "tags": [
           "api::endpoints"
@@ -42,8 +42,15 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": ["runId"],
                   "properties": {
-                    "{Name of output node}": {"$ref": "#/components/schemas/Message"}
+                    "runId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "{Name of output node}": {
+                      "$ref": "#/components/schemas/GraphRunOutput"
+                    }
                   }
                 }
               }
@@ -144,30 +151,6 @@
           }
         ]
       },
-      "ThreadChatMessage": {
-        "type": "object",
-        "properties": {
-          "thread_id": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "role": {
-            "type": "string"
-          },
-          "content": {
-            "type": "string"
-          },
-          "metadata": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            },
-            "nullable": true
-          }
-        },
-        "required": ["role", "content"]
-      },
       "ChatMessage": {
         "type": "object",
         "properties": {
@@ -196,15 +179,6 @@
         "oneOf": [
           {
             "type": "string"
-          },
-          {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          {
-            "$ref": "#/components/schemas/ThreadChatMessage"
           },
           {
             "type": "array",
@@ -248,6 +222,11 @@
               "type": "string"
             },
             "description": "Per-request metadata. Keys are arbitrary strings such as user_id, etc.",
+            "nullable": true
+          },
+          "stream": {
+            "type": "boolean",
+            "description": "If true, each node's output will be streamed. For some nodes, the whole execution will be streamed (e.g. LLM). Final value will be the run trace.",
             "nullable": true
           }
         }
@@ -308,6 +287,17 @@
           },
           "endTime": {
             "type": "string"
+          }
+        }
+      },
+      "GraphRunOutput": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "$ref": "#/components/schemas/NodeInput"
           }
         }
       }

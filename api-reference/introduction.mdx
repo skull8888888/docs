@@ -5,11 +5,9 @@ description: 'General guidelines on using our API'
 
 ## General
 
-Use the following base URL: `https://api.lmnr.ai/v1`
+Use the following base URL: `https://api.lmnr.ai/v2`
 
-For example, `POST https://api.lmnr.ai/v1/endpoint/run`
-
-Each endpoint's page specifies the method, path and parameters to be used. Additionally, you can try sending the request from there.
+For example, `POST https://api.lmnr.ai/v2/endpoint/run`
 
 For more detailed information about each endpoint or schema, check our OpenAPI specification.
 
@@ -21,6 +19,8 @@ For more detailed information about each endpoint or schema, check our OpenAPI s
   Full OpenAPI specification file
 </Card>
 
+Each endpoint's page in OpenAPI specification specifies the method, path and parameters to be used. Additionally, you can try sending the request from there.
+
 ## Authentication
 
 All API endpoints are authenticated using Project API key as Bearer token.
@@ -29,4 +29,6 @@ To get the token, go to "settings" page and move to "Project API keys" section. 
 
 Note that each project has different Project API keys. For switching between projects, press "Laminar" icon at the top-left of the dashboard.
 
-<img height="200" src="/images/api-reference/project-api-key.png" alt="Project API key bearer tokens" />
+<Frame caption="Press settings on the navbar and go to Project API Keys section">
+<img width="1000" src="/images/api-reference/project-api-key.png" alt="Project API key bearer tokens" />
+</Frame>
