@@ -71,7 +71,10 @@
         "nodes/subpipeline",
         "nodes/router",
         "nodes/web-search",
-        "nodes/format-validator"
+        "nodes/format-validator",
+        "nodes/json-extractor",
+        "nodes/code",
+        "nodes/tool-call"
       ]
     },
     {

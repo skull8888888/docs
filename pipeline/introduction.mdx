@@ -7,11 +7,9 @@ description: "Get started with laminar's pipeline builder."
 
 **Pipeline** – an instance of a complete workflow.
 
-**Pipeline version** – a saved snapshot of a pipeline, similar to a git commit.
+**Commit** – a saved snapshot of a pipeline, similar to a git commit. Commit versions can be deployed to [endpoints](/endpoints/introduction)
 
-**Workshop version** - a pipeline version manually committed from Laminar's pipeline page.
-
-**Endpoint version** - a version created when a pipeline is deployed to an [endpoint](/endpoints/introduction).
+**Workshop version** - a draft version. Every pipeline has exactly one workshop version. Think of it as a git HEAD.
 
 **Node** – a core component of a pipeline that performs data transformation and passes the result downstream.
 
@@ -23,8 +21,6 @@ description: "Get started with laminar's pipeline builder."
 
 When you create new project you will first be redirected to the projects pipeline page.
 
-Alternatively, find it in the navigation column on the left. In the example below, we are in the pipelines page of the "docs" project
+Alternatively, find it in the navigation column on the left.
 
-<img height="200" src="/images/pipeline-builder/pipelines-page-in-navbar.png" alt="navbar with pipelines selected"/>
-
-First, create a pipeline, by clicking "New pipeline" button in the pipelines page. Give it a custom name. You will be redirected to the page of the newly created pipeline. Your pipeline will have initially have two nodes - one Input node and one Output node.
+First, create a pipeline, by clicking "New pipeline" button in the pipelines page. Give it a custom name. You will be redirected to the page of the newly created pipeline.
