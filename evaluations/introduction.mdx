@@ -3,62 +3,59 @@ title: Introduction
 description: Evaluate the correctness of the produced results.
 ---
 
-## Concept
+## Concepts
 
-Evaluation is a concept of running a given pipeline version against a given dataset and then evaluating the outputs of the pipeline.
+Evaluation is a concept of evaluating all datapoints in a dataset.
 
-For every datapoint in the dataset:
-1. For the pipeline being tested, inputs are filled in with the values from the dataset, corresponding to the input node names.
-For example, if a pipeline has inputs `"colour"`  and `"season"`, then evaluation run would look for keys `"colour"` and `"season"` in every datapoint, and substitute the respective pipeline inputs with the values corresponding to these keys in the datapoints when running the pipeline.
-1. The pipeline is run. All [env variables](/pipeline/env-variables) must be set for this to succeed.
-1. All outputs of the pipeline are extracted and fed to the evaluator alongside all values in the datapoint.
-1. The evaluator evaluates the outputs and optionally uses the values from the datapoint (using output name) if it needs target data.
+- Evaluator pipeline – the pipeline that is run with every datapoint and must produce a numeric result.
+- Executor pipeline – optionally, before running the evaluator pipeline, you can run another pipeline on the dataset.
+This pipeline is called "executor pipeline". Its output will be passed to the evaluator pipeline.
+- `target` – data sent to the evaluator pipeline.
+- `data` – data sent to the executor pipeline.
 
-You can run the same evaluation against different pipelines and pipeline versions.
+## Flow overview
 
-## Target data
+<Frame caption="High-level overview of the evaluation flow">
+  <img
+    height="300"
+    src="/images/evaluations/evaluation-overview.png" alt="High-level overview of the evaluation flow"/>
+</Frame>
 
-Depending on the evaluator type, it may or may not require target data to run. If the evaluator is intended to compare actual data against some baseline for every input datapoint (e.g. match formatting, compute similarity), it requires target data. If the evalutator can compare the data to a static baseline common across all datapoints (e.g. validate formatting) or can evaluate in place (e.g. pipeline-based evaluator with another 'critic' LLM), then it does not require target data. Learn more about whether each evaluator requires target data in [Evaluators](/evaluations/evaluators).
+Evaluation does the following for every datapoint in the dataset:
 
-## Example
+1. Check if executor pipeline is selected. If so.
+    1. Set all the points in `data` of the datapoint as values to the input nodes of the _executor_ pipeline.
+        For example, if the executor pipeline has inputs `"color"`  and `"season"`,
+        then evaluation run would look for keys `"color"` and `"season"` in `data`
+        and substitute the respective pipeline inputs with the values corresponding
+        to these keys in the datapoints when running the executor pipeline.
+    1. The pipeline is run. All required [env variables](/pipeline/env-variables) must be set for this to succeed.
+    1. All outputs of the _executor_ pipeline are extracted and set as inputs to the _evaluator_ pipeline.
+1. Set all the points in `target` of the datapoint as values to the input nodes of the _evaluator_ pipeline.
+1. Evaluator pipeline is run. All required [env variables](/pipeline/env-variables) must be set for this to succeed.
+1. Evaluator pipeline produces a single numeric input. This is stored in the results of the evaluation.
 
-Consider the following dataset:
+<Tip>
+  Results of the executor pipeline are sent as inputs to the evaluator pipeline.
+  Make sure to name the outputs of the executor pipelne same as the correspoding inputs of the evaluator pipeline.
+</Tip>
 
-| colour | season | recommendation
-| ------ | ------ | ---------------------------------------------
-| brown  | autumn | brown mid-heal shoes for a casual office look
-| yellow | summer | light yellow dress for a beach party look
+## Creating and running an evaluation
 
-And the pipeline that takes inputs `colour` and `season`, and produces a look recommendation with output name `recommendation`.
+1. Go to "evaluations" page in the navbar.
+1. Click "New evaluation" at the top of the page.
+1. Give the evaluation a name.
+1. Select the evaluator pipeline and commit.
+1. [OPTIONAL] Select the executor pipeline and commit.
+1. Select the dataset.
 
-You could evaluate the similarity of the pipeline outputs to the ground truth recommendations you have above. This means that your evaluation requires target data. You will need to make sure that the ground truth data column matches the output node name of the pipeline you are testing.
-
-In contrary, if you want to match every recommendation against a static value, for example a regex `look$`, your evaluation does not require target data. The evaluator will grade ALL output nodes in the pipeline.
-
-## Creating an evaluation
-
-1. Go to "evaluations" page in the navbar
-1. Click "New evaluation" at the top of the page
-1. Give the evaluation a name
-1. Select the dataset
-1. Select and configure an [evaluator](/evaluations/evaluators)
-
-## Running an evaluation
-
-1. From the evaluations page, click on an evaluation
-1. In the evaluation page, click "Run evaluation"
-1. Select the pipeline and the version you would like to test
-1. IMPORTANT: If your pipeline has nodes, which require [env variables](/pipeline/env-variables), make sure that they are set in the API keys page.
-1. Click run evaluation
-1. The result will appear in the page.
-
-Note, that evaluation will run only against the datapoints that have all required input keys to fill in the pipeline's input nodes.
+Note, that evaluation will run only against the datapoints that have all required input keys to fill in
+the evaluator pipeline's input nodes (`target`) and the executor pipeline's input nodes (`data`).
 
 ### Status and results of the evaluation
 
-Possible statuses of evaluation jobs:
-- Running
-- Success
-- Error
+Possible statuses of evaluations:
+- Started
+- Finished
 
-Where error means an error executing the pipeline version.
+Individual datapoint statuses "Success" / "Failed" are stored at datapoint level.

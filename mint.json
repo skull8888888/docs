@@ -74,7 +74,13 @@
         "nodes/format-validator",
         "nodes/json-extractor",
         "nodes/code",
+<<<<<<< Updated upstream
         "nodes/tool-call"
+=======
+        "nodes/tool-call",
+        "nodes/function-call",
+        "nodes/semantic-similarity"
+>>>>>>> Stashed changes
       ]
     },
     {
@@ -117,8 +123,7 @@
     {
       "group": "Evaluations",
       "pages": [
-        "evaluations/introduction",
-        "evaluations/evaluators"
+        "evaluations/introduction"
       ]
     },
     {
