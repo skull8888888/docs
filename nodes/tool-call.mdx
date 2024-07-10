@@ -1,17 +1,9 @@
 ---
-<<<<<<< Updated upstream
-title: 'Tool call node'
-description: 'Call a tool in your local codebase'
----
-
-## Tool Caling
-=======
 title: 'Tool call'
 description: 'Call a tool in your local codebase'
 ---
 
 ## Tool Calling
->>>>>>> Stashed changes
 
 You can call tools in your local codebase using Laminar.
 The only requirement on the node is that the name of the node must match the tool (function) name in your codebase.
@@ -19,11 +11,7 @@ The only requirement on the node is that the name of the node must match the too
 The tool format must match OpenAI's [tool calling format](https://platform.openai.com/docs/api-reference/chat/create#chat-create-tool_choice)
 (See the response example on the right-hand side of the page).
 
-<<<<<<< Updated upstream
-We are currently adding support for converting other provider's tool calling format to OpenAI format, please contact us
-=======
 We are currently adding support for converting other providers' tool calling format to OpenAI format, please contact us
->>>>>>> Stashed changes
 if you'd like us to prioritize any provider.
 
 There are 2 ways to use tool call nodes. Using Laminar's remote debugger, or calling the endpoint through our SDK.
@@ -55,14 +43,8 @@ Python:
 ```python
 from lmnr import Laminar, NodeInput
 
-<<<<<<< Updated upstream
-def my_tool(arg1: string, arg2: string) -> NodeInput {
-    return f'{arg1}{arg2}'
-}
-=======
 def my_tool(arg1: str, arg2: str) -> NodeInput:
     return f'{arg1}{arg2}'
->>>>>>> Stashed changes
 
 l = Laminar('<YOUR_PROJECT_API_KEY>')
 result = l.run(
@@ -72,12 +54,8 @@ result = l.run(
 )
 ```
 
-<<<<<<< Updated upstream
-SDK
-=======
 JS:
 
->>>>>>> Stashed changes
 ```javascript
 import { Laminar, NodeInput } from '@lmnr-ai/lmnr';
 
