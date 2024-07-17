@@ -10,16 +10,75 @@ To add datapoints, press "Add datapoints".
 
 You can add datapoints from 2 sources.
 
-### 1. File upload
-Supported file formats are: `.csv`, `.json`, `.jsonl`.
+## 1. File upload
+
+### 1.1 Structured file
+
+Supported file formats are: `.csv`, `.json`, `.jsonl`. We infer the format based on the file extension.
+
 - csv - **header is required**, default separator and minimal quoting are assumed. If a row has an empty value or less values than headers, missing values will be filled with empty strings.
-- json - the file must contain **one array** of objects, each with primitive (string, number, boolean, null) values
-- jsonlines - each line must contain an object, each with primitive (string, number, boolean, null) values
+- json - the file must contain **one array** of objects
+- jsonlines - each line must contain an object
+
+For each datapoint, we first construct the key-value object, and then parse it according to the following rules:
+1. If the only key is `"data"`, and the corresponding value is a JSON object, place that object in datapoint's `"data"`.
+1. If the keys are `"data"` and `"target"`, and both corresponding values are JSON objects, populate the datapoint's `"data"` and `"target"` accordingly.
+1. In **ALL** other cases, all keys and values will go inside `"data"`.
+
+This is needed to ensure that at the top level `"data"` and `"target"` are both JSON objects.
 
 If there is an error parsing the file, no datapoints will be added.
 If a single value in the file does not conform to format, it will be silently ignored.
 
-### 2. Endpoint logs
+#### Examples
+
+Example 1. `"data"` only
+
+```json
+{"data": {"key1": "val1"}}
+```
+
+becomes:
+
+```json
+{"data": {"key1": "val1"}}
+```
+
+Example 2. `"data"` and `"target"`
+
+```json
+{"data": {"key1": "val1"}, "target": {"target_key1": "target_val1"}}
+```
+
+becomes:
+
+```json
+{"data": {"key1": "val1"}, "target": {"target_key1": "target_val1"}}
+```
+
+Example 3. Non-object `"data"`
+
+```json
+{"data": ["apple", "banana", "cherry"]}
+```
+
+becomes:
+
+```json
+{"data": {"data": ["apple", "banana", "cherry"]}}
+```
+
+### 1.2 Unstructured file
+
+Laminar supports converting many other files to datasets including txt, pdf, and docx. Such files will be parsed, chunked,
+and added to the dataset. Every chunk will have one datapoint with the following info in `"data"`:
+- "content" – the actual chunk content
+- "page_number" – for multipage documents, the number of the page this chunk belongs to
+- "page_content" – content of the entire page
+
+<Tip> **Having trouble uploading a text file with an unusual extension, such as .mdx?** Rename the file to .txt locally and re-upload </Tip>
+
+## 2. Endpoint logs
 After you deploy the pipeline to Endpoint, each API call to deployed pipeline is logged to Logs.
 After that, you can upload the datapoints from logs by selecting the Endpoint, its Pipeline Version, and the node(s), from which the logs will be uploaded. Each point will have node names as keys, and the corresponding node's outputs as values.
 

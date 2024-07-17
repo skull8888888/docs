@@ -1,58 +1,19 @@
 ---
 title: Introduction
-description: Evaluate the correctness of the produced results.
+description: Evaluate the correctness of pipeline results
 ---
 
-## Concepts
+## Introduction
 
-Evaluation is a concept of evaluating all datapoints in a dataset.
+You can evaluate the correctness of various flows using custom Laminar pipelines.
+The only requirements are a [dataset](/datasets/introduction)
+to run the evaluations against and a pipeline that produces a numeric output.
 
-- Evaluator pipeline – the pipeline that is run with every datapoint and must produce a numeric result.
-- Executor pipeline – optionally, before running the evaluator pipeline, you can run another pipeline on the dataset.
-This pipeline is called "executor pipeline". Its output will be passed to the evaluator pipeline.
-- `target` – data sent to the evaluator pipeline.
-- `data` – data sent to the executor pipeline.
+There are two possible setups for evaluations:
+1. Running Laminar pipeline and evaluating its results with another pipeline [Learn more](/evaluations/evaluation-with-executor)
+1. Running an evaluator pipeline on a dataset. [Learn more](/evaluations/evaluation-data-only)
 
-## Flow overview
-
-<Frame caption="High-level overview of the evaluation flow">
-  <img
-    height="300"
-    src="/images/evaluations/evaluation-overview.png" alt="High-level overview of the evaluation flow"/>
-</Frame>
-
-Evaluation does the following for every datapoint in the dataset:
-
-1. Check if executor pipeline is selected. If so.
-    1. Set all the points in `data` of the datapoint as values to the input nodes of the _executor_ pipeline.
-        For example, if the executor pipeline has inputs `"color"`  and `"season"`,
-        then evaluation run would look for keys `"color"` and `"season"` in `data`
-        and substitute the respective pipeline inputs with the values corresponding
-        to these keys in the datapoints when running the executor pipeline.
-    1. The pipeline is run. All required [env variables](/pipeline/env-variables) must be set for this to succeed.
-    1. All outputs of the _executor_ pipeline are extracted and set as inputs to the _evaluator_ pipeline.
-1. Set all the points in `target` of the datapoint as values to the input nodes of the _evaluator_ pipeline.
-1. Evaluator pipeline is run. All required [env variables](/pipeline/env-variables) must be set for this to succeed.
-1. Evaluator pipeline produces a single numeric input. This is stored in the results of the evaluation.
-
-<Tip>
-  Results of the executor pipeline are sent as inputs to the evaluator pipeline.
-  Make sure to name the outputs of the executor pipelne same as the correspoding inputs of the evaluator pipeline.
-</Tip>
-
-## Creating and running an evaluation
-
-1. Go to "evaluations" page in the navbar.
-1. Click "New evaluation" at the top of the page.
-1. Give the evaluation a name.
-1. Select the evaluator pipeline and commit.
-1. [OPTIONAL] Select the executor pipeline and commit.
-1. Select the dataset.
-
-Note, that evaluation will run only against the datapoints that have all required input keys to fill in
-the evaluator pipeline's input nodes (`target`) and the executor pipeline's input nodes (`data`).
-
-### Status and results of the evaluation
+## Status and results of the evaluation
 
 Possible statuses of evaluations:
 - Started

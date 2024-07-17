@@ -104,12 +104,6 @@
       ]
     },
     {
-      "group": "Files",
-      "pages": [
-        "files/introduction"
-      ]
-    },
-    {
       "group": "Datasets",
       "pages": [
         "datasets/introduction",
@@ -119,7 +113,9 @@
     {
       "group": "Evaluations",
       "pages": [
-        "evaluations/introduction"
+        "evaluations/introduction",
+        "evaluations/evaluation-with-executor",
+        "evaluations/evaluation-data-only"
       ]
     },
     {

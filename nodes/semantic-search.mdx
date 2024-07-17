@@ -8,6 +8,10 @@ import SemanticSearchFileUploadSnippet from '/snippets/semantic-search-file-uplo
 
 Semantic search allows you to search over uploaded files or over the datasets you create.
 
+## Internal details
+
+Vector database is hosted in Qdrant, and the embeddings are done using Cohere's `embed-multilingual-v3.0` [model](https://huggingface.co/Cohere/Cohere-embed-multilingual-v3.0).
+
 ## Configuration
 
 ### Threshold
@@ -21,36 +25,23 @@ For example, if the threshold is set at `0.42`, only the contents with similarit
 
 ### Template
 
-You can control the output through a template where keys are placed into `{{moustache syntax}}`.
+You can control the output through a template where keys are placed into `{{mustache_syntax}}`.
 This template is applied to every content retrieved by semantic search. 
 
 All retrieved contents, rendered according to template, are joined via a newline character `\n`.
 
-The keys that can de used in a template are different for file datasources and dataset datasources and are described in the next sections.
-Also, you can check [examples](/nodes/semantic-search#examples) below.
-
 Read more about variable requirements in: [String template node](/nodes/string-template) and [JSON extractor node](/nodes/json-extractor)
 
-#### Files' reserved keys
+#### Reserved keys
 
 - `relevance_index` - An index, which starts from 1, representing the order in the list of retrieved contents ordered by similarity to the query. 1 means this content is the most semantically similar.
-- `content` - The relevant retrieved chunk.
-- `page_content` - The content of the whole page, which contains the `content` chunk. 
-- `page_number` - The number of the page, which contains the `content` chunk. Only applicable to file formats which are divided into pages, e.g. PDF. 0 for files with no pages.
-
-#### Datasets' keys
-
-- `relevance_index` - An index, which starts from 1, representing the order in the list of retrieved contents ordered by similarity to the query. 1 means this content is the most semantically similar.
-- Additionally, you can select any column name from your dataset as a key.
+- Additionally, you can select any key name from your dataset `"data"` as a key.
 
 ### Datasources
 
 You can click "Add datasource" button and add as many datasources as you want. It means the semantic search will search for the most semantically similar texts among all datasources.
 
-One type of datasources that can be added is a file.
-<SemanticSearchFileUploadSnippet />
-
-Another type of datasources that can be added is a dataset. You can go to "datasets" page, create a dataset, add datapoints, index them, and then use it here [(Read more)](/datasets/introduction###indexing).
+Datasources of semantic search nodes are simply datasets. You can go to "datasets" page, create a dataset, add datapoints, index them, and then use it here [(Read more)](/datasets/introduction#indexing).
 If datapoints are not indexed, then there will be no entries in our vector database to search through.
 
 ## Output
