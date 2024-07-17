@@ -5,7 +5,7 @@
     "dark": "/logo/laminar-white.svg",
     "light": "/logo/laminar.svg"
   },
-  "favicon": "/favicon-doc.png",
+  "favicon": "/favicon.png",
   "colors": {
     "primary": "#0D9373",
     "light": "#07C983",
@@ -28,6 +28,10 @@
   },
   "tabs": [
     {
+      "name": "Tutorials",
+      "url": "tutorials"
+    },
+    {
       "name": "API Reference",
       "url": "api-reference"
     }
@@ -47,60 +51,48 @@
       ]
     },
     {
-      "group": "Pipeline",
+      "group": "Pipeline builder",
       "pages": [
-        "pipeline/introduction",
-        "pipeline/page-navigation",
-        "pipeline/working-with-nodes",
-        "pipeline/env-variables",
-        "pipeline/run-save-deploy"
+        {
+          "group": "Overview",
+          "pages": [
+            "pipeline/introduction",
+            "pipeline/page-navigation",
+            "pipeline/env-variables",
+            "pipeline/run-save-deploy"
+          ]
+        },
+        {
+          "group": "Nodes",
+          "pages": [
+            "pipeline/working-with-nodes",
+            "nodes/input-output",
+            "nodes/string-template",
+            "nodes/error-node",
+            "nodes/extractor",
+            "nodes/LLM",
+            "nodes/unify",
+            "nodes/semantic-search",
+            "nodes/semantic-router",
+            "nodes/subpipeline",
+            "nodes/router",
+            "nodes/web-search",
+            "nodes/format-validator",
+            "nodes/json-extractor",
+            "nodes/code",
+            "nodes/tool-call",
+            "nodes/function-call",
+            "nodes/semantic-similarity"
+          ]
+        }
       ]
     },
-    {
-      "group": "Nodes",
+        {
+      "group": "Evaluations",
       "pages": [
-        "pipeline/working-with-nodes",
-        "nodes/input-output",
-        "nodes/string-template",
-        "nodes/error-node",
-        "nodes/extractor",
-        "nodes/LLM",
-        "nodes/unify",
-        "nodes/semantic-search",
-        "nodes/semantic-router",
-        "nodes/subpipeline",
-        "nodes/router",
-        "nodes/web-search",
-        "nodes/format-validator",
-        "nodes/json-extractor",
-        "nodes/code",
-        "nodes/tool-call",
-        "nodes/function-call",
-        "nodes/semantic-similarity"
-      ]
-    },
-    {
-      "group": "Workspaces",
-      "pages": [
-        "workspaces/introduction"
-      ]
-    },
-    {
-      "group": "Projects",
-      "pages": [
-        "projects/introduction"
-      ]
-    },
-    {
-      "group": "Guardrails",
-      "pages": [
-        "nodes/zenguard"
-      ]
-    },
-    {
-      "group": "Endpoints",
-      "pages": [
-        "endpoints/introduction"
+        "evaluations/introduction",
+        "evaluations/evaluation-with-executor",
+        "evaluations/evaluation-data-only"
       ]
     },
     {
@@ -111,11 +103,9 @@
       ]
     },
     {
-      "group": "Evaluations",
+      "group": "Endpoints",
       "pages": [
-        "evaluations/introduction",
-        "evaluations/evaluation-with-executor",
-        "evaluations/evaluation-data-only"
+        "endpoints/introduction"
       ]
     },
     {
@@ -135,6 +125,13 @@
       "group": "Endpoints - API",
       "pages": [
         "api-reference/endpoint/endpoint_run"
+      ]
+    },
+    {
+      "group": "Tutorials",
+      "pages": [
+        "tutorials/introduction",
+        "tutorials/evaluations"
       ]
     }
   ],

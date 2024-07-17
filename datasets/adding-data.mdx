@@ -32,49 +32,52 @@ If a single value in the file does not conform to format, it will be silently ig
 
 #### Examples
 
-Example 1. `"data"` only
+<Tabs>
+    <Tab title='Example 1. `"data"` only'> 
 
-```json
-{"data": {"key1": "val1"}}
-```
+        ```json
+        {"data": {"key1": "val1"}}
+        ```
 
-becomes:
+        becomes:
 
-```json
-{"data": {"key1": "val1"}}
-```
+        ```json
+        {"data": {"key1": "val1"}}
+        ```
+    </Tab>
+    <Tab title = 'Example 2. `"data"` and `"target"`'> 
+        ```json
+        {"data": {"key1": "val1"}, "target": {"target_key1": "target_val1"}}
+        ```
 
-Example 2. `"data"` and `"target"`
+        becomes:
 
-```json
-{"data": {"key1": "val1"}, "target": {"target_key1": "target_val1"}}
-```
+        ```json
+        {"data": {"key1": "val1"}, "target": {"target_key1": "target_val1"}}
+        ```
+    </Tab>
 
-becomes:
+    <Tab title = 'Example 3. Non-object `"data"`'>
 
-```json
-{"data": {"key1": "val1"}, "target": {"target_key1": "target_val1"}}
-```
+        ```json
+        {"data": ["apple", "banana", "cherry"]}
+        ```
 
-Example 3. Non-object `"data"`
+        becomes:
 
-```json
-{"data": ["apple", "banana", "cherry"]}
-```
-
-becomes:
-
-```json
-{"data": {"data": ["apple", "banana", "cherry"]}}
-```
+        ```json
+        {"data": {"data": ["apple", "banana", "cherry"]}}
+        ```
+    </Tab>
+</Tabs>
 
 ### 1.2 Unstructured file
 
 Laminar supports converting many other files to datasets including txt, pdf, and docx. Such files will be parsed, chunked,
 and added to the dataset. Every chunk will have one datapoint with the following info in `"data"`:
-- "content" – the actual chunk content
-- "page_number" – for multipage documents, the number of the page this chunk belongs to
-- "page_content" – content of the entire page
+- `"content"` – the actual chunk content
+- `"page_number"` – for multipage documents, the number of the page this chunk belongs to
+- `"page_content"` – content of the entire page
 
 <Tip> **Having trouble uploading a text file with an unusual extension, such as .mdx?** Rename the file to .txt locally and re-upload </Tip>
 
