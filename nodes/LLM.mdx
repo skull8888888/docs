@@ -100,7 +100,12 @@ Read more about BAML syntax here: https://docs.boundaryml.com/docs/syntax/class
 
 ## Stream
 
-For models that support streaming output, we can stream the response to you, both in the workshop and when you make endpoint calls.
+This switch is used to select which LLM nodes' content to stream during [endpoint call](/api-reference/endpoint/endpoint_run).
+When call to endpoint is made, set "stream" to true in request params, so that LLM nodes which have "stream" enabled are streamed using server-sent events.
+
+Note that for now only selected models such as OpenAI, OpenAI Azure, Anthropic, and Bedrock Anthropic support streaming.
+
+Note that when running pipelines in pipeline builder, LLM node will always be streamed.
 
 ## Tool calling
 

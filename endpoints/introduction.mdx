@@ -4,17 +4,45 @@ title: Introduction
 
 ## Concept
 
-Endpoints live inside projects and have externally accessible names. You can call endpoints from your applications via [laminar api](/api-reference/introduction). Every endpoint has exactly one target pipeline version. This is the flow that will be executed every time the endpoint is called from the API.
+Endpoints are proxies to your pipelines externally accessible via API.
+
+Endpoints live inside projects and are uniquely identified and accessible by their name.
+Check [OpenAPI specification](/api-reference/endpoint/endpoint_run) on how to call endpoint.
+Every endpoint has exactly one pipeline version, which is invoked when endpoint is called.
+
+Note that only committed pipeline versions can be deployed to an endpoint.
+That's required because endpoint can point only to immutable pipeline versions, i.e. commits.
+
+## Creating endpoint
+
+Endpoints can be created by going to Endpoints page and clicking "New endpoint".
+
+After you enter endpoint name, click "Create" and it will be created.
 
 ## Name restriction
 
-Because the endpoints must be accessible externally via the laminar API, **endpoint names must be unique in the project**.
+Because the endpoints must be accessible externally via the laminar API, **endpoint names must be unique within the project**. Also they cannot be changed later.
 
-## Deployment flow
+## Deploy pipeline to an Endpoint
 
-1. User clicks deploy from the pipeline editing page and selects the endpoint.
-1. The state of the pipeline is saved in a __new__ version.
-1. That version becomes the candidate version for this endpoint.
-1. Checks execution kicks off.
-1. If checks are passed correctly, the existing target pipeline version is 'retired', and the candidate version is 'promoted' to the target of the endpoint.
-    - If checks fail, however, the candidate version is stored in the endpoints history, and the endpoint remains at its latest target pipeline version, i.e. no update happens.
+1. Create the endpoint, if it's not already created.
+1. Go to pipeline and select the pipeline version to be deployed.
+1. Click "Deploy" from the pipeline builder, then select the endpoint.
+1. If the current pipeline version is "Workshop" version, then enter a name for the new commit, which will be created.
+1. Click "Deploy" and the pipeline version will be deployed to endpoint. From this point on, whenever endpoint is called, it will invoke the latest pipeline version.
+
+You can always check which pipeline version is currently deployed on the Endpoint's page.
+
+## Endpoint history
+
+History of the deployed pipeline versions can be seen on the Endpoints page.
+
+## Call endpoint
+
+Read detailed instructions on how to call endpoint in [OpenAPI specification](/api-reference/endpoint/endpoint_run).
+
+For the quickstart, the sample call for the endpoint will be shown on the endpoint's page, if you click "use API".
+
+Don't forget to pass `"env"` with every request to the endpoint, which contains environment variables required for the pipeline.
+The environment variables from [env variables](/pipeline/env-variables) page won't be applied, since they are only stored in your browser.
+Note that streaming through server-sent events can be enabled, if `"stream"` is set to `true`.
