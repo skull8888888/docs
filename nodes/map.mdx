@@ -1,0 +1,17 @@
+---
+title: 'Map'
+---
+
+## Map node
+
+Map node can take a list of strings and call subpipeline with each of the strings.
+Then it will return a list of output strings with results of all subpipelines.
+
+Map node's subpipeline can only be a pipeline which has only one input node of type String and one output node.
+
+To setup the map node, you only need to select pipeline and pipeline version of the subpipeline to map inputs to.
+
+### Things to consider
+1. Only commit pipeline versions can be used as subpipelines.
+1. For now, subpipeline can only be a pipeline which has only one input node of type String and one output node. Input and Output nodes of the subpipeline can have any name.
+1. Each subpipeline run will be counted as a separate run towards a total number of runs, so when you run a pipeline which has a Map node, the total run count will be incremented by (1 + length of inputs to map node).
