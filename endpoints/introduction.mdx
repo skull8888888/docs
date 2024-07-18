@@ -6,12 +6,15 @@ title: Introduction
 
 Endpoints are proxies to your pipelines externally accessible via API.
 
-Endpoints live inside projects and are uniquely identified and accessible by their name.
-Check [OpenAPI specification](/api-reference/endpoint/endpoint_run) on how to call endpoint.
+Use our [Python SDK](https://github.com/lmnr-ai/lmnr-python) or [Typescript SDK](https://github.com/lmnr-ai/lmnr-ts) for calling endpoints.
+
+Endpoints belong to projects and are uniquely identified and accessible by their name.
 Every endpoint has exactly one pipeline version, which is invoked when endpoint is called.
 
 Note that only committed pipeline versions can be deployed to an endpoint.
 That's required because endpoint can point only to immutable pipeline versions, i.e. commits.
+
+If you want to call endpoint by sending HTTP request, read detailed instructions on how to call endpoint in [OpenAPI specification](/api-reference/endpoint/endpoint_run).
 
 ## Creating endpoint
 
@@ -39,7 +42,9 @@ History of the deployed pipeline versions can be seen on the Endpoints page.
 
 ## Call endpoint
 
-Read detailed instructions on how to call endpoint in [OpenAPI specification](/api-reference/endpoint/endpoint_run).
+Endpoints can be called by using our [Python SDK](https://github.com/lmnr-ai/lmnr-python) and [Typescript SDK](https://github.com/lmnr-ai/lmnr-ts).
+
+If you want to call endpoint by sending HTTP request, read detailed instructions on how to call endpoint in [OpenAPI specification](/api-reference/endpoint/endpoint_run).
 
 For the quickstart, the sample call for the endpoint will be shown on the endpoint's page, if you click "use API".
 
