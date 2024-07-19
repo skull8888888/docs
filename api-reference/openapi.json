@@ -105,49 +105,10 @@
         },
         "required": ["semanticCacheEnabled", "inputMessageCount", "inputTokenCount", "outputTokenCount", "totalTokenCount", "prompt"]
       },
-      "UnifyNodeMetaLog": {
-        "type": "object",
-        "properties": {
-          "inputMessageCount": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "inputTokenCount": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "outputTokenCount": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "totalTokenCount": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "prompt": {
-            "type": "string"
-          },
-          "approximate_cost": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "request_model": {
-            "type": "string"
-          },
-          "response_model": {
-            "type": "string"
-          }
-        },
-        "required": ["inputMessageCount", "inputTokenCount", "outputTokenCount", "totalTokenCount", "prompt", "request_model", "response_model"]
-      },
       "MetaLog": {
         "oneOf": [
           {
             "$ref": "#/components/schemas/LLMNodeMetaLog"
-          },
-          {
-            "$ref": "#/components/schemas/UnifyNodeMetaLog"
           }
         ]
       },

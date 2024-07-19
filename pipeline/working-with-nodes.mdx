@@ -51,7 +51,7 @@ The selection depends on the node configuration and on the input data it receive
 
 ## Dynamic inputs
 
-For relevant nodes, e.g. [LLM node](/nodes/LLM) and [Unify node](/nodes/unify),
+For relevant nodes, e.g. [LLM node](/nodes/LLM),
 we allow the system message to be templated with the user input for each call.
 This is achieved with enclosing your `{{variables}}` in double curly braces, a.k.a mustache syntax.
 To start, simply enclose a word in your node's "prompt" field in doubly curly braces. After that, a new input handle of type `String`, named with that enclosed word,
