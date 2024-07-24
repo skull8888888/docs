@@ -1,5 +1,54 @@
 ---
-title: 'Build evaluations on Laminar'
+title: 'Evaluate your RAG pipeline on Laminar'
+description: Collect RAG pipeline results, upload them as dataset, and evaluate them.
 ---
 
-Coming soon.
+## RAG pipeline
+
+On Laminar, you can evaluate pipenes created outside of Laminar as well as pipelines created on our platform.
+
+In this tutorial, let's consider the case where you create the pipeline on Laminar and then evaluate it.
+
+To create a RAG pipeline, do the following:
+1. Go to pipelines page.
+1. Click "New pipeline"
+1. Name your pipeline `RAG-executor` and select `RAG` from templates.
+
+<Frame caption="Create RAG pipeline from template">
+  <img
+    height="300"
+    src="/images/tutorials/RAG-from-template.png"
+    alt="Create RAG pipeline from template on Laminar in just few clicks"
+  />
+</Frame>
+
+Voilà! Your RAG pipeline is here.
+
+The pipeline asks the first LLM to generate a concise search query based on the user's question, and then passes it to Semantic Search node to search over files.
+Then it asks second LLM to answer the user's question based on the data returned from the Semantic Search node.
+
+## Add data to Semantic Search node
+
+Let's do the semantic search over the Laminar Datasets documentation.
+
+Download the file from here: https://TODO
+
+Go to Datasets page and click "New dataset".
+
+Enter dataset name `Laminar Datasets docs` and click create.
+
+You'll be redirected to the dataset's page.
+
+Click "Add from source", select the downloaded file, and add it.
+
+After doing that, your file will be chunked and uploaded as a dataset of datapoints.
+
+However, it's still not searchable, because you need to create embeddings. To do that, click "Index" and enter "content" key.
+
+Indexing is an important step because that's how we create embeddings to make the semantically relevant data searchable in the vector store. We need to index by the chunk's "content" itself.
+
+## Set Semantic Search node's datasource
+
+Go back to your `RAG-executor` pipeline in Pipelines page, open Semantic Search node's settings. Then click "Add datasource" and select `Laminar Datasets docs` dataset.
+
+Now let's jump into creating our evaluator!
