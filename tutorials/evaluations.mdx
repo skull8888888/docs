@@ -3,6 +3,8 @@ title: 'Evaluate your RAG pipeline on Laminar'
 description: Collect RAG pipeline results, upload them as dataset, and evaluate them.
 ---
 
+import CreateDataset from '/snippets/create-dataset.mdx'
+
 ## RAG pipeline
 
 On Laminar, you can evaluate pipenes created outside of Laminar as well as pipelines created on our platform.
@@ -13,6 +15,8 @@ To create a RAG pipeline, do the following:
 1. Go to pipelines page.
 1. Click "New pipeline"
 1. Name your pipeline `RAG-executor` and select `RAG` from templates.
+1. You'll need to add one `Output` node and name it "context". Then connect the output of `SemanticSearch` node to this "content" output node. It's because we'll need to evaluate the context too.
+1. Click "Commit" at the top of the page, give the commit a name "v1" and commit the pipeline.
 
 <Frame caption="Create RAG pipeline from template">
   <img
@@ -29,13 +33,14 @@ Then it asks second LLM to answer the user's question based on the data returned
 
 ## Add data to Semantic Search node
 
-Let's do the semantic search over the Laminar Datasets documentation.
+Let's do the semantic search over the Laminar documentation about Datasets.
 
-Download the file from here: https://TODO
+You can download copy the text content from raw url below and save file as "dataset-docs.txt". It's important to have the txt extension.
+<a href="https://gist.githubusercontent.com/temirrr/d8b671cbbb8e31417ecb6fd5cbb4d66b/raw/55d2250741c3cf4efb8d417457ad6ff58b1efa91/gistfile1.json" download="dataset-docs.txt">Download Dataset docs</a>
 
 Go to Datasets page and click "New dataset".
 
-Enter dataset name `Laminar Datasets docs` and click create.
+Enter dataset name "Laminar Datasets docs" and click create.
 
 You'll be redirected to the dataset's page.
 
@@ -43,12 +48,82 @@ Click "Add from source", select the downloaded file, and add it.
 
 After doing that, your file will be chunked and uploaded as a dataset of datapoints.
 
-However, it's still not searchable, because you need to create embeddings. To do that, click "Index" and enter "content" key.
+However, it's still not searchable, because you need to create embeddings. To do that, click "Index" and enter "content". "content" is the key by which the dataset will be indexed.
 
-Indexing is an important step because that's how we create embeddings to make the semantically relevant data searchable in the vector store. We need to index by the chunk's "content" itself.
+Indexing is an important step because that's how we create embeddings to make the semantically relevant data searchable in the vector store.
 
 ## Set Semantic Search node's datasource
 
 Go back to your `RAG-executor` pipeline in Pipelines page, open Semantic Search node's settings. Then click "Add datasource" and select `Laminar Datasets docs` dataset.
 
+Also, you need to click Commit, enter `v1` as commit name, and commit the first version of your executor pipeline.
+
+<Tip>Only committed pipeline versions can be used in evaluations</Tip>
+
 Now let's jump into creating our evaluator!
+
+
+## How to evaluate RAG pipeline
+
+There can be various ways to evaluate performance of your RAG pipelines. Let's consider major ones:
+
+1. **Pipeline response vs Ground-Truth answer**
+
+Purpose: Measure how well the output produced by the pipeline matches the expected ground-truth answer.
+Laminar template: `Exact match evaluator`
+
+2. **Pipeline response vs User input**
+
+Purpose: Measure how well does the pipeline response answer the user's question.
+
+You can easily create such pipeline in Laminar by having full control of the evaluation logic. The simplest way to start is to use LLM-as-judge by adding one LLM node to your evaluator pipeline.
+
+3. **Pipeline response vs Retrieved context and User input**
+
+Purpose: Measure how well does the pipeline response match the user's question, and at the same time if the answer is grounded in the context.
+
+Good point about it is that it can give low score to the responses which are good, but are responded by the LLM, rather than coming from your RAG.
+Sometimes, you want the LLM to say that it doesn't know the response, if there is no such information in your store, rather than responding by itself.
+
+These are the major types of RAG evaluations. You can definitely come up with all other types of evaluations and build it on Laminar.
+
+## Create evaluator pipeline
+
+Let's evaluate pipeline response with the retrieved context and user's input.
+
+Luckily, there is a template on Laminar to do that quickly.
+
+To create an evaluator pipeline, do the following:
+1. Go to pipelines page.
+1. Click "New pipeline"
+1. Name your pipeline `RAG-evaluator` and select `RAG relevancy evaluator` from templates.
+1. You'll need to rename the "answer" `Input` node to "output", because this input will take the value from the "output" `Output` of the executor pipeline. Accordingly, "context" `Input` node will take the output of the "context" `Output` node of the executor pipeline. Input to "question" will come from the dataset.
+1. Click "Commit" at the top of the page, give the commit a name "v1" and commit the pipeline.
+
+<Tip>There is "Evaluate" section in templates, where you can browse through the most common templates for evaluations.</Tip>
+
+## Create a dataset for evaluations
+
+When we do evaluations, we need some data to run on. 
+
+Go to Datasets page and click "New dataset".
+
+Enter dataset name "Laminar RAG inputs" and click create.
+
+You'll be redirected to the dataset's page.
+
+Click "Add from source", select the downloaded file, and add it.
+
+## Run evaluation
+
+Go to Evaluations page.
+
+Click "New evaluation". Give it a name "RAG evaluation".
+
+Then, you can select executor pipeline `RAG-executor` and version `v1`.
+
+Then, you can select evaluator pipeline `RAG-evaluator` and version `v1`.
+
+Then choose `Laminar RAG inputs` dataset, and click `Create`.
+
+That will run evaluation and you can see its execution in realtime.
