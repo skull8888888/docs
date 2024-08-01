@@ -2,23 +2,21 @@
 title: 'Adding data'
 ---
 
-To add datapoints, press "Add datapoints".
-
-<Frame caption="Add datapoints button in datasets page">
-<img height="200" src="/images/datasets/add-datapoints.png" />
-</Frame>
-
-You can add datapoints from 2 sources.
+You can add datapoints either from file or by manually adding datapoints one-by-one.
 
 ## 1. File upload
+
+You can upload datapoints either from a structured file, which contains datapoints, or from an unstructured file of various formats.
+
+To do that, click "Add from source" at the top of the Datasets page. Then, select in the tab whether you want to upload in a structured or unstructured way.
 
 ### 1.1 Structured file
 
 Supported file formats are: `.csv`, `.json`, `.jsonl`. We infer the format based on the file extension.
 
 - csv - **header is required**, default separator and minimal quoting are assumed. If a row has an empty value or less values than headers, missing values will be filled with empty strings.
-- json - the file must contain **one array** of objects
-- jsonlines - each line must contain an object
+- json - the file must contain **one array** of datapoints.
+- jsonlines - each line must contain one datapoint.
 
 For each datapoint, we first construct the key-value object, and then parse it according to the following rules:
 1. If the only key is `"data"`, and the corresponding value is a JSON object, place that object in datapoint's `"data"`.
@@ -79,16 +77,8 @@ and added to the dataset. Every chunk will have one datapoint with the following
 - `"page_number"` – for multipage documents, the number of the page this chunk belongs to
 - `"page_content"` – content of the entire page
 
-<Tip> **Having trouble uploading a text file with an unusual extension, such as .mdx?** Rename the file to .txt locally and re-upload </Tip>
+<Tip> **Having trouble uploading a text file with an extension, such as .mdx or .json?** Rename the file to .txt locally and re-upload </Tip>
 
-## 2. Endpoint logs
-After you deploy the pipeline to Endpoint, each API call to deployed pipeline is logged to Logs.
-After that, you can upload the datapoints from logs by selecting the Endpoint, its Pipeline Version, and the node(s), from which the logs will be uploaded. Each point will have node names as keys, and the corresponding node's outputs as values.
+## 2. Add manually
 
-#### 2.1. Automatically writing endpoint logs to datasets.
-
-You can also do the above automatically. Read more in the [logs documentation](/logs/automatic-dataset-writing).
-
-<Frame caption="Select endpoint name, pipeline version, and node ids to upload datapoints from logs.">
-<img width="400" src="/images/datasets/datapoints-from-logs.png" />
-</Frame>
+Click "Add datapoint" at the top of the Datasets page and new empty row will be added. Then, you can fill out the content of "data" and "target" for newly created datapoint.
