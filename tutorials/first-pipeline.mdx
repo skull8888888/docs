@@ -100,9 +100,9 @@ You can close the LLM node's settings.
 
 Now, simply connect the Input node to LLM node. Input node's output type will automatically change from `String` to `ChatMessageList`.
 
-## Add Router node
+## Add Switch node
 
-Similarly to LLM node, drag and drop Router node from the tab on the right.
+Similarly to LLM node, drag and drop Switch node from the tab on the right.
 
 Click on the node, press the gear icon to enter its settings. The settings will appear on the right side.
 
@@ -110,19 +110,19 @@ Click "Add route" and enter "LLM".
 
 Click "Add route" once again and add "Search" route.
 
-<Frame caption="Configured Router node">
+<Frame caption="Configured Switch node">
   <img
     height="300"
     src="/images/tutorials/Router-sheet.png"
-    alt="Laminar Router node configuration"
+    alt="Laminar Switch node configuration"
   />
 </Frame>
 
 Close the settings.
 
-Now, you can connect the LLM node to "condition" input handle of the router node. Based on this condition, what comes to "input" will be routed to the selected route. Other routes, which don't match the condition, will be terminated and won't proceed.
+Now, you can connect the LLM node to "condition" input handle of the switch node. Based on this condition, what comes to "input" will be routed to the selected route. Other routes, which don't match the condition, will be terminated and won't proceed.
 
-Also connect the Input node to the "input" handle of the Router node. Nodes' output can be sent to as many other nodes as you want.
+Also connect the Input node to the "input" handle of the Switch node. Nodes' output can be sent to as many other nodes as you want.
 
 ## Add Output node.
 
@@ -130,7 +130,7 @@ Your pipeline already has one Output node. Let's add another one. Simply drag an
 
 Also rename the first Output node to "LLM".
 
-Now you can connect 2 outputs of the Router node to "LLM" output node and "Search" output node.
+Now you can connect 2 outputs of the Switch node to "LLM" output node and "Search" output node.
 
 After connecting all the nodes, your graph should look as follows:
 
