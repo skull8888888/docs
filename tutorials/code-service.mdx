@@ -1,0 +1,164 @@
+---
+name: 'Running local functions in Laminar'
+description: 'Call local functions from Laminar'
+---
+
+## Intro
+
+In this tutorial, we will build a pipeline that calls your own code.
+
+The demo application will:
+1. Take a user's question and a website URL as an input.
+1. Read and parse a website using Beautiful Soup.
+1. Call an LLM with the input quetion and the content of the website
+1. Return the result to the user
+
+## Prerequisites
+
+- Python - Install Python3.9+
+- poetry - Install poetry for managing your dependencies in a project
+
+## Building the flow
+
+First, create a pipeline starting from "Blank" template.
+Place a function node and define the signature of your function.
+
+The function takes in the url and returns the contents of the website.
+
+![](/images/tutorials/parse-website.png)
+
+Then, place an LLM node and prompt it with the following prompt:
+
+```
+You are a question answering machine that responds user's questions about the contents of a website. You must ground your response in the content of the website and try not to add your own knowledge. If the provided content does not have the response, acknowledge it.
+
+User's question:
+{{question}}
+
+Website content:
+{{parsed_content}}
+```
+
+The mustache variables will create input handles on the left of the node.
+
+Finally place additional input node, and rename the input nodes to `question` and `url`. 
+
+Connect the `url` input to the `parse_website` node, `question` to the `question` handle on LLM,
+output of `parse_website` node to the `parsed_content` handle on the LLM, and the LLM node to the output node.
+
+The final flow will look like this
+
+![](/images/tutorials/function-call-flow.png)
+
+## Implementing Function node
+
+Now, we need to actually add code for the Function node called `parse_website`.
+
+You'll need to use IDE of your choice and terminal.
+
+Run the following commands in terminal:
+```
+mkdir website_qa
+cd website_qa
+poetry init --no-interaction
+poetry add lmnr requests bs4
+poetry shell
+```
+
+We've created a project and installed `lmnr` library there. Also we installed `requests` and `bs4` libraries to make requests and parse them.
+Also, we activated our poetry environment to call CLI commands with `lmnr` later.
+
+Now create `pipeline.py` file in your IDE next to generated `pyproject.toml` and `poetry.lock` files.
+Also, create `src` folder with `__init__.py` and `request.py` files.
+
+Your directory structure should look like this:
+```
+website_qa/
+│
+├── pipeline.py
+├── pyproject.toml
+├── poetry.lock
+│
+└── src/
+    ├── __init__.py
+    └── request.py
+```
+
+Let's define a function which makes the request and parses it in `src/request.py`.
+
+```python
+# src/request.py
+import requests
+from bs4 import BeautifulSoup
+
+
+def parse_website(url: str) -> str:
+    html_content = requests.get(url).text
+    soup = BeautifulSoup(html_content, 'html.parser')
+    text_content = soup.get_text()
+
+    return text_content
+```
+
+You can write and store code of any complexity in `src/`. Just make sure it's properly structured according to Python's module import rules.
+Place `__init__.py` files in all subdirectories.
+
+Now, let's go to `pipeline.py` and register the function for the `parse_website` node.
+
+pipeline.py must have variable `lmnr` of type `Pipeline` where you register the functions to be used for your nodes.
+
+```
+# pipeline.py
+from lmnr import Pipeline
+
+from src.request import parse_website
+
+
+lmnr = Pipeline()
+
+
+@lmnr.func("parse_website")
+def parse_url(url: str) -> str:
+    return parse_website(url)
+```
+
+At this point, we need to connect the local code to our pipeline. Let's go back to your terminal.
+
+You'll need to set your project id as an environment variable, so that we can locate the project in which you built your pipeline.
+[Read here](https://docs.lmnr.ai/api-reference/introduction#authentication) on how to get project API key.
+
+`export LMNR_PROJECT_API_KEY={your project api key}`
+
+Then run `lmnr dev` to establish connection with your server.
+
+You should see the following output:
+
+```
+========================================
+Debugger Session ID:
+{DEBUGGER_SESSION_ID}
+========================================
+
+Registered functions:
+- parse_website
+
+========================================
+```
+
+Copy `DEBUGGER_SESSION_ID` and paste it in the `Env` in the header of the pipeline builder.
+
+Note that if you restart `lmnr dev`, then you'll need to paste new `DEBUGGER_SESSION_ID`.
+
+Now we're ready to test the flow.
+
+## Testing the flow
+
+Let's test the end-to-end flow with a couple simple inputs
+
+Fill in the url input on the left with `https://docs.lmnr.ai/tutorials/getting-started`
+
+Ask a question about this page in the question input on the left, e.g. "What is a Laminar workspace".
+
+Then press Cmd + Enter (or Ctrl + Enter) or click run button.
+
+![](/images/tutorials/code-tutor-pipeline-run-output.png)

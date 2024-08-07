@@ -136,7 +136,8 @@
       "group": "Tutorials",
       "pages": [
         "tutorials/getting-started",
-        "tutorials/first-pipeline"
+        "tutorials/first-pipeline",
+        "tutorials/code-service"
       ]
     }
   ],
