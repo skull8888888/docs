@@ -1,7 +1,10 @@
 ---
 name: 'Running local functions in Laminar'
-description: 'Call local functions from Laminar'
+description: 'Integrate your code with Laminar'
 ---
+
+This is first tutorial (1/2) in a series about how to develop and deploy your pipeline on Laminar.
+It aims to showcase how you can fully develop and orchestrate an LLM pipeline or agent on Laminar, and then fully host it on Laminar just by running a few commands.
 
 ## Intro
 
@@ -16,7 +19,8 @@ The demo application will:
 ## Prerequisites
 
 - Python - Install Python3.9+
-- poetry - Install poetry for managing your dependencies in a project
+- poetry - Install poetry for managing your dependencies in a project [(Read more)](https://python-poetry.org/docs/)
+- Understanding of how to create a pipeline from template on Laminar [(Read more)](/tutorials/first-pipeline#creating-a-pipeline)
 
 ## Building the flow
 
@@ -107,7 +111,7 @@ Now, let's go to `pipeline.py` and register the function for the `parse_website`
 
 pipeline.py must have variable `lmnr` of type `Pipeline` where you register the functions to be used for your nodes.
 
-```
+```python
 # pipeline.py
 from lmnr import Pipeline
 
@@ -161,4 +165,6 @@ Ask a question about this page in the question input on the left, e.g. "What is 
 
 Then press Cmd + Enter (or Ctrl + Enter) or click run button.
 
-![](/images/tutorials/code-tutor-pipeline-run-output.png)
+![](/images/tutorials/code-tutorial-pipeline-run-output.png)
+
+You can try to play around with your agent and, when you're ready to deploy it, move on to the [next tutorial](/tutorials/deploy-on-laminar).
