@@ -1,256 +1,184 @@
 ---
-title: Build and deploy a pipeline
-description: Build LLM pipeline on Laminar and deploy it as a Laminar endpoint
+title: 'First pipeline (1/2)'
+description: 'Create your first pipeline on Laminar'
 ---
 
-This tutorial will teach you how to build LLM pipeline on Laminar, then expose it as an API,
-and update your application logic to call Laminar instead.
+This is first tutorial (1/2) in a series about how to develop and deploy your pipeline on Laminar.
+It aims to showcase how you can fully develop and orchestrate an LLM pipeline or agent on Laminar, and then fully host it on Laminar just by running a few commands.
 
-## Creating a project
+## Intro
+
+In this tutorial, we will build a pipeline that calls your own code.
+
+The demo application will:
+1. Take a user's question and a website URL as an input.
+1. Read and parse a website using Beautiful Soup.
+1. Call an LLM with the input quetion and the content of the website
+1. Return the result to the user
+
+## Prerequisites
+
+- Python - Install Python3.9+
+- poetry - Install poetry for managing your dependencies in a project [(Read more)](https://python-poetry.org/docs/)
+
+## Create a project
 
 When you have just registered, you will have one workspace created by default.
 Workspaces have projects. Click "New project" to create a project and give it a name "my-first-project".
 
-<Frame caption="New project dialog">
-  <img
-    height="300"
-    src="/images/tutorials/create-project.png"
-    alt="Create project on Laminar by selecting workspace and project name"
-  />
-</Frame>
-
 Click "Create" and the project will be created. Then you'll get redirected to "Pipelines" page.
 
-## Creating a pipeline
+## Create a pipeline
 
 Now that you have created a project, let's create a Laminar pipeline.
 
-Let's imagine you had a pipeline in your previous workflow, which decides based on the user's question whether to answer from its own knowledge or use the web search.
-
-To reproduce this pipeline, first click "New pipeline", then enter name "LLM-or-WebSearch", select Blank template from templates, and click "Create".
-
-<Frame caption="Create new pipeline dialog">
-  <img
-    height="300"
-    src="/images/tutorials/create-pipeline.png"
-    alt="Create pipeline on Laminar by entering pipeline name"
-  />
-</Frame>
+First, click "New pipeline", then enter name "website_qa", select "Blank" from templates from templates, and click "Create".
 
 The pipeline will be created. Then you'll be redirected to the Laminar pipeline builder.
 
-## Add LLM node
+## Build the pipeline
 
-Due to selecting Blank template, you'll only see Input and Output nodes on the graph. Let's add more nodes!
+Place a [Function node](/nodes/function-call) and define the signature of your function.
 
-<Frame caption="Input and Output nodes from Blank template">
-  <img
-    height="300"
-    src="/images/tutorials/blank-template.png"
-    alt="Input and Output nodes at Laminar pipeline builder"
-  />
-</Frame>
+To do that, just add `url` to "Parameter names" in the node's settings. This function will take a url and return the content of the website.
 
-Drag and drop LLM node from the tab on the right.
+![](/images/tutorials/parse-website.png)
 
-<Frame caption="Input, Output, and LLM nodes. Nodes are not connected yet.">
-  <img
-    height="300"
-    src="/images/tutorials/input-llm-output.png"
-    alt="Input, Output, and LLM nodes on Laminar pipeline builder."
-  />
-</Frame>
-
-Click on the LLM node, press the gear icon to enter its settings. The LLM node's settings will appear on the right side.
-
-Enter the following prompt to "Prompt" section:
+Then, place an LLM node and prompt it with the following prompt:
 
 ```
-Your goal is decide whether an LLM can answer the following question without the use of external data. 
-If it can, answer LLM, otherwise answer Search.
+You are a question answering machine that responds user's questions about the contents of a website. You must ground your response in the content of the website and try not to add your own knowledge. If the provided content does not have the response, acknowledge it.
+
+User's question:
+{{question}}
+
+Website content:
+{{parsed_content}}
 ```
 
-Select the model. In this case, we'll go with `gpt-4o-mini`. Laminar provides it for free, but for other models, you'll have to enter your own API keys.
+The mustache variables will create input handles on the left of the node.
 
-Toggle the "Chat messages input" switch to add input, which will take ChatMessageList, which is a list of alternating User and Assistant messages.
+Finally place additional input node, and rename Input nodes to `question` and `url`.
 
-Usually, LLMs would output unstructured text. However, in this case, it would be beneficial for us to constrain LLM to response either "LLM" or "Search".
-Laminar has the feature which guides LLM to return the structured output based on the schema.
+Connect the `url` Input node to the `parse_website` node, `question` to the `question` handle on LLM,
+output of `parse_website` node to the `parsed_content` handle on the LLM, and the LLM node to the Output node.
 
-To enable the structured output, toggle the "Structured output" switch. Then enter the following text:
+The final flow will look like this
 
+![](/images/tutorials/function-call-flow.png)
+
+## Implementing Function node
+
+Now, we need to actually add code for the Function node called `parse_website`.
+
+You'll need to use IDE of your choice and terminal.
+
+Run the following commands in terminal:
 ```
-enum Route {
-  LLM
-  Search
-}
-```
-
-You can pass way more complex nested schemas to the structured output.
-
-<Frame caption="Configured LLM node">
-  <img
-    height="300"
-    src="/images/tutorials/LLM-sheet.png"
-    alt="Laminar LLM node configuration"
-  />
-</Frame>
-
-You can close the LLM node's settings.
-
-Now, simply connect the Input node to LLM node. Input node's output type will automatically change from `String` to `ChatMessageList`.
-
-## Add Switch node
-
-Similarly to LLM node, drag and drop Switch node from the tab on the right.
-
-Click on the node, press the gear icon to enter its settings. The settings will appear on the right side.
-
-Click "Add route" and enter "LLM".
-
-Click "Add route" once again and add "Search" route.
-
-<Frame caption="Configured Switch node">
-  <img
-    height="300"
-    src="/images/tutorials/Router-sheet.png"
-    alt="Laminar Switch node configuration"
-  />
-</Frame>
-
-Close the settings.
-
-Now, you can connect the LLM node to "condition" input handle of the switch node. Based on this condition, what comes to "input" will be routed to the selected route. Other routes, which don't match the condition, will be terminated and won't proceed.
-
-Also connect the Input node to the "input" handle of the Switch node. Nodes' output can be sent to as many other nodes as you want.
-
-## Add Output node.
-
-Your pipeline already has one Output node. Let's add another one. Simply drag and drop Output node and name it "Search".
-
-Also rename the first Output node to "LLM".
-
-Now you can connect 2 outputs of the Switch node to "LLM" output node and "Search" output node.
-
-After connecting all the nodes, your graph should look as follows:
-
-<Frame caption="Connected graph">
-  <img
-    height="300"
-    src="/images/tutorials/llm-or-search-graph.png"
-    alt="Laminar graph with nodes and connected edges"
-  />
-</Frame>
-
-The graph is ready for running.
-
-## Run graph
-
-Enter "Who's the winner of UEFA Euro 2024?" in the Pipeline Execution tab on the left. Click Run.
-
-You'll see the trace in the bottom. You can also see the statistics such as the total execution time, total token count, and total cost there.
-
-Play with other inputs and check if LLM node decides correclty.
-
-## Discover Laminar and extend the pipeline
-
-Check our [Web Search node](/nodes/web-search) and try to add it into the flow. It will help you to search the web for the answer, when the LLM decides it needs to search the web.
-Then you can pass its output to LLM node to make it human-readable and pass to the output.
-
-## Commit your pipeline
-
-Now let's create a commit. Commit is a valid and immutable snapshot of your pipeline. Commit can later be deployed or used for evaluations.
-
-Press "Commit" on the bar at the top of the page and enter `v1` as the first commit name. Click "Commit".
-
-The commit will be created.
-
-Switch to "v1" pipeline version by using the dropdown select at the top bar.
-
-## Deploy your pipeline
-
-Now that we're on the commit version, let's deploy the pipeline.
-
-Click "Deploy" on the bar at the top of the page.
-
-Press "Select endpoint". Then select "Create new" and enter `LLM-or-WebSearch` as the endpoint name. Click "Deploy".
-
-The endpoint is now created and now your pipeline is instantly accessible through API.
-
-## Integrate endpoint call to your application
-
-Go to Endpoints page and click "use API" to see the Python or Typescript code for using Laminar in your application.
-
-We pasted it below too for simplicity.
-
-In the code below, you can see `LAMINAR_API_KEY`. This is a project API key for your project. To create a project API key, go to "settings" page, create project API key there, and paste it here. [Read more](/api-reference/introduction#authentication)
-
-```python Integrate with Python SDK
-from lmnr import Laminar
-import os
-
-l = Laminar(os.environ['LAMINAR_API_KEY'])
-result = l.run(
-    endpoint = 'LLM-or-WebSearch',
-    inputs = {
-        "chat_messages": [
-            {
-                "role": "user",
-                "content": "Who's the winner of UEFA Euro 2024?"
-            }
-        ]
-    },
-    env = {
-        "OPENAI_API_KEY": "os.environ[OPENAI_API_KEY]"
-    },
-    metadata = {}
-)
-print(result)
+mkdir website_qa
+cd website_qa
+poetry init --no-interaction
+poetry add lmnr requests bs4
+poetry shell
 ```
 
-```typescript Integrate with Typescript SDK
-import { Laminar } from '@lmnr-ai/lmnr';
+We've created a project and installed `lmnr` library there. Also we installed `requests` and `bs4` libraries to make requests and parse them.
+Also, we activated our poetry environment to call CLI commands with `lmnr` later.
 
-const l = new Laminar(process.env.LAMINAR_API_KEY);
-const result = await l.run({
-  endpoint: 'LLM-or-WebSearch',
-  inputs: {
-    "chat_messages": [
-      {
-        "role": "user",
-        "content": "Who's the winner of UEFA Euro 2024?"
-      }
-    ]
-  },
-  env: {
-    "OPENAI_API_KEY": "process.env.OPENAI_API_KEY"
-  },
-  metadata: {},
-});
-console.log(result);
+Now create `pipeline.py` file in your IDE next to generated `pyproject.toml` and `poetry.lock` files.
+Also, create `src` folder with `__init__.py` and `request.py` files.
+
+Your directory structure should look like this:
+```
+website_qa/
+│
+├── pipeline.py
+├── pyproject.toml
+├── poetry.lock
+│
+└── src/
+    ├── __init__.py
+    └── request.py
 ```
 
-Call it with curl too.
+Let's define a function which makes the request and parses it in `src/request.py`.
 
-```
-curl 'https://api.lmnr.ai/v2/endpoint/run' \
--H "Content-Type: application/json" \
--H "Authorization: Bearer $LAMINAR_API_KEY" \
--d '{
-  "endpoint": "LLM-or-WebSearch",
-  "inputs": {
-    "chat_messages": [
-      {
-        "role": "user",
-        "content": ""
-      }
-    ]
-  },
-  "env": {
-    "OPENAI_API_KEY": "$OPENAI_API_KEY"
-  },
-  "metadata": {}
-}'
+```python
+# src/request.py
+import requests
+from bs4 import BeautifulSoup
+
+
+def parse_website(url: str) -> str:
+    html_content = requests.get(url).text
+    soup = BeautifulSoup(html_content, 'html.parser')
+    text_content = soup.get_text()
+
+    return text_content
 ```
 
-Now that you have built and called this flow from your application, check out other tutorials or read the docs to learn how to create datasets, run evaluations, monitor your application, use the data from logs to improve your application, and much more!
+You can write and store code of any complexity in `src/`. Just make sure it's properly structured according to Python's module import rules.
+Place `__init__.py` files in all subdirectories.
+
+Now, let's go to `pipeline.py` and register the function for the `parse_website` node.
+
+pipeline.py must have variable of type `Pipeline` where you register the functions to be used for your nodes.
+
+```python
+# pipeline.py
+from lmnr import Pipeline
+
+from src.request import parse_website
+
+
+app = Pipeline()
+
+
+@app.func("parse_website")
+def parse_url(url: str) -> str:
+    return parse_website(url)
+```
+
+At this point, we need to connect the local code to our pipeline. Let's go back to your terminal.
+
+You'll need to set your project id as an environment variable, so that we can locate the project in which you built your pipeline.
+[Read here](https://docs.lmnr.ai/api-reference/introduction#authentication) on how to get project API key.
+
+`export LMNR_PROJECT_API_KEY={your project api key}`
+
+Then run `lmnr dev` to establish connection with your server.
+
+You should see the following output:
+
+```
+========================================
+Debugger Session ID:
+{DEBUGGER_SESSION_ID}
+========================================
+
+Registered functions:
+- parse_website
+
+========================================
+```
+
+Copy `DEBUGGER_SESSION_ID` and paste it in the `Env` in the header of the pipeline builder.
+
+Note that if you restart `lmnr dev`, then you'll need to paste new `DEBUGGER_SESSION_ID`.
+
+Now we're ready to test the flow.
+
+## Testing the flow
+
+Let's test the end-to-end flow with a couple simple inputs
+
+Fill in the url input on the left with `https://docs.lmnr.ai/tutorials/getting-started`
+
+Ask a question about this page in the question input on the left, e.g. "What is a Laminar workspace".
+
+Then press Cmd + Enter (or Ctrl + Enter) or click run button.
+
+![](/images/tutorials/code-tutorial-pipeline-run-output.png)
+
+You'll see the output of the pipeline and the full trace similarly to the picture.
+You can try to play around and, when you're ready to deploy it, move on to the [next tutorial](/tutorials/deploy-on-laminar).

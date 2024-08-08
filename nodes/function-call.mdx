@@ -1,22 +1,43 @@
 ---
 title: 'Function call'
-description: 'Call a function in your local codebase'
+description: 'Call a function from your code'
 ---
 
 ## Function call
 
-Very similarly to [Tool calling](/nodes/tool-call), you can call your own functions whenever needed.
-The difference for this node is that it does not have to be an LLM tool call it can be called anywhere in the flow.
+Function call allows you to call a function from your code.
 
-Start off by defining the function signature in the node. Node's name must match the function name,
-and the parameters specified must match the function signature. The function must return a string or a list of chat messages.
+You can develop any function locally in any IDE or text editor, install any package you want, and add it to your pipeline.
+
+During development, your pipeline will be connected to your local code through websockets.
+
+When you deploy both your code and pipeline to an endpoint, the pipeline will call your function hosted on Laminar.
+As a result, your pipeline, together with your functions' code, will be fully hosted on Laminar.
+
+Start off by defining the function signature in the node. Give node a name and parameter names.
+
+When you implement a function in your code, function name and its parameters' names must match those defined in the graph.
+The function must return a string or a list of chat messages.
 If the function returns a more complex structure, such as a JSON dictionary, please stringify it.
 
 Every parameter in the signature will add an input handle to the function call node.
 
-There are 2 ways to use functions nodes. Using Laminar's remote debugger, or calling the endpoint through our SDK.
+For now, only Python code is supported.
 
-### Laminar remote debugger.
+## Writing code and connecting it to pipeline
+
+Check out our [tutorial](/tutorials/first-pipeline) to learn how to simply call your local code by running `lmnr dev` and how to deploy using `lmnr deploy`.
+
+It also shows how to structure code in your repository/directory to be able to use it with Laminar pipelines.
+
+## Implementation details
+
+When you deploy your code and pipeline to an endpoint, Laminar spins up a container with your functions written in Python, which interfaces with our Rust engine through gRPC.
+Then, when you call your code through an endpoint, when engine executes this node, it will call the container through gRPC to execute your function.
+
+## Laminar remote debugger.
+
+This is another way to call your functions instead of doing `lmnr dev`.
 
 If you want to test a flow that includes a function call, you can use Laminar remote debugger in
 [NodeJS](https://www.npmjs.com/package/@lmnr-ai/lmnr) or in [Python](https://pypi.org/project/lmnr/).
@@ -31,11 +52,10 @@ This will return and print your unique session ID.
 1. Copy the session ID and paste it as an environment variable `DEBUGGER_SESSION_ID` in lmnr.ai workshop in your browser.
 1. Run the pipeline from your browser
 
-### Calling endpoints through SDK
+## Calling endpoints through SDK
 
-SDK in [NodeJS](https://www.npmjs.com/package/@lmnr-ai/lmnr) or in [Python](https://pypi.org/project/lmnr/) also supports
-running Laminar endpoints. You can deploy your pipeline with a tool call node just like any other pipeline; however,
-when calling the pipeline from your code, make sure to specify the optional parameter `tools`, which is a list of local functions.
+SDK in [NodeJS](https://www.npmjs.com/package/@lmnr-ai/lmnr) or in [Python](https://pypi.org/project/lmnr/) support
+calling Laminar endpoints.
 
 Example code snippets:
 

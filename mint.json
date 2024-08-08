@@ -137,8 +137,8 @@
       "pages": [
         "tutorials/getting-started",
         "tutorials/first-pipeline",
-        "tutorials/code-service",
-        "tutorials/deploy-on-laminar"
+        "tutorials/deploy-on-laminar",
+        "tutorials/control-flow-with-LLM"
       ]
     }
   ],

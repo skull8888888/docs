@@ -1,0 +1,257 @@
+---
+title: Control flow with LLM
+description: Build LLM pipeline where LLM takes control of the flow
+---
+
+This tutorial will teach you how to build LLM pipeline where only one branch is activated based on the LLM's reasoning. Then we will show how to deploy it.
+
+Instead of 2 Output nodes, you can extend the pipeline with 2 subbranches, out of which only one will be executed.
+
+## Creating a project
+
+When you have just registered, you will have one workspace created by default.
+Workspaces have projects. Click "New project" to create a project and give it a name "my-first-project".
+
+<Frame caption="New project dialog">
+  <img
+    height="300"
+    src="/images/tutorials/create-project.png"
+    alt="Create project on Laminar by selecting workspace and project name"
+  />
+</Frame>
+
+Click "Create" and the project will be created. Then you'll get redirected to "Pipelines" page.
+
+## Creating a pipeline
+
+Now that you have created a project, let's create a Laminar pipeline.
+
+Let's imagine you had a pipeline in your previous workflow, which decides based on the user's question whether to answer from its own knowledge or use the web search.
+
+To reproduce this pipeline, first click "New pipeline", then enter name "LLM-or-WebSearch", select Blank template from templates, and click "Create".
+
+<Frame caption="Create new pipeline dialog">
+  <img
+    height="300"
+    src="/images/tutorials/create-pipeline.png"
+    alt="Create pipeline on Laminar by entering pipeline name"
+  />
+</Frame>
+
+The pipeline will be created. Then you'll be redirected to the Laminar pipeline builder.
+
+## Add LLM node
+
+Due to selecting Blank template, you'll only see Input and Output nodes on the graph. Let's add more nodes!
+
+<Frame caption="Input and Output nodes from Blank template">
+  <img
+    height="300"
+    src="/images/tutorials/blank-template.png"
+    alt="Input and Output nodes at Laminar pipeline builder"
+  />
+</Frame>
+
+Drag and drop LLM node from the tab on the right.
+
+<Frame caption="Input, Output, and LLM nodes. Nodes are not connected yet.">
+  <img
+    height="300"
+    src="/images/tutorials/input-llm-output.png"
+    alt="Input, Output, and LLM nodes on Laminar pipeline builder."
+  />
+</Frame>
+
+Click on the LLM node, press the gear icon to enter its settings. The LLM node's settings will appear on the right side.
+
+Enter the following prompt to "Prompt" section:
+
+```
+Your goal is decide whether an LLM can answer the following question without the use of external data. 
+If it can, answer LLM, otherwise answer Search.
+```
+
+Select the model. In this case, we'll go with `gpt-4o-mini`. Laminar provides it for free, but for other models, you'll have to enter your own API keys.
+
+Toggle the "Chat messages input" switch to add input, which will take ChatMessageList, which is a list of alternating User and Assistant messages.
+
+Usually, LLMs would output unstructured text. However, in this case, it would be beneficial for us to constrain LLM to response either "LLM" or "Search".
+Laminar has the feature which guides LLM to return the structured output based on the schema.
+
+To enable the structured output, toggle the "Structured output" switch. Then enter the following text:
+
+```
+enum Route {
+  LLM
+  Search
+}
+```
+
+You can pass way more complex nested schemas to the structured output.
+
+<Frame caption="Configured LLM node">
+  <img
+    height="300"
+    src="/images/tutorials/LLM-sheet.png"
+    alt="Laminar LLM node configuration"
+  />
+</Frame>
+
+You can close the LLM node's settings.
+
+Now, simply connect the Input node to LLM node. Input node's output type will automatically change from `String` to `ChatMessageList`.
+
+## Add Switch node
+
+Similarly to LLM node, drag and drop Switch node from the tab on the right.
+
+Click on the node, press the gear icon to enter its settings. The settings will appear on the right side.
+
+Click "Add route" and enter "LLM".
+
+Click "Add route" once again and add "Search" route.
+
+<Frame caption="Configured Switch node">
+  <img
+    height="300"
+    src="/images/tutorials/Router-sheet.png"
+    alt="Laminar Switch node configuration"
+  />
+</Frame>
+
+Close the settings.
+
+Now, you can connect the LLM node to "condition" input handle of the switch node. Based on this condition, what comes to "input" will be routed to the selected route. Other routes, which don't match the condition, will be terminated and won't proceed.
+
+Also connect the Input node to the "input" handle of the Switch node. Nodes' output can be sent to as many other nodes as you want.
+
+## Add Output node.
+
+Your pipeline already has one Output node. Let's add another one. Simply drag and drop Output node and name it "Search".
+
+Also rename the first Output node to "LLM".
+
+Now you can connect 2 outputs of the Switch node to "LLM" output node and "Search" output node.
+
+After connecting all the nodes, your graph should look as follows:
+
+<Frame caption="Connected graph">
+  <img
+    height="300"
+    src="/images/tutorials/llm-or-search-graph.png"
+    alt="Laminar graph with nodes and connected edges"
+  />
+</Frame>
+
+The graph is ready for running.
+
+## Run graph
+
+Enter "Who's the winner of UEFA Euro 2024?" in the Pipeline Execution tab on the left. Click Run.
+
+You'll see the trace in the bottom. You can also see the statistics such as the total execution time, total token count, and total cost there.
+
+Play with other inputs and check if LLM node decides correclty.
+
+## Discover Laminar and extend the pipeline
+
+Check our [Function node](/nodes/function-call) and try to add it into the flow. You can write a code which further searches the web, when the LLM decides it needs to search the web.
+Then you can pass its output to LLM node to make it human-readable and pass to the output.
+
+## Commit your pipeline
+
+Now let's create a commit. Commit is a valid and immutable snapshot of your pipeline. Commit can later be deployed or used for evaluations.
+
+Press "Commit" on the bar at the top of the page and enter `v1` as the first commit name. Click "Commit".
+
+The commit will be created.
+
+Switch to "v1" pipeline version by using the dropdown select at the top bar.
+
+## Deploy your pipeline
+
+Now that we're on the commit version, let's deploy the pipeline.
+
+Click "Deploy" on the bar at the top of the page.
+
+Press "Select endpoint". Then select "Create new" and enter `LLM-or-WebSearch` as the endpoint name. Click "Deploy".
+
+The endpoint is now created and now your pipeline is instantly accessible through API.
+
+## Integrate endpoint call to your application
+
+Go to Endpoints page and click "use API" to see the Python or Typescript code for using Laminar in your application.
+
+We pasted it below too for simplicity.
+
+In the code below, you can see `LAMINAR_API_KEY`. This is a project API key for your project. To create a project API key, go to "settings" page, create project API key there, and paste it here. [Read more](/api-reference/introduction#authentication)
+
+```python Integrate with Python SDK
+from lmnr import Laminar
+import os
+
+l = Laminar(os.environ['LAMINAR_API_KEY'])
+result = l.run(
+    endpoint = 'LLM-or-WebSearch',
+    inputs = {
+        "chat_messages": [
+            {
+                "role": "user",
+                "content": "Who's the winner of UEFA Euro 2024?"
+            }
+        ]
+    },
+    env = {
+        "OPENAI_API_KEY": "os.environ[OPENAI_API_KEY]"
+    },
+    metadata = {}
+)
+print(result)
+```
+
+```typescript Integrate with Typescript SDK
+import { Laminar } from '@lmnr-ai/lmnr';
+
+const l = new Laminar(process.env.LAMINAR_API_KEY);
+const result = await l.run({
+  endpoint: 'LLM-or-WebSearch',
+  inputs: {
+    "chat_messages": [
+      {
+        "role": "user",
+        "content": "Who's the winner of UEFA Euro 2024?"
+      }
+    ]
+  },
+  env: {
+    "OPENAI_API_KEY": "process.env.OPENAI_API_KEY"
+  },
+  metadata: {},
+});
+console.log(result);
+```
+
+Call it with curl too.
+
+```
+curl 'https://api.lmnr.ai/v2/endpoint/run' \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer $LAMINAR_API_KEY" \
+-d '{
+  "endpoint": "LLM-or-WebSearch",
+  "inputs": {
+    "chat_messages": [
+      {
+        "role": "user",
+        "content": ""
+      }
+    ]
+  },
+  "env": {
+    "OPENAI_API_KEY": "$OPENAI_API_KEY"
+  },
+  "metadata": {}
+}'
+```
+
+Now that you have built and called this flow from your application, check out other tutorials or read the docs to learn how to create datasets, run evaluations, monitor your application, use the data from logs to improve your application, and much more!
