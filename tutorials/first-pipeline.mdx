@@ -38,7 +38,7 @@ The pipeline will be created. Then you'll be redirected to the Laminar pipeline 
 
 ## Build the pipeline
 
-Place a [Function node](/nodes/function-call) and define the signature of your function.
+Place a [Function node](/documentation/nodes/function-call) and define the signature of your function.
 
 To do that, just add `url` to "Parameter names" in the node's settings. This function will take a url and return the content of the website.
 
@@ -91,14 +91,12 @@ Also, create `src` folder with `__init__.py` and `request.py` files.
 Your directory structure should look like this:
 ```
 website_qa/
-│
 ├── pipeline.py
 ├── pyproject.toml
 ├── poetry.lock
-│
 └── src/
-    ├── __init__.py
-    └── request.py
+      ├── __init__.py
+      └── request.py
 ```
 
 Let's define a function which makes the request and parses it in `src/request.py`.

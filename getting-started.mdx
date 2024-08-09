@@ -1,0 +1,60 @@
+---
+name: Getting started
+description: Get started with Laminar AI
+---
+
+## Concepts and getting around
+
+### Projects and workspaces
+
+Once you sign up on Laminar, you will get to your [dashboard](https://www.lmnr.ai/projects).
+Here you can see and manage your workspaces and projects.
+When you create an account, you are created your personal workspace by default.
+
+A Laminar project is a collection of [pipelines](/documentation/pipeline/introduction),
+[endpoints](/documentation/endpoints/introduction),
+[datasets](/documentation/datasets/introduction),
+[evaluations](/documentation/evaluations/introduction),
+and execution [logs](/documentation/logs/introduction).
+Access [API keys](/api-reference/introduction#authentication)
+and environment variables are configured at the project level as well.
+Think about it as a scope of a certain work. 
+
+A Laminar workspace is a collection of projects accessible and users that have access to them.
+
+On pro and start-up tiers, you can create more workspaces and add people to them. This enables collaboration
+including real-time editing of the pipelines. To do that, you only need to know the email address with which they have registered to Laminar.
+
+1. Navigate to the projects page by clicking the Laminar's logo in the top left corner.
+1. Navigate to the workspace by clicking on the workspace name on the left.
+1. Click "Add user".
+1. Type in their email and click "Add".
+
+In the same page, you can create projects.
+
+### Pipelines
+
+Once you create your first project, you will be redirected to the pipelines page. Pipeline builder is the place
+where you build your core logic, evaluations logic, and experiment with the flows. For more information on pipelines
+and navigating in the builder page, see the [pipelines documentation](/documentation/pipeline/introduction).
+
+### Endpoints
+
+Think of every pipeline that you build as a large function with input parameters and one or many outputs.
+Laminar allows you to deploy every pipeline to endpoints and then call it externally from your code.
+
+Every input node of the pipeline will serve as an input parameter in the API call and the outputs will
+be returned in the response. See [endpoints documentation](/documentation/endpoints/introduction) for more.
+
+### Evaluations and datasets
+
+Laminar has a powerful set of tools for evaluations where you can create any custom pipeline to evaluate
+how your other pipelines work or evaluate the data in your datasets. In order to run evaluations, you need to
+create a [dataset](/documentation/datasets/introduction), add data to it, and create an evaluator pipeline. See more in
+[evaluation documentation](/documentation/evaluations/introduction).
+
+Evaluations run in parallel batches, and you can get the results faster than you ever had seen it before.
+
+## Onboarding to Laminar
+
+Read onto the following sections to learn how to [migrate your previous workflows](/tutorials/first-pipeline) to Laminar or start from scratch.

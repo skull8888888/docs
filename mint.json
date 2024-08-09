@@ -15,6 +15,9 @@
       "to": "#5562ea"
     }
   },
+  "primaryTab": {
+    "name": "Tutorials"
+  },
   "theme": "venus",
   "modeToggle": {
     "default": "dark",
@@ -33,8 +36,8 @@
   },
   "tabs": [
     {
-      "name": "Tutorials",
-      "url": "tutorials"
+      "name": "Documentation",
+      "url": "documentation"
     },
     {
       "name": "API Reference",
@@ -52,7 +55,7 @@
     {
       "group": "Getting started",
       "pages": [
-        "introduction"
+        "getting-started"
       ]
     },
     {
@@ -61,33 +64,26 @@
         {
           "group": "Overview",
           "pages": [
-            "pipeline/introduction",
-            "pipeline/page-navigation",
-            "pipeline/env-variables",
-            "pipeline/run-save-deploy"
+            "documentation/pipeline/introduction",
+            "documentation/pipeline/page-navigation",
+            "documentation/pipeline/env-variables",
+            "documentation/pipeline/run-save-deploy"
           ]
         },
         {
           "group": "Nodes",
           "pages": [
-            "pipeline/working-with-nodes",
-            "nodes/input-output",
-            "nodes/string-template",
-            "nodes/error-node",
-            "nodes/extractor",
-            "nodes/LLM",
-            "nodes/semantic-search",
-            "nodes/semantic-switch",
-            "nodes/subpipeline",
-            "nodes/map",
-            "nodes/switch",
-            "nodes/web-search",
-            "nodes/format-validator",
-            "nodes/json-extractor",
-            "nodes/code",
-            "nodes/tool-call",
-            "nodes/function-call",
-            "nodes/semantic-similarity"
+            "documentation/pipeline/working-with-nodes",
+            "documentation/nodes/input-output",
+            "documentation/nodes/string-template",
+            "documentation/nodes/LLM",
+            "documentation/nodes/semantic-search",
+            "documentation/nodes/semantic-switch",
+            "documentation/nodes/switch",
+            "documentation/nodes/web-search",
+            "documentation/nodes/json-extractor",
+            "documentation/nodes/function-call",
+            "documentation/nodes/semantic-similarity"
           ]
         }
       ]
@@ -95,28 +91,28 @@
         {
       "group": "Evaluations",
       "pages": [
-        "evaluations/introduction",
-        "evaluations/evaluation-with-executor",
-        "evaluations/evaluation-data-only"
+        "documentation/evaluations/introduction",
+        "documentation/evaluations/evaluation-with-executor",
+        "documentation/evaluations/evaluation-data-only"
       ]
     },
     {
       "group": "Datasets",
       "pages": [
-        "datasets/introduction",
-        "datasets/adding-data"
+        "documentation/datasets/introduction",
+        "documentation/datasets/adding-data"
       ]
     },
     {
       "group": "Endpoints",
       "pages": [
-        "endpoints/introduction"
+        "documentation/endpoints/introduction"
       ]
     },
     {
       "group": "Logs",
       "pages": [
-        "logs/introduction"
+        "documentation/logs/introduction"
       ]
     },
     {
@@ -134,7 +130,6 @@
     {
       "group": "Tutorials",
       "pages": [
-        "tutorials/getting-started",
         "tutorials/first-pipeline",
         "tutorials/deploy-on-laminar",
         "tutorials/control-flow-with-LLM"

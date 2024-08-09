@@ -1,0 +1,22 @@
+---
+title: Introduction
+description: Evaluate the correctness of pipeline results
+---
+
+## Introduction
+
+You can evaluate the correctness of various flows using custom Laminar pipelines.
+The only requirements are a [dataset](/documentation/datasets/introduction)
+to run the evaluations against and a pipeline that produces a numeric output.
+
+There are two possible setups for evaluations:
+1. Running Laminar pipeline and evaluating its results with another pipeline [Learn more](/documentation/evaluations/evaluation-with-executor)
+1. Running an evaluator pipeline on a dataset. [Learn more](/documentation/evaluations/evaluation-data-only)
+
+## Status and results of the evaluation
+
+Possible statuses of evaluations:
+- Started
+- Finished
+
+Individual datapoint statuses "Success" / "Failed" are stored at datapoint level.

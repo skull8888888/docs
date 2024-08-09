@@ -1,0 +1,42 @@
+---
+tilte: 'Evaluation with data only'
+description: 'Evaluate results of previous runs stored in a dataset'
+---
+
+## Key concepts
+
+- Evaluator pipeline - the pipeline evaluating the results
+- Dataset format – two fixed JSON objects: `target` and `data`, each with any keys.
+
+## Flow overview
+
+<Frame caption="High-level overview of the evaluation flow">
+  <img
+    height="300"
+    src="/images/evaluations/evaluator-overview-data-only.png"
+    alt="High-level overview of the evaluation flow for data only"
+  />
+</Frame>
+
+<Tip> **What happens if `data` and `target` have overlapping keys?**
+Values in `target` have higher priority over and overwrite the values in `data`. </Tip>
+
+## Detailed flow
+
+For every datapoint in the dataset, evaluation does the following:
+
+1. Merge the `data` and `target` objects. If keys clash, values in `target` are selected.
+1. Set all the values in the resulting merged object as values to the input nodes of the evaluator pipeline.
+This is done by matching* the keys of the object to the input node names of the evaluator pipeline.
+1. Evaluator pipeline is run. All required [env variables](/documentation/pipeline/env-variables) must be set for this to succeed.
+1. Evaluator pipeline produces a single numeric output. This is stored in the results of the evaluation.
+
+## Requirements
+
+- Evaluator pipeline has at least one commit.
+- Object obtained by merging `target` and `data` at least contains keys matching* the names of the input nodes
+on the evaluator pipeline.
+- All required environment variables for the evaluator run are set in the [Env vars page](/documentation/pipeline/env-variables#full-set-up).
+- Evaluator pipeline must produce one output. This output must be parsable into a number (8-bit float).
+
+_\* Exact case-sensitive match_

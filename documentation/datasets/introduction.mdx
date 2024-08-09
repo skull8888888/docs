@@ -1,0 +1,104 @@
+---
+title: Introduction
+---
+
+## Concept
+
+Dataset is a collection of datapoints. It can be used for the following purposes:
+1. Datasource for semantic search.
+1. Provide inputs and expected outputs for [Evaluations](documentation/evaluations/introduction).
+
+In this page, you can learn how to use datasets for semantic search, how to use for evaluations, and how to add datapoints.
+
+## Format
+
+Every datapoint has two fixed JSON objects: `target` and `data`, each with any keys.
+- `data` – the actual datapoint data
+- `target` – data additionally sent to the evaluator pipeline. See [evaluations](/documentation/evaluations/introduction)
+
+For every key inside `data` and `target`, the value can either be a string or
+a list of ChatMessage objects (see [Handle Types](/documentation/pipeline/working-with-nodes#handle-types)).
+Non-string values cannot be indexed, but are stringified otherwise.
+
+### Examples
+
+This is an example of a valid datapoint.
+
+```json
+{
+    "data": {
+        "color": "red",
+        "size": "large",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Hello, can you help me choose a T-shirt?"
+            },
+            {
+                "role": "assistant",
+                "content": "I'm afraid, we don't sell T-shirts"
+            }
+        ]
+    },
+    "target": {
+        "expected_output": "Of course! What size and color are you looking for?"
+    }
+}
+```
+
+Let's consider a similar datapoint but `"color"` is now an array. Also `"expected_output"` is `null`.
+
+```json
+{
+    "data": {
+        "color": ["red", "magenta"],
+        "size": "large",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Hello, can you help me choose a T-shirt?"
+            },
+            {
+                "role": "assistant",
+                "content": "I'm afraid, we don't sell T-shirts"
+            }
+        ]
+    },
+    "target": {
+        "expected_output": null
+    }
+}
+```
+
+If used for evaluations, `"color"` value will be converted to `"[\"red\", \"magenta\"]"`, and `"expected_output"` will be converted to
+the string: `"null".
+
+## Indexing
+
+In order to be able to retrieve semantically relevant data points, we must index the dataset on a certain key.
+
+This is done by simply specifying the key in the dataset page.
+
+### Indexing considerations
+
+- Only values inside `"data"` of the dataset can be indexed.
+- Datapoints that do not contain the specified key are skipped.
+- If the value corresponding to this key is not a string or a list of chat messages, the datapoint is skipped.
+- Newly added datapoints are indexed automatically according to the above rules.
+- When updating the index column name, the entire dataset is re-indexed.
+
+For the example above, if the dataset is indexed on `"color"`, then only the first datapoint will be indexed, but not the second one,
+because it has an array of strings.
+
+## Use case: Semantic Search
+
+Datasets can be used as a [Semantic Search node](documentation/nodes/semantic-search)'s datasource.
+
+In this case, dataset MUST be indexed
+
+## Use case: Evaluations
+
+Datasets can be used for evaluations to specify inputs and expected outputs.
+
+You will need to make sure the dataset keys match the input and output node names of the pipelines.
+See more in the [Evaluations](documentation/evaluations/introduction) page.

@@ -1,0 +1,70 @@
+---
+name: 'Running local functions in Laminar'
+description: 'Call local functions from Laminar'
+---
+
+## Intro
+
+In this tutorial, we will build a pipeline that calls your own code.
+
+The demo application will:
+1. Take a user's question and a website URL as an input.
+1. Read and parse a website using Beautiful Soup.
+1. Call an LLM with the input quetion and the content of the website
+1. Return the result to the user
+
+## Prerequisites
+
+- Python - Install Python3.9+
+- poetry - Install poetry for managing your dependencies in a project
+
+## Building the flow
+
+First, create a pipeline starting from blank template.
+Place a function node and define the signature of your function.
+
+The function takes in the url and returns the contents of the website.
+
+![](/images/tutorials/parse-website.png)
+
+Then, place an LLM node and prompt it with the following prompt:
+
+```
+You are a question answering machine that responds user's questions about the contents of a website. You must ground your response in the content of the website and try not to add your own knowledge. If the provided content does not have the response, acknowledge it.
+
+User's question:
+{{question}}
+
+Website content:
+{{parsed_content}}
+```
+
+The {{mustache}} variables will create input handles on the left of the node.
+
+Finally place additional input node, and rename the input nodes to `question` and `url`. 
+
+Connect the `url` input to the `parse_website` node, `question` to the `question` handle on LLM,
+output of `parse_website` node to the `parsed_content` handle on the LLM, and the LLM node to the output node.
+
+The final flow will look like this
+
+![](/images/tutorials/function-call-flow.png)
+
+## Implementing `parse_website`
+
+.
+
+## Connecting remote debugger
+
+.
+
+## Testing the flow
+
+Let's test the end-to-end flow with a couple simple inputs
+
+Fill in the url input on the left with `https://docs.lmnr.ai/tutorials/getting-started`
+
+Ask a question about this page in the question input on the left, e.g. "What is a Laminar workspace".
+
+[Screenshot of the full run result]
+
