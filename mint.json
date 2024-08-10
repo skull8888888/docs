@@ -116,8 +116,7 @@
     {
       "group": "Logs",
       "pages": [
-        "logs/introduction",
-        "logs/automatic-dataset-writing"
+        "logs/introduction"
       ]
     },
     {
