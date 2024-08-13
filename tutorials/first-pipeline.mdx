@@ -82,7 +82,7 @@ poetry add lmnr requests bs4
 poetry shell
 ```
 
-We've created a project and installed `lmnr` library there. Also we installed `requests` and `bs4` libraries to make requests and parse them.
+We've created a project and installed `lmnr` library there. Also we installed `requests` and `bs4` libraries to make requests and parse the returned websites.
 Also, we activated our poetry environment to call CLI commands with `lmnr` later.
 
 Now create `pipeline.py` file in your IDE next to generated `pyproject.toml` and `poetry.lock` files.
@@ -91,6 +91,7 @@ Also, create `src` folder with `__init__.py` and `request.py` files.
 Your directory structure should look like this:
 ```
 website_qa/
+├── .env
 ├── pipeline.py
 ├── pyproject.toml
 ├── poetry.lock
@@ -137,12 +138,22 @@ def parse_url(url: str) -> str:
     return parse_website(url)
 ```
 
-At this point, we need to connect the local code to our pipeline. Let's go back to your terminal.
+## Connecting your browser to your local code
 
-You'll need to set your project id as an environment variable, so that we can locate the project in which you built your pipeline.
-[Read here](https://docs.lmnr.ai/api-reference/introduction#authentication) on how to get project API key.
+At this point, we need to connect the local code to our pipeline.
 
-`export LMNR_PROJECT_API_KEY={your project api key}`
+We will need two things:
+- A project API key. These are shared among all users within the project and are needed to authenticate the backend.
+- A dev session ID. This is stored in your browser and is sent to Laminar backend, so it knows where to call for local functions.
+
+Get the project api key and dev session id from the project settings page. You can locate the settings in the navbar in the UI.
+
+Create a `.env` file besides `pipeline.py`, `pyproject.toml`, and `poetry.lock`. Enter the following there:
+```
+#.env
+LMNR_PROJECT_API_KEY={your project api key}
+LMNR_DEV_SESSION_ID={your dev session id}
+```
 
 Then run `lmnr dev` to establish connection with your server.
 
@@ -150,8 +161,8 @@ You should see the following output:
 
 ```
 ========================================
-Debugger Session ID:
-{DEBUGGER_SESSION_ID}
+Dev Session ID:
+{DEV_SESSION_ID}
 ========================================
 
 Registered functions:
@@ -160,9 +171,7 @@ Registered functions:
 ========================================
 ```
 
-Copy `DEBUGGER_SESSION_ID` and paste it in the `Env` in the header of the pipeline builder.
-
-Note that if you restart `lmnr dev`, then you'll need to paste new `DEBUGGER_SESSION_ID`.
+You don't need to reconnect the debugger when you change your code. In addition, this command will try its best to persist the session.
 
 Now we're ready to test the flow.
 
@@ -170,9 +179,9 @@ Now we're ready to test the flow.
 
 Let's test the end-to-end flow with a couple simple inputs
 
-Fill in the url input on the left with `https://docs.lmnr.ai/tutorials/getting-started`
+Fill in the `url` input on the left with `https://docs.lmnr.ai/tutorials/getting-started`
 
-Ask a question about this page in the question input on the left, e.g. "What is a Laminar workspace".
+Ask a question about this page in the `question` input on the left, e.g. "What is a Laminar workspace".
 
 Then press Cmd + Enter (or Ctrl + Enter) or click run button.
 
