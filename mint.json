@@ -16,7 +16,7 @@
     }
   },
   "primaryTab": {
-    "name": "Tutorials"
+    "name": "Documentation"
   },
   "theme": "venus",
   "modeToggle": {
@@ -36,8 +36,8 @@
   },
   "tabs": [
     {
-      "name": "Documentation",
-      "url": "documentation"
+      "name": "Tutorials",
+      "url": "tutorials"
     },
     {
       "name": "API Reference",
@@ -130,8 +130,6 @@
     {
       "group": "Tutorials",
       "pages": [
-        "tutorials/first-pipeline",
-        "tutorials/deploy-on-laminar",
         "tutorials/control-flow-with-LLM"
       ]
     }
