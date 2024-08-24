@@ -1,0 +1,139 @@
+---
+name: 'Migrating off of endpoints to directly calling pipelines'
+---
+
+## Migration to the new endpoint
+
+This guide will help you update your existing endpoint calls to the new pipeline calls.
+
+### 1. Preparing code (Skip if you don't use function nodes)
+
+Now that pipeline's do not host custom code any more, you will have to integrate any of the code you have had 
+in Function nodes closer into your codebase. Essentially, it will be your responsibility to orchestrate the code
+and call the functions when you need to, not pipeline's.
+
+This step is highly specific to each application.
+
+### 2. Splitting pipelines (Skip if you don't use function nodes)
+
+On the high level, you will have to split your pipelines into separate pipelines at each Function node.
+
+Below is a simple example:
+
+![](/images/tutorials/with-function-node-before.png)
+
+This pipeline is a simple agent that either summarizes texts or writes reviews.
+It starts with a `decision_maker` LLM that decides which of the two options matches user intention.
+It is then followed by a function `process_decision`, that does some custom post processing on the decision,
+e.g. parsing JSON structured output of the model.
+Next, the switch directs the flow to one of the more custom prompted LLMs for the final task to be performed.
+
+This pipeline will have to be broken down at the function node. Everything before it will go to one pipeline,
+and everything after it goes to another.
+
+The results must look something like the following:
+
+![](/images/tutorials/without-function-node-after-1.png)
+
+![](/images/tutorials/without-function-node-after-2.png)
+
+The first pipeline calls the first LLM for a decision, and the post-processing happens in your code.
+
+The second one calls one of the LLMs, and can be amended to call some more LLMs in parallel, e.g. in a Mixture of Agents style approach.
+
+### 3. Calling pipelines directly
+
+The first step to call a pipeline directly is to set a target commit right in the pipeline page. This is done in a few simple steps.
+
+1. Commit a working version. This is optional in case you have done this previously and have existing commit versions.
+1. Go to the commited version.
+1. Click "Set as target"
+
+Next, update your code to call pipeline instead of endpoints.
+
+If you've been calling the endpoints from Python or TS SDKs, the change is relatively small.
+
+#### Python
+
+```sh
+poetry add lmnr@0.3.0b1
+poetry lock && poetry install # optionally
+```
+
+```python
+from lmnr import Laminar
+
+l = Laminar('<YOUR_PROJECT_API_KEY>')
+result = l.run(
+    pipeline = 'my_pipeline_name',  # instead of `endpoint = 'my_endpoint_name'`
+    inputs = {'input_node_name': 'some_value'},
+    # all environment variables
+    env = {'OPENAI_API_KEY': 'sk-some-key'},
+    # any metadata to attach to this run's trace
+    metadata = {'session_id': 'your_custom_session_id'}
+)
+
+```
+
+If you've used types `EndpointRunRequest`, `EndpointRunResponse`, and `EndpointRunError`, they will now be changed to
+`PipelineRunRequest`, `PipelineRunResponse`, and `PipelineRunError` respectively.
+
+#### Typescript
+
+```sh
+pnpm i @lmnr-ai/lmnr@0.3.0
+```
+
+```javascript
+import { Laminar, NodeInput } from '@lmnr-ai/lmnr';
+
+const l = new Laminar('<YOUR_PROJECT_API_KEY>');
+const result = await l.run({
+    pipeline: 'my_pipeline_name',  // instead of `endpoint: 'my_endpoint_name',`
+    inputs: {'input': [{'role': 'user', 'content': 'hello'}]},
+    env: {'OPENAI_API_KEY': 'sk-some-key'}, // optional
+    metadata: {'session_id': 'your_custom_session_id'}, // optional
+}); 
+```
+
+If you've used types `EndpointRunRequest` and `EndpointRunResponse` they will now be changed to
+`PipelineRunRequest` and `PipelineRunResponse` respectively.
+
+#### Direct API requests
+
+You will need to change:
+- URL from `https://api.lmnr.ai/v2/endpoint/run` to `https://api.lmnr.ai/v1/pipeline/run`
+- `"endpoint"` key in the body of the request to `"pipeline"`
+- the corresponding value to the name of your pipeline rather than the name of your endpoint.
+
+Before:
+
+```sh
+curl 'https://api.lmnr.ai/v2/endpoint/run' \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer $LMNR_PROJECT_API_KEY" \
+-d '{
+  "endpoint": "my_endpoint_name",
+  "inputs": {
+    "my_input_node_name": "input_value"
+  },
+  "env": {},
+  "metadata": {}
+}'
+```
+
+After
+
+```sh
+curl 'https://api.lmnr.ai/v1/pipeline/run' \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer $LMNR_PROJECT_API_KEY" \
+-d '{
+  "pipeline": "my_pipeline_name",
+  "inputs": {
+    "my_input_node_name": "input_value"
+  },
+  "env": {},
+  "metadata": {}
+}'
+```
