@@ -19,12 +19,12 @@
     }
   ],
   "paths": {
-    "/v2/endpoint/run": {
+    "/v1/pipeline/run": {
       "post": {
         "tags": [
-          "api::endpoints"
+          "api::pipelines"
         ],
-        "operationId": "run_endpoint_graph",
+        "operationId": "run_pipeline_graph",
         "requestBody": {
           "content": {
             "application/json": {
@@ -37,19 +37,22 @@
         },
         "responses": {
           "200": {
-            "description": "Endpoint run result",
+            "description": "Pipeline run result",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["runId"],
+                  "required": ["runId", "outputs"],
                   "properties": {
                     "runId": {
                       "type": "string",
                       "format": "uuid"
                     },
-                    "{Name of output node}": {
-                      "$ref": "#/components/schemas/GraphRunOutput"
+                    "outputs" : {
+                      "type": "object",
+                      "additionalProperties": {
+                        "$ref": "#/components/schemas/GraphRunOutput"
+                      }
                     }
                   }
                 }
@@ -155,14 +158,14 @@
       "GraphRequest": {
         "type": "object",
         "required": [
-          "endpoint",
+          "pipeline",
           "inputs",
           "env"
         ],
         "properties": {
-          "endpoint": {
+          "pipeline": {
             "type": "string",
-            "description": "Name of the endpoint to be called. Not to be confused with the pipeline version name."
+            "description": "Name of the pipeline to be called. Not to be confused with the pipeline version name. Target pipeline version for the pipeline is set in the UI."
           },
           "inputs": {
             "type": "object",

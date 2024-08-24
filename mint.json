@@ -122,9 +122,9 @@
       ]
     },
     {
-      "group": "Endpoints - API",
+      "group": "Pipelines - API",
       "pages": [
-        "api-reference/endpoint/endpoint_run"
+        "api-reference/pipelines/pipeline_run"
       ]
     },
     {
