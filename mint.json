@@ -97,6 +97,14 @@
       ]
     },
     {
+      "group": "Events",
+      "pages": [
+        "documentation/events/introduction",
+        "documentation/events/semantic-events",
+        "documentation/events/regular-events"
+      ]
+    },
+    {
       "group": "Datasets",
       "pages": [
         "documentation/datasets/introduction",
