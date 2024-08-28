@@ -42,8 +42,8 @@ Span object has the following properties:
 | output     | any      | No       | `"Hi, Rex, nice to meet you"` | Output of the span. Defaults to the wrapped function's return value when created with decorators in SDK, or to LLM nodes output in the pipeline
 | attributes | map \<string, any\> | No | `{'gen_ai.usage.input_tokens}` | Any otel-style attributes. For LLM spans, attributes comply to [otel standards](https://github.com/open-telemetry/semantic-conventions/blob/main/docs/gen-ai/gen-ai-spans.md) |
 | metadata   | map \<string, any\> | No | `{"k1": v1"}` | Any additional metadata you want to associate with your span |
-| events     | Event[] | No | - | Events associated with this span. See [events](/events/introduction) for more
-| evaluateEvents | EvaluateEvent[] | No | - | Events associated with this span that Laminar must assess. See [events](/events/introduction) for more
+| events     | Event[] | No | - | Events associated with this span. See [events](/documentation/events/introduction) for more
+| evaluateEvents | EvaluateEvent[] | No | - | Events associated with this span that Laminar must assess. See [events](/documentation/events/introduction) for more
 
 In instrumented code, unlike traces, spans wait in the context until the entire tracked function finishes, collecting any events or metadata.
 A span can be sent only once and as a complete object. If you use our SDK this is taken care of, but is something to be aware of,
@@ -51,7 +51,7 @@ if you want to send the spans manually.
 
 ## Event
 
-An occurence of an event in your application. Read more in [events](/events/introduction).
+An occurence of an event in your application. Read more in [events](/documentation/events/introduction).
 
 | Name       | Type     | Required | Example | Description |
 |------------|----------|----------|---------|-------------|
@@ -63,7 +63,7 @@ An occurence of an event in your application. Read more in [events](/events/intr
 
 ## EvaluateEvent
 
-An occurence of an event that Laminar must evaluate and store. Read more in [events](/events/introduction)
+An occurence of an event that Laminar must evaluate and store. Read more in [events](/documentation/events/introduction)
 
 | Name       | Type     | Required | Example | Description |
 |------------|----------|----------|---------|-------------|
