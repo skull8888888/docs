@@ -1,58 +1,49 @@
 ---
 title: Introduction
-description: Logging basics
+description: Tracing with Laminar
 ---
+
+## Glossary
+
+- Span – a unit of work representing a single operation in your application. A single "block" on the "waterfall" trace.
+- Trace – collection of spans involved in processing a request in your LLM application.
+Consists of one or more nested spans. A root span is the first span in a trace, and marks the beginning and end of the trace.
+Trace holds spans and some additional metadata, such as total token count, session id or release version of your app.
+- Event – a key-value pair of data with a timestamp represnting an event within your application. Must happen within a span.
+- Session – a collection of traces that were serving the same user or the same interaction.
 
 ## Concept
 
- For every run, the entire execution trace is logged, so the information you can see in logs includes, but is not limited to:
+Laminar offers comprehensive tracing and analytics of your entire application.
+For every run, the entire execution trace is logged, so the information you can see in logs includes, but is not limited to:
 
 - Total execution time
 - Total execution tokens and cost
-- Outputs of every node in the pipeline
-- Execution time of every node in the pipeline
-- Execution cost of every node in the pipeline
+- Span-level execution time and token counts
+- Inputs and outputs of each span
 
 <Info>
-    Logs page shows the endpoints' logs. The logs from the pipeline builder can be accessible in the pipeline builder by going to run outputs' Run History tab.
+    If your application calls a Laminar pipeline, each LLM node will be automatically traced.
 </Info>
 
-## Accessing logs
+## Accessing traces
 
-1. Go to the Logs page from the navbar on the left side of the page
-1. Select the endpoint that you want to examine
-1. Click on each row to see the detailed breakdown of each log on the sidebar.
+1. Go to the traces page from the navbar on the left side of the page
+1. Click on each row to see the detailed breakdown, and waterfalll of each log on the sidebar.
 1. Click "Filter" and filter by the required criteria.
 
-<Frame caption="Example Logs page">
-<img height="300" src="/images/logs/logs-page.png" alt="Screenshot of the logs page"/>
+<Frame caption="Example traces page">
+<img height="300" src="/images/traces/traces-page.png" alt="Screenshot of the traces page"/>
 </Frame>
 
 ### Viewing more details
 
 Simply click on any of the rows in the logs page and you will see the details in the side.
 
-<Frame caption="Example log details">
-<img height="300" src="/images/logs/logs-sidebar.png" alt="Screenshot of the logs sidebar"/>
-</Frame>
+Click on each span to see its details, including inputs, outputs and metadata, as well as associated events.
 
-Click on each node to see its details.
+## Getting started
 
-### Exporting to datasets
+Ready to dive in? Follow on to the [tutorial](/tutorials/python-decorator-instrumentation)!
 
-You can export logs to datasets by selecting the logs, which you want to export, and clicking "Export to dataset".
-
-If your dataset is already indexed, the new datapoints from the logs will be indexed by the same column.
-If your dataset is not indexed yet, then new datapoints won't be indexed.
-
-### Tags
-
-When you open each log (by clicking its row), the sidebar's focus will be on the whole log (not on each particular node from the log).
-
-You'll see Outputs, Inputs, and Feedback tabs.
-
-If you click Feedback tab, you'll be able to add tags to your logs.
-
-For example, you can add "correctness" tag and add value 0 or value 1, which will be equivalent to like/dislike user-feedback.
-
-Contact us at founders@lmnr.ai if you're interested in further reusing this data to improve the performance of your pipelines and agents.
+Alternatively, read on to the next section to get deeper knowledge of each concept.

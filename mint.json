@@ -104,9 +104,9 @@
       ]
     },
     {
-      "group": "Logs",
+      "group": "Tracing",
       "pages": [
-        "documentation/logs/introduction"
+        "documentation/tracing/introduction"
       ]
     },
     {
@@ -124,6 +124,7 @@
     {
       "group": "Tutorials",
       "pages": [
+        "tutorials/python-decorator-instrumentation",
         "tutorials/control-flow-with-LLM"
       ]
     }
