@@ -98,7 +98,7 @@ Read more about BAML syntax here: https://docs.boundaryml.com/docs/syntax/class
 
 ## Stream
 
-This switch is used to select which LLM nodes' content to stream during [endpoint call](/api-reference/endpoint/endpoint_run).
+This switch is used to select which LLM nodes' content to stream during [endpoint call](/api-reference/pipeline/pipeline_run).
 When call to endpoint is made, set "stream" to true in request params, so that LLM nodes which have "stream" enabled are streamed using server-sent events.
 
 Note that for now only selected models such as OpenAI, OpenAI Azure, Anthropic, and Bedrock Anthropic support streaming.

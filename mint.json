@@ -82,9 +82,7 @@
             "documentation/nodes/semantic-search",
             "documentation/nodes/semantic-switch",
             "documentation/nodes/switch",
-            "documentation/nodes/web-search",
             "documentation/nodes/json-extractor",
-            "documentation/nodes/function-call",
             "documentation/nodes/semantic-similarity"
           ]
         }
@@ -120,7 +118,7 @@
     {
       "group": "Pipelines - API",
       "pages": [
-        "api-reference/pipelines/pipeline_run"
+        "api-reference/pipeline/pipeline_run"
       ]
     },
     {
