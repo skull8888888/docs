@@ -153,11 +153,6 @@ You'll see the trace in the bottom. You can also see the statistics such as the 
 
 Play with other inputs and check if LLM node decides correclty.
 
-## Discover Laminar and extend the pipeline
-
-Check our [Function node](/documentation/nodes/function-call) and try to add it into the flow. You can write a code which further searches the web, when the LLM decides it needs to search the web.
-Then you can pass its output to LLM node to make it human-readable and pass to the output.
-
 ## Commit your pipeline
 
 Now let's create a commit. Commit is a valid and immutable snapshot of your pipeline. Commit can later be deployed or used for evaluations.
@@ -172,15 +167,13 @@ Switch to "v1" pipeline version by using the dropdown select at the top bar.
 
 Now that we're on the commit version, let's deploy the pipeline.
 
-Click "Deploy" on the bar at the top of the page.
+Click "Set as target" on the bar at the top of the page.
 
-Press "Select endpoint". Then select "Create new" and enter `LLM-or-WebSearch` as the endpoint name. Click "Deploy".
-
-The endpoint is now created and now your pipeline is instantly accessible through API.
+Now this "v1" commit is set as target of this pipeline and is available as an API endpoint.
 
 ## Integrate endpoint call to your application
 
-Go to Endpoints page and click "use API" to see the Python or Typescript code for using Laminar in your application.
+Click "use API" to see the Python or Typescript code for using Laminar in your application.
 
 We pasted it below too for simplicity.
 
@@ -192,7 +185,7 @@ import os
 
 l = Laminar(os.environ['LAMINAR_API_KEY'])
 result = l.run(
-    endpoint = 'LLM-or-WebSearch',
+    pipeline = 'LLM-or-WebSearch',
     inputs = {
         "chat_messages": [
             {
@@ -214,7 +207,7 @@ import { Laminar } from '@lmnr-ai/lmnr';
 
 const l = new Laminar(process.env.LAMINAR_API_KEY);
 const result = await l.run({
-  endpoint: 'LLM-or-WebSearch',
+  pipeline: 'LLM-or-WebSearch',
   inputs: {
     "chat_messages": [
       {
@@ -234,11 +227,11 @@ console.log(result);
 Call it with curl too.
 
 ```
-curl 'https://api.lmnr.ai/v2/endpoint/run' \
+curl 'https://api.lmnr.ai/v1/pipeline/run' \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $LAMINAR_API_KEY" \
 -d '{
-  "endpoint": "LLM-or-WebSearch",
+  "pipeline": "LLM-or-WebSearch",
   "inputs": {
     "chat_messages": [
       {
@@ -253,5 +246,3 @@ curl 'https://api.lmnr.ai/v2/endpoint/run' \
   "metadata": {}
 }'
 ```
-
-Now that you have built and called this flow from your application, check out other tutorials or read the docs to learn how to create datasets, run evaluations, monitor your application, use the data from logs to improve your application, and much more!
