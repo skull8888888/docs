@@ -1,0 +1,49 @@
+---
+title: Introduction
+description: Tracing with Laminar
+---
+
+## Glossary
+
+- Span – a unit of work representing a single operation in your application. A single "block" on the "waterfall" trace.
+- Trace – collection of spans involved in processing a request in your LLM application.
+Consists of one or more nested spans. A root span is the first span in a trace, and marks the beginning and end of the trace.
+Trace holds spans and some additional metadata, such as total token count, session id or release version of your app.
+- Event – a key-value pair of data with a timestamp represnting an event within your application. Must happen within a span.
+- Session – a collection of traces that were serving the same user or the same interaction.
+
+## Concept
+
+Laminar offers comprehensive tracing and analytics of your entire application.
+For every run, the entire execution trace is logged, so the information you can see in logs includes, but is not limited to:
+
+- Total execution time
+- Total execution tokens and cost
+- Span-level execution time and token counts
+- Inputs and outputs of each span
+
+<Info>
+    If your application calls a Laminar pipeline, each LLM node will be automatically traced.
+</Info>
+
+## Accessing traces
+
+1. Go to the traces page from the navbar on the left side of the page
+1. Click on each row to see the detailed breakdown, and waterfalll of each log on the sidebar.
+1. Click "Filter" and filter by the required criteria.
+
+<Frame caption="Example traces page">
+<img height="300" src="/images/traces/traces-page.png" alt="Screenshot of the traces page"/>
+</Frame>
+
+### Viewing more details
+
+Simply click on any of the rows in the logs page and you will see the details in the side.
+
+Click on each span to see its details, including inputs, outputs and metadata, as well as associated events.
+
+## Getting started
+
+Ready to dive in? Follow on to the [tutorial](/tutorials/python-decorator-instrumentation)!
+
+Alternatively, read on to the next section to get deeper knowledge of each concept.

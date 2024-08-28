@@ -23,7 +23,9 @@
     "default": "dark",
     "isHidden": true
   },
-  "openapi": ["/api-reference/openapi.json"],
+  "openapi": [
+    "/api-reference/openapi.json"
+  ],
   "topbarLinks": [
     {
       "name": "Contact support",
@@ -53,9 +55,9 @@
   ],
   "navigation": [
     {
-      "group": "Getting started",
+      "group": "Overview",
       "pages": [
-        "getting-started"
+        "overview"
       ]
     },
     {
@@ -64,55 +66,55 @@
         {
           "group": "Overview",
           "pages": [
-            "documentation/pipeline/introduction",
-            "documentation/pipeline/page-navigation",
-            "documentation/pipeline/env-variables",
-            "documentation/pipeline/run-save-deploy"
+            "pipeline/introduction",
+            "pipeline/page-navigation",
+            "pipeline/env-variables",
+            "pipeline/run-save-deploy"
           ]
         },
         {
           "group": "Nodes",
           "pages": [
-            "documentation/pipeline/working-with-nodes",
-            "documentation/nodes/input-output",
-            "documentation/nodes/string-template",
-            "documentation/nodes/LLM",
-            "documentation/nodes/semantic-search",
-            "documentation/nodes/semantic-switch",
-            "documentation/nodes/switch",
-            "documentation/nodes/web-search",
-            "documentation/nodes/json-extractor",
-            "documentation/nodes/function-call",
-            "documentation/nodes/semantic-similarity"
+            "pipeline/working-with-nodes",
+            "nodes/input-output",
+            "nodes/string-template",
+            "nodes/LLM",
+            "nodes/semantic-search",
+            "nodes/semantic-switch",
+            "nodes/switch",
+            "nodes/json-extractor",
+            "nodes/semantic-similarity"
           ]
         }
       ]
     },
-        {
+    {
       "group": "Evaluations",
       "pages": [
-        "documentation/evaluations/introduction",
-        "documentation/evaluations/evaluation-with-executor",
-        "documentation/evaluations/evaluation-data-only"
+        "evaluations/introduction",
+        "evaluations/evaluation-with-executor",
+        "evaluations/evaluation-data-only"
+      ]
+    },
+    {
+      "group": "Events",
+      "pages": [
+        "events/introduction",
+        "events/semantic-events",
+        "events/regular-events"
       ]
     },
     {
       "group": "Datasets",
       "pages": [
-        "documentation/datasets/introduction",
-        "documentation/datasets/adding-data"
+        "datasets/introduction",
+        "datasets/adding-data"
       ]
     },
     {
-      "group": "Endpoints",
+      "group": "Tracing",
       "pages": [
-        "documentation/endpoints/introduction"
-      ]
-    },
-    {
-      "group": "Logs",
-      "pages": [
-        "documentation/logs/introduction"
+        "tracing/introduction"
       ]
     },
     {
@@ -124,12 +126,13 @@
     {
       "group": "Pipelines - API",
       "pages": [
-        "api-reference/pipelines/pipeline_run"
+        "api-reference/pipeline/pipeline_run"
       ]
     },
     {
       "group": "Tutorials",
       "pages": [
+        "tutorials/python-decorator-instrumentation",
         "tutorials/control-flow-with-LLM"
       ]
     }

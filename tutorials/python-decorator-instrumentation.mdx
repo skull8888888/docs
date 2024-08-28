@@ -1,0 +1,60 @@
+---
+name: "Laminar's decorator instrumentation for Python"
+---
+
+This guide will show you how to instrument your Python app with `@observe` decorators.
+
+Note that this is different from manual instrumentation (with `trace.span()`-like calls), and that mixing the two can lead to unexpected results.
+
+## When to choose decorator instrumentation
+
+Decorator instrumentation is simpler and faster, but it comes with somewhat limited flexibility, and does not work well with
+`ThreadPoolExecutors`, due to their poor integration in Python with `ContextVar`.
+
+We recommend using `@observe` to get started, and if you ever need to have more flexibility, switch to manual instrumentation, because
+both onboarding and offboarding decorator instrumentation is quick.
+
+## Example code
+
+We provide you two simple primitives:
+
+- `observe` - a multi-purpose automatic decorator that starts traces and spans when functions are entered, and finishes them when functions return
+- `wrap_llm_call` - a function that takes in your LLM call and return a "decorated" version of it. This does all the same things as `observe`, plus
+a few utilities around LLM-specific things, such as counting tokens and recording model params.
+
+You can also import `lmnr_context` in order to interact and have more control over the context of the current span.
+
+```python
+import os
+from openai import OpenAI
+
+from lmnr import observe, wrap_llm_call, lmnr_context
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+
+@observe()  # annotate all functions you want to trace
+def poem_writer(topic="turbulence"):
+    prompt = f"write a poem about {topic}"
+
+    # wrap the actual final call to LLM with `wrap_llm_call`
+    response = wrap_llm_call(client.chat.completions.create)(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt},
+        ],
+    )
+
+    poem = response.choices[0].message.content
+
+    if topic in poem:
+        # send an event with a pre-defined name
+        lmnr_context.event("topic_alignment", "good")
+    
+    # to trigger an automatic check for a possible event do:
+    lmnr_context.evaluate_event("excessive_wordiness", poem)
+
+    return poem
+
+if __name__ == "__main__":
+    print(poem_writer(topic="laminar flow"))
+```

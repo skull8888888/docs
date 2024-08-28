@@ -1,0 +1,45 @@
+---
+title: Semantic events
+description: Quickstart on how to setup semantic events in Laminar
+---
+
+### Define a semantic event
+
+Go to the events page and click on the "Create event" button.
+
+<img src="/images/events/create-event.png" alt="Create event" width="400" />
+
+Important fields to fill are:
+- name
+- description
+- instructions
+- event type
+
+Name is a unique identifier of the event. It will be used to trigger the event.
+
+Description is a short description of the event.
+
+Instruction is provided to the LLM to generate the event outcome. Define the instructions in a way that the LLM will be able to generate the event outcome in a way that is easy to understand and track.
+
+### Trigger a semantic event
+
+To trigger a semantic event, call the `evaluate_event` function inside instrumented function.
+
+```python
+from laminar import observe, lmnr_context
+
+# rest of the code
+
+@observe()
+def function_name()
+    ...
+    lmnr_context.evaluate_event("Sentiment", "<data to pass to the LLM>")
+    ...
+
+```
+
+`evaluate_event` function will trigger the background process on Laminar side and the event outcome will be recorded in the event outcome tab.
+
+### Event metrics
+
+All recorded events are available in the event metrics tab. You can track the occurences of the event, the event outcome, and the event instructions.
