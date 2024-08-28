@@ -1,0 +1,18 @@
+---
+title: Regular events
+description: Quickstart on how to setup regular events in Laminar
+---
+
+### Regular event
+
+Regular events are essentially semantic events but with the value is not provided by the LLM, and instead is directly provided at the moment of the event trigger.
+
+Register an event in the Laminar UI and trigger it from the code using the `lmnr_context.event` function.
+
+```python
+from laminar import lmnr_context
+
+# rest of the code
+
+lmnr_context.event("Sentiment", "POSITIVE")
+```
