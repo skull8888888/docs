@@ -14,15 +14,15 @@ Zenguard is a guardrail node which passes input text to the [Zenguard detectors]
 - Keywords
 - Secrets
 
-It has [conditional output handles](/documentation/pipeline/working-with-nodes#conditional-output-handles); that is, it will redirect the flow to only one of its outputs.
+It has [conditional output handles](/pipeline/working-with-nodes#conditional-output-handles); that is, it will redirect the flow to only one of its outputs.
 
 <Tip>You can see the order in which detectors are applied in logs. However, if you need more control over the order, then you can just chain Zenguard nodes and enable only one type of detector on each of them.</Tip>
 
-The node directs the flow to the "block" branch if any of the detectors — which are applied one after another — detect undesired behavior; if there is nothing "detected," then it will direct the flow to "passthrough" [(Read more)](/documentation/nodes/zenguard/#passthrough-or-block).
+The node directs the flow to the "block" branch if any of the detectors — which are applied one after another — detect undesired behavior; if there is nothing "detected," then it will direct the flow to "passthrough" [(Read more)](/nodes/zenguard/#passthrough-or-block).
 
 Note that "block" branch, if the flow goes to this branch, always gets the unmodified input to the node regardless of how many detectors it has passed through.
 
-This node requires `ZENGUARD_API_KEY` to be set in the ["env variables"](/documentation/pipeline/env-variables) page.
+This node requires `ZENGUARD_API_KEY` to be set in the ["env variables"](/pipeline/env-variables) page.
 
 ## Passthrough or block
 

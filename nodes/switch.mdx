@@ -5,11 +5,11 @@ title: Switch
 ## Switch node
 
 Switch node sends the input value to one of the output routes, based on the condition input.
-It has [conditional output handles](/documentation/pipeline/working-with-nodes#conditional-output-handles); that is, it will redirect the flow to only one of its outputs.
+It has [conditional output handles](/pipeline/working-with-nodes#conditional-output-handles); that is, it will redirect the flow to only one of its outputs.
 
 Switch node requires an exact case-sensitive match between the **route name** and the condition value.
 
-Unlike [semantic switch](/documentation/nodes/semantic-switch), it is NOT the `input` that is matched against the route, it is the `condition`.
+Unlike [semantic switch](/nodes/semantic-switch), it is NOT the `input` that is matched against the route, it is the `condition`.
 If you still want the input to be both matched and also conditionally sent through to one of the outputs, you can connect both handles to the same node.
 
 ## No match; default route

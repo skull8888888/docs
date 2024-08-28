@@ -11,9 +11,9 @@ Scraping some pages may fail and it will be silently ignored. However, if scrapi
 If you plan to pass the output of this node to LLM, then we suggest to use models such as Claude, which have larger context window size.
 To illustrate, some long Wikipedia-article pages may result in gpt-3.5-turbo failing, since those article are longer than its content window which fits only 16,385 tokens.
 
-Another alternative is to only use relevant chunks of text from each scraped page by enabling [Only semantically similar chunks](/documentation/nodes/web-search#only-semantically-similar-chunks).
+Another alternative is to only use relevant chunks of text from each scraped page by enabling [Only semantically similar chunks](/nodes/web-search#only-semantically-similar-chunks).
 
-Currently, this node uses Google search for searching, so you'll need to provide your google search keys [(Read more)](/documentation/nodes/web-search#env-variables). No keys need to be provided for web scraping, since we manage it by ourselves.
+Currently, this node uses Google search for searching, so you'll need to provide your google search keys [(Read more)](/nodes/web-search#env-variables). No keys need to be provided for web scraping, since we manage it by ourselves.
 Feel free to contact us at *founders@lmnr.ai* if you need other search or scrape/crawl providers.
 
 ## Configuration
@@ -33,7 +33,7 @@ All retrieved contents, rendered according to template, are joined via a newline
 The keys which can be used in the template:
 - `title` - The title of the scraped web page.
 - `url` - The url of the scraped web page.
-- `content` - The whole content of the scraped page OR chunk's content, depending on if [Only semantically similar chunks](/documentation/nodes/web-search#only-semantically-similar-chunks) is enabled. Note that when we scrape the web page's content, we remove the html boilerplate and try to convert to markdown.
+- `content` - The whole content of the scraped page OR chunk's content, depending on if [Only semantically similar chunks](/nodes/web-search#only-semantically-similar-chunks) is enabled. Note that when we scrape the web page's content, we remove the html boilerplate and try to convert to markdown.
 
 ### Only semantically similar chunks
 
@@ -55,7 +55,7 @@ This field is only present if "Only semantically similar chunks" is enabled.
 
 ## Env variables
 
-You'll need to set the following variables at [env variables](/documentation/pipeline/env-variables) page:
+You'll need to set the following variables at [env variables](/pipeline/env-variables) page:
 - `GOOGLE_SEARCH_ENGINE_ID`
 - `GOOGLE_SEARCH_API_KEY`
 
