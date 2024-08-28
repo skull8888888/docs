@@ -23,7 +23,9 @@
     "default": "dark",
     "isHidden": true
   },
-  "openapi": ["/api-reference/openapi.json"],
+  "openapi": [
+    "/api-reference/openapi.json"
+  ],
   "topbarLinks": [
     {
       "name": "Contact support",
@@ -53,9 +55,9 @@
   ],
   "navigation": [
     {
-      "group": "Getting started",
+      "group": "Overview",
       "pages": [
-        "getting-started"
+        "overview"
       ]
     },
     {
@@ -88,7 +90,7 @@
         }
       ]
     },
-        {
+    {
       "group": "Evaluations",
       "pages": [
         "documentation/evaluations/introduction",
@@ -101,12 +103,6 @@
       "pages": [
         "documentation/datasets/introduction",
         "documentation/datasets/adding-data"
-      ]
-    },
-    {
-      "group": "Endpoints",
-      "pages": [
-        "documentation/endpoints/introduction"
       ]
     },
     {

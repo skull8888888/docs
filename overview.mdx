@@ -1,0 +1,24 @@
+---
+name: Overview
+---
+Laminar is a platform that helps developers build better LLM applications by providing a comprehensive set of tools for observability, analytics, and prompt chain management.
+
+### Observability
+With Laminar, you can instrument your entire LLM application and track full execution trace. Adding instrumentation is as simple as adding a python decorator to your function. Get started with [instrumentation](/documentation/observability/introduction).
+
+### Analytics
+Laminar provides infrastructure to run LLM analysis to extract semantic events, such as "user sentiment", and then turn them into trackable metrics. Combining these events with the trace data, allows you to link back to the specific user interaction that caused the event and gives you a better understanding of the user experience.
+Learn more about event extraction in [analytics](/documentation/analytics/introduction).
+
+### Prompt chain management
+You can build and host chains of prompts and LLMs and then call them as if they were single function. It is especially useful when you want to experiment with techniques such as Mixture of Agents and self-reflecting agents.
+Learn more about prompt chains in [prompt chains](/documentation/prompt-chains/introduction).
+
+### Evaluations and datasets
+
+Laminar has a powerful set of tools for evaluations where you can create any custom LLM pipeline to evaluate
+how your other pipelines work or evaluate the data in your datasets. In order to run evaluations, you need to
+create a [dataset](/documentation/datasets/introduction), add data to it, and create an evaluator pipeline. See more in
+[evaluation documentation](/documentation/evaluations/introduction).
+
+Evaluations run in parallel batches, and you can get the results faster than you ever had seen it before.
