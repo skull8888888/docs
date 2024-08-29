@@ -5,7 +5,9 @@ description: Quickstart on how to setup regular events in Laminar
 
 ### Regular event
 
-Regular events are essentially semantic events but with the value is not provided by the LLM, and instead is directly provided at the moment of the event trigger.
+Regular events are events for which the value is known at the code execution time. Similarly to semantic events, they belong to a span.
+
+Regular events' timestamp will be recorded at the time, when they are called in the code.
 
 Register an event in the Laminar UI and trigger it from the code using the `lmnr_context.event` function.
 

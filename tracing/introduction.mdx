@@ -9,7 +9,7 @@ description: Tracing with Laminar
 - Trace – collection of spans involved in processing a request in your LLM application.
 Consists of one or more nested spans. A root span is the first span in a trace, and marks the beginning and end of the trace.
 Trace holds spans and some additional metadata, such as total token count, session id or release version of your app.
-- Event – a key-value pair of data with a timestamp represnting an event within your application. Must happen within a span.
+- Event – a key-value pair of data with a timestamp representing an event within your application. Must happen within a span.
 - Session – a collection of traces that were serving the same user or the same interaction.
 
 ## Concept
@@ -23,7 +23,7 @@ For every run, the entire execution trace is logged, so the information you can 
 - Inputs and outputs of each span
 
 <Info>
-    If your application calls a Laminar pipeline, each LLM node will be automatically traced.
+    If your application calls a Laminar pipeline, each LLM node will be automatically traced. To connect them, pass parent_span_id in the request.
 </Info>
 
 ## Accessing traces

@@ -21,7 +21,7 @@
   "theme": "venus",
   "modeToggle": {
     "default": "dark",
-    "isHidden": true
+    "isHidden": false
   },
   "openapi": [
     "/api-reference/openapi.json"
@@ -61,6 +61,35 @@
       ]
     },
     {
+      "group": "Tracing",
+      "pages": [
+        "tracing/introduction"
+      ]
+    },
+    {
+      "group": "Events",
+      "pages": [
+        "events/introduction",
+        "events/semantic-events",
+        "events/regular-events"
+      ]
+    },
+    {
+      "group": "Datasets",
+      "pages": [
+        "datasets/introduction",
+        "datasets/adding-data"
+      ]
+    },
+    {
+      "group": "Evaluations",
+      "pages": [
+        "evaluations/introduction",
+        "evaluations/evaluation-with-executor",
+        "evaluations/evaluation-data-only"
+      ]
+    },
+    {
       "group": "Pipeline builder",
       "pages": [
         {
@@ -86,35 +115,6 @@
             "nodes/semantic-similarity"
           ]
         }
-      ]
-    },
-    {
-      "group": "Evaluations",
-      "pages": [
-        "evaluations/introduction",
-        "evaluations/evaluation-with-executor",
-        "evaluations/evaluation-data-only"
-      ]
-    },
-    {
-      "group": "Events",
-      "pages": [
-        "events/introduction",
-        "events/semantic-events",
-        "events/regular-events"
-      ]
-    },
-    {
-      "group": "Datasets",
-      "pages": [
-        "datasets/introduction",
-        "datasets/adding-data"
-      ]
-    },
-    {
-      "group": "Tracing",
-      "pages": [
-        "tracing/introduction"
       ]
     },
     {
