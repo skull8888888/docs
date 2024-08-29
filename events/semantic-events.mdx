@@ -17,9 +17,10 @@ Important fields to fill are:
 
 Name is a unique identifier of the event. It will be used to trigger the event.
 
-Description is a short description of the event.
+Description is a short description of the event. It is used only for user's convenience and is not used to assign value to the event.
 
-Instruction is provided to the LLM to generate the event outcome. Define the instructions in a way that the LLM will be able to generate the event outcome in a way that is easy to understand and track.
+Instruction is provided to the LLM to generate the event outcome.
+Define the instructions in a way that the LLM will be able to generate the event outcome in a way that is easy to understand and track.
 
 ### Trigger a semantic event
 
@@ -39,6 +40,8 @@ def function_name()
 ```
 
 `evaluate_event` function will trigger the background process on Laminar side and the event outcome will be recorded in the event outcome tab.
+
+The semantic event's timestamp will be set as the end time of the span to which it belongs.
 
 ### Event metrics
 

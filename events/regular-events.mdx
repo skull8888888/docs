@@ -9,12 +9,20 @@ Regular events are events for which the value is known at the code execution tim
 
 Regular events' timestamp will be recorded at the time, when they are called in the code.
 
-Register an event in the Laminar UI and trigger it from the code using the `lmnr_context.event` function.
+Register an event in the events page and trigger it from the code using the `lmnr_context.event` function.
 
 ```python
 from laminar import lmnr_context
 
 # rest of the code
 
-lmnr_context.event("Sentiment", "POSITIVE")
+@observe()
+def function_name()
+    ...
+    # "Sentiment" event type must be created in the events page
+    lmnr_context.event("Sentiment", "POSITIVE")
+    ...
+
 ```
+
+<Warning>If event name does not match any event name defined in the events page, the event won't be saved.</Warning>
