@@ -63,7 +63,9 @@
     {
       "group": "Tracing",
       "pages": [
-        "tracing/introduction"
+        "tracing/introduction",
+        "tracing/quickstart",
+        "tracing/objects"
       ]
     },
     {

@@ -1,0 +1,55 @@
+---
+name: "Tracing quickstart"
+---
+
+## Installation
+
+```sh
+pip install lmnr
+echo "LMNR_PROJECT_API_KEY=<YOUR_PROJECT_API_KEY>" >> .env
+```
+
+## Example code
+
+We provide you two simple primitives:
+
+- `observe` - a multi-purpose automatic decorator that starts traces and spans when functions are entered, and finishes them when functions return
+- `wrap_llm_call` - a function that takes in your LLM call and return a "decorated" version of it. This does all the same things as `observe`, plus
+a few utilities around LLM-specific things, such as counting tokens and recording model params.
+
+You can also import `lmnr_context` in order to interact and have more control over the context of the current span.
+
+```python
+import os
+from openai import OpenAI
+
+from lmnr import observe, wrap_llm_call, lmnr_context
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+
+@observe()  # annotate all functions you want to trace
+def poem_writer(topic="turbulence"):
+    prompt = f"write a poem about {topic}"
+
+    # wrap the actual final call to LLM with `wrap_llm_call`
+    response = wrap_llm_call(client.chat.completions.create)(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt},
+        ],
+    )
+
+    poem = response.choices[0].message.content
+
+    if topic in poem:
+        # send an event with a pre-defined name
+        lmnr_context.event("topic_alignment", "good")
+    
+    # to trigger an automatic check for a possible event do:
+    lmnr_context.evaluate_event("excessive_wordiness", poem)
+
+    return poem
+
+if __name__ == "__main__":
+    print(poem_writer(topic="laminar flow"))
+```
