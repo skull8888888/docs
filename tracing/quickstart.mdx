@@ -6,7 +6,15 @@ name: "Tracing quickstart"
 
 ```sh
 pip install lmnr
-echo "LMNR_PROJECT_API_KEY=<YOUR_PROJECT_API_KEY>" >> .env
+```
+
+## Get project API key
+
+Go to the settings page and get your project API key. Add it to the `.env` file. Laminar automatically picks it up.
+You can also set it as an environment variable `LMNR_PROJECT_API_KEY`.
+```sh
+import os
+os.environ["LMNR_PROJECT_API_KEY"] = "<YOUR_PROJECT_API_KEY>"
 ```
 
 ## Example code
