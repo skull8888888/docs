@@ -86,9 +86,7 @@
     {
       "group": "Evaluations",
       "pages": [
-        "evaluations/introduction",
-        "evaluations/evaluation-with-executor",
-        "evaluations/evaluation-data-only"
+        "evaluations/introduction"
       ]
     },
     {
@@ -135,7 +133,8 @@
       "group": "Tutorials",
       "pages": [
         "tutorials/python-decorator-instrumentation",
-        "tutorials/control-flow-with-LLM"
+        "tutorials/control-flow-with-LLM",
+        "tutorials/javascript-offline-eval"
       ]
     }
   ],

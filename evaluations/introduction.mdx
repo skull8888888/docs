@@ -1,22 +1,55 @@
 ---
 title: Introduction
-description: Evaluate the correctness of pipeline results
+description: Evaluate the results of your application
 ---
 
 ## Introduction
 
-You can evaluate the correctness of various flows using custom Laminar pipelines.
-The only requirements are a [dataset](/datasets/introduction)
-to run the evaluations against and a pipeline that produces a numeric output.
+Evaluation is the concept of running your logic against some dataset
+and evaluating its results with another function.
 
-There are two possible setups for evaluations:
-1. Running Laminar pipeline and evaluating its results with another pipeline [Learn more](/evaluations/evaluation-with-executor)
-1. Running an evaluator pipeline on a dataset. [Learn more](/evaluations/evaluation-data-only)
+## Key concepts
+
+- Executor – the function being evaluated, often your prompt or (to-be-)production logic
+- Evaluator - the function evaluating the results
+- Dataset format – two fixed JSON objects: `target` and `data` each with any keys.
+  - `target` – data sent to the evaluator. Usually, contains the expected or target outputs of certain parts of your executor.
+  - `data` – data sent to the executor.
+
+## Flow overview
+
+<Frame caption="High-level overview of the evaluation flow">
+  <img
+    height="300"
+    src="/images/evaluations/evaluation-with-executor.png"
+    alt="High-level overview of the evaluation flow with the executor pipeline"
+  />
+</Frame>
+
+For every datapoint in the dataset, evaluation does the following:
+
+1. Pass the `data` as an argument to the executor.
+1. Run the executor.
+1. Executor output is stored.
+1. Output of the executor, and `target` are passed to the _evaluator_ function.
+1. Evaluator pipeline produces a numeric output or a json object with several numeric outputs.
+This is stored in the results of the evaluation.
+
+### Requirements and definitions
+
+- Executor takes in a `Map<string, any>` (replaced with `data`) parameter and returns anything
+- Evaluator takes in a `Map<string, any` (replaced with `target`) parameter, and the output of the executor
+- Evaluator returns either a single numeric score or a JSON object, with string keys and numeric values for multiple scores
 
 ## Status and results of the evaluation
 
 Possible statuses of evaluations:
 - Started
 - Finished
+- Error
 
 Individual datapoint statuses "Success" / "Failed" are stored at datapoint level.
+
+## Next steps
+
+Read our evals [quickstart guide](/tutorials/javascript-offline-eval) to get started with evaluating your code.
