@@ -64,8 +64,7 @@
       "group": "Tracing",
       "pages": [
         "tracing/introduction",
-        "tracing/quickstart",
-        "tracing/objects"
+        "tracing/otel"
       ]
     },
     {
@@ -73,7 +72,8 @@
       "pages": [
         "events/introduction",
         "events/semantic-events",
-        "events/regular-events"
+        "events/regular-events",
+        "events/otel"
       ]
     },
     {
@@ -133,8 +133,7 @@
       "group": "Tutorials",
       "pages": [
         "tutorials/python-decorator-instrumentation",
-        "tutorials/control-flow-with-LLM",
-        "tutorials/javascript-offline-eval"
+        "tutorials/control-flow-with-LLM"
       ]
     }
   ],

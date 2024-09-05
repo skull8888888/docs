@@ -22,6 +22,106 @@ For every run, the entire execution trace is logged, so the information you can 
 - Span-level execution time and token counts
 - Inputs and outputs of each span
 
+## Getting started
+
+### 1. Get project API key
+
+Go to the settings page and get your project API key. Add it to the `.env` file. Laminar automatically picks it up.
+You can also set it as an environment variable `LMNR_PROJECT_API_KEY`.
+
+<Tabs>
+<Tab title="Python">
+
+### 2. Install the package
+
+Laminar Python is available on [PyPI](https://pypi.org/project/lmnr). You can install it using pip.
+
+```sh
+pip install lmnr
+```
+
+### 3. Annotate your code
+
+`Laminar.initialize()` will enable OpenLLMetry's automatic tracing of LLM calls, vector DBs calls, and more.
+If you want to instrument other tools and functions, you can use `@observe()` decorator.
+
+```python
+import os
+from openai import OpenAI
+
+from lmnr import observe, Laminar as L
+
+L.initialize(project_api_key=os.environ["LMNR_PROJECT_API_KEY"])
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+
+@observe()  # annotate all functions you want to trace
+def poem_writer(topic="turbulence"):
+    prompt = f"write a poem about {topic}"
+
+    # OpenAI call is automatically traced with OpenLLMetry
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt},
+        ],
+    )
+
+    poem = response.choices[0].message.content
+
+    return poem
+
+if __name__ == "__main__":
+    print(poem_writer(topic="laminar flow"))
+```
+
+</Tab>
+<Tab title="JavaScript/TypeScript">
+
+### 2. Install the package
+
+Laminar JavaScript is available on [npm](https://www.npmjs.com/package/@lmnr-ai/lmnr). You can install it using npm.
+
+```sh
+npm install @lmnr-ai/lmnr
+```
+
+### 3. Annotate your code
+
+`Laminar.initialize()` will enable OpenLLMetry's automatic tracing of LLM calls, vector DBs calls, and more.
+If you want to instrument other tools and functions, you can wrap them in an async `observe` function.
+
+```javascript
+const { Configuration, OpenAIApi } = require("openai");
+import { OpenAI } from 'openai';
+import { Laminar as L, observe } from '@lmnr-ai/lmnr';
+
+L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
+
+const o = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+async const poemWriter = (topic = "turbulence") => {
+  const prompt = `write a poem about ${topic}`;
+  const response = await client.chat.completions.create({
+    model: "gpt-4o",
+    messages: [
+      { role: "system", content: "You are a helpful assistant." },
+      { role: "user", content: prompt }
+    ]
+  });
+
+  const poem = response.choices[0].message.content;
+  return poem;
+}
+
+// Observe the function like this
+await observe({name: 'poemWriter', async () => { await poemWriter('laminar flow') }});
+```
+
+</Tab>
+</Tabs>
+
+
 ## Accessing traces
 
 1. Go to the traces page from the navbar on the left side of the page
@@ -45,3 +145,5 @@ Laminar is compatible with OpenTelemetry tracing through the means of [OpenLLMet
 This means that you can use OpenTelemetry SDKs to send traces to Laminar, and they will be displayed in the Laminar UI.
 
 To get started, in your application, set the OpenTelemetry exporter to the Laminar endpoint: `https://api.lmnr.ai/v1/traces`.
+
+Read on to the [Next section](/tracing/otel) to learn more about the OpenTelemetry objects and attributes that Laminar uses.
