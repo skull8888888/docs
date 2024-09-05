@@ -125,7 +125,6 @@
     {
       "group": "Tutorials",
       "pages": [
-        "tutorials/python-decorator-instrumentation",
         "tutorials/control-flow-with-LLM"
       ]
     }
