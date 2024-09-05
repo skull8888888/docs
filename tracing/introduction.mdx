@@ -1,6 +1,6 @@
 ---
 title: Introduction
-description: Tracing with Laminar
+description: OpenTelemetry-compatible tracing with Laminar
 ---
 
 ## Glossary
@@ -8,7 +8,7 @@ description: Tracing with Laminar
 - Span – a unit of work representing a single operation in your application. A single "block" on the "waterfall" trace.
 - Trace – collection of spans involved in processing a request in your LLM application.
 Consists of one or more nested spans. A root span is the first span in a trace, and marks the beginning and end of the trace.
-Trace holds spans and some additional metadata, such as total token count, session id or release version of your app.
+Trace holds spans and aggregated metadata from the spans.
 - Event – a key-value pair of data with a timestamp representing an event within your application. Must happen within a span.
 - Session – a collection of traces that were serving the same user or the same interaction.
 
@@ -38,8 +38,10 @@ Simply click on any of the rows in the logs page and you will see the details in
 
 Click on each span to see its details, including inputs, outputs and metadata, as well as associated events.
 
-## Getting started
+## OpenTelemetry compatibility
 
-Ready to dive in? Follow on to the [tutorial](/tutorials/python-decorator-instrumentation)!
+Laminar is compatible with OpenTelemetry tracing through the means of [OpenLLMetry](https://github.com/traceloop/openllmetry).
 
-Alternatively, read on to the next section to get deeper knowledge of each concept.
+This means that you can use OpenTelemetry SDKs to send traces to Laminar, and they will be displayed in the Laminar UI.
+
+To get started, in your application, set the OpenTelemetry exporter to the Laminar endpoint: `https://api.lmnr.ai/v1/traces`.

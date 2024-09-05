@@ -1,26 +1,137 @@
 ---
 name: Overview
 ---
-Laminar is an open-source observability and analytics platform for complex LLM apps. Laminar helps developers build better LLM applications by providing a comprehensive set of tools for observability, analytics, and prompt chain management.
+Laminar is an open-source observability and analytics platform for complex LLM apps. 
+Laminar helps developers build better LLM applications by providing a comprehensive
+set of tools for observability, analytics, and prompt chain management.
+
+Living at the intersection of tracing and event-based analytics, Laminar is
+like Datadog + PostHog for LLM applications.
 
 Check our [Github repo](https://github.com/lmnr-ai/lmnr) to learn more about how it works or if you are interested in self-hosting.
 
+## Getting started
+
+<Tabs>
+<Tab title="Python">
+
+Install the package from [PyPI](https://pypi.org/project/lmnr/).
+
+```sh
+pip install lmnr
+```
+
+Annotate your code with `@observe()` decorator to start tracing.
+
+```python
+from lmnr import observe, Laminar as L
+from openai import OpenAI
+# ...
+
+# Initialize Laminar
+L.initialize(project_api_key="<YOUR_PROJECT_API_KEY>")
+
+# ...
+
+# Annotate all functions you want to trace
+@observe()
+def function_to_trace
+    # LLM calls are automatically traced with OpenLLMetry
+    openai_client.chat.completions.create(
+        # ...
+    )
+    # events can be sent with L.event. Event values are OpenTelemetry compliant,
+    # so they have to be strings, numbers, booleans, or arrays of those.
+    L.event("event_name", "event_value")
+
+```
+
+</Tab>
+
+<Tab title="JavaScript/TypeScript">
+
+Install the package from [npm](https://www.npmjs.com/package/@lmnr-ai/lmnr).
+
+```sh
+npm install @lmnr-ai/lmnr
+```
+
+Wrap your function with `observe` to start tracing.
+
+```javascript
+import { observe, Laminar as L } from '@lmnr-ai/lmnr';
+import { OpenAI } from 'openai';
+// ...
+
+// Initialize Laminar
+L.initialize({ projectApiKey: "<YOUR_PROJECT_API_KEY>" });
+
+// ...
+
+// Wrap all functions you want to trace
+await observe('myFunction', async () => {
+    /// ...
+
+    // LLM calls are automatically traced with OpenLLMetry
+    openai.chat.completions.create(
+        // ...
+    )
+    // events can be sent with L.event. Event values are OpenTelemetry compliant,
+    // so they have to be strings, numbers, booleans, or arrays of those.
+    L.event("event_name", "event_value")
+});
+
+```
+
+</Tab>
+
+</Tabs>
+
+### Project API key
+
+To get the project API key, go to the Laminar dashboard, click the project settings,
+and generate a project API key.
+Unless specified at initialization, Laminar will look for the key in the `LMNR_PROJECT_API_KEY` environment variable.
+
+## Features
+
 ### Observability
-With Laminar, you can instrument your entire LLM application and track full execution trace. Adding instrumentation is as simple as adding a python decorator to your function. Get started with [instrumentation](/tracing/introduction).
+
+With Laminar, you can instrument your entire LLM application and track the full execution trace.
+Adding instrumentation is as simple as adding a Python decorator to your function (wrapping into another function in the case of Javascript/Typescript).
+
+It is fully compatible with OpenTelemetry through the means of [OpenLLMetry](https://github.com/traceloop/openllmetry).
+
+Get started with [Tracing](/tracing/introduction).
+
+![Screenshot of observability dashboard](/images/overview.png)
 
 ### Analytics
-Laminar provides infrastructure to run LLM analysis to extract semantic events, such as "user sentiment", and then turn them into trackable metrics. Combining these events with the trace data, allows you to link back to the specific user interaction that caused the event and gives you a better understanding of the user experience.
-Read about [event extraction](/events/introduction) to learn more.
+
+Laminar provides infrastructure to run LLM analysis to extract semantic events,
+such as "user sentiment" or "did my LLM agent upsell?", and then turn them
+into trackable metrics. Combining these events with the trace data, allows
+you to link back to the specific user interaction that caused the event
+and gives you a better understanding of the user experience.
+
+In addition, you can track raw metrics, by sending events with values directly
+to Laminar.
+
+Learn more about [Events](/events/introduction) extraction.
 
 ### Prompt chain management
-You can build and host chains of prompts and LLMs and then call them as if they were single function. It is especially useful when you want to experiment with techniques such as Mixture of Agents and self-reflecting agents.
-Learn more about prompt chains in [prompt chains](/pipeline/introduction).
 
-### Evaluations and datasets
+You can build and host chains of prompts and LLMs and then call them as ifthey were single function.
+It is especially useful when you want to experiment with techniques such as Mixture of Agents
+and self-reflecting agents without or before hosting prompts and model configs in your code.
 
-Laminar has a powerful set of tools for evaluations where you can create any custom LLM pipeline to evaluate
-how your other pipelines work or evaluate the data in your datasets. In order to run evaluations, you need to
-create a [dataset](/datasets/introduction), add data to it, and create an evaluator pipeline. See more in
-[evaluation documentation](/evaluations/introduction).
+Learn more about [Pipeline builder](/pipeline/introduction) for prompt chains.
 
-Evaluations run in parallel batches, and you can get the results faster than you ever had seen it before.
+### Evaluations
+
+In addition to semantic events, Laminar allows you to run evaluations and analyze their
+results in the dashboard.
+
+You can use Laminar's JavaScript and Python SDKs to set up and ran your evaluations.
+
+Learn more about [evaluations](/evaluations/introduction).
