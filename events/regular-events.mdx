@@ -3,26 +3,58 @@ title: Regular events
 description: Quickstart on how to setup regular events in Laminar
 ---
 
-### Regular event
+## Regular event
 
 Regular events are events for which the value is known at the code execution time. Similarly to semantic events, they belong to a span.
 
-Regular events' timestamp will be recorded at the time, when they are called in the code.
+Regular events' timestamp will be recorded at the time, when they are called in the code, unless another timestamp is provided.
 
-Register an event in the events page and trigger it from the code using the `lmnr_context.event` function.
+Because of the OpenTelemetry compatibility, the `value` of the event can be Boolean, String, or Number, or a sequence of each.
 
+### Prerequisites
+
+Make sure to install the package and get your API key from the Laminar dashboard.
+Read more in [Installation](/overview#installation).
+
+### Sending regular events
+
+<Warning>If an event is sent outside of span context, we will have nothing to associate it with, so it
+won't be recorded. Make sure to wrap your function with `observe`.</Warning>
+
+<Tabs>
+<Tab title = "Python">
+    
 ```python
-from laminar import lmnr_context
+from lmnr import Laminar as L, observe
 
-# rest of the code
+L.initialize()
 
 @observe()
-def function_name()
-    ...
-    # "Sentiment" event type must be created in the events page
-    lmnr_context.event("Sentiment", "POSITIVE")
-    ...
-
+def my_function():
+    # ...
+    L.event("user_reaction", "left_conversation")
+    # ...
 ```
 
-<Warning>If event name does not match any event name defined in the events page, the event won't be saved.</Warning>
+</Tab>
+<Tab title = "JavaScript/TypeScript">
+    
+```javascript
+import { Laminar as L, observe } from '@lmnr-ai/lmnr';
+
+L.initialize()
+
+await observe('myFunction', async () => {
+    // ...
+    L.event("user_reaction", "left_conversation")
+    // ..
+});
+```
+
+</Tab>
+</Tabs>
+
+### Event metrics
+
+All recorded events are available in the event metrics tab.
+You can track the occurences of the event and the event outcome

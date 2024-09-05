@@ -3,46 +3,91 @@ title: Semantic events
 description: Quickstart on how to setup semantic events in Laminar
 ---
 
-### Define a semantic event
+## Define a semantic event
 
-Go to the events page and click on the "Create event" button.
+Semantic events are events for which the value is assigned by LLM. They can be either Boolean, String, or Number.
 
-<img src="/images/events/create-event.png" alt="Create event" width="400" />
+First, you need to create a pipeline in Laminar that will assess the event.
+Proceed to [Pipeline Builder](/pipeline) documentation to learn more.
+The [LLM tutorial](/tutorials/control-flow-with-LLM) may also come in handy.
 
-Important fields to fill are:
-- name
-- description
-- instructions
-- event type
+Create a pipeline, use one or more LLM nodes and write prompts in them to asses an event.
 
-Name is a unique identifier of the event. It will be used to trigger the event.
+Example prompt for user sentiment detection.
 
-Description is a short description of the event. It is used only for user's convenience and is not used to assign value to the event.
+> "Your goal is to detect the sentiment of the user. The user can be either happy, neutral, or sad."
 
-Instruction is provided to the LLM to generate the event outcome.
-Define the instructions in a way that the LLM will be able to generate the event outcome in a way that is easy to understand and track.
+with BAML structured output:
+
+```
+enum Sentiment {
+    Happy
+    Neutral
+    Sad
+}
+
+class SentimentLabel {
+    sentiment Sentiment
+    reasoning string
+}
+```
 
 ### Trigger a semantic event
 
 To trigger a semantic event, call the `evaluate_event` function inside instrumented function.
 
-```python
-from laminar import observe, lmnr_context
+<Warning>If an event is sent outside of span context, we will have nothing to associate it with, so it
+won't be recorded. Make sure to wrap your function with `observe`.</Warning>
 
-# rest of the code
+<Tabs>
+<Tab title = "Python">
+    
+```python
+from lmnr import Laminar as L, observe
+
+L.initialize()
 
 @observe()
-def function_name()
-    ...
-    lmnr_context.evaluate_event("Sentiment", "<data to pass to the LLM>")
-    ...
-
+def my_function():
+    # ...
+    L.evaluate_event(
+        "my_event_name",
+        "my_pipeline_name",
+        {"input_node_name": "Is your AI agent working at all???!!!"},
+        {"OPENAI_API_KEY": "my_openai_api_key"},
+    )
+    # ...
 ```
+
+</Tab>
+<Tab title = "JavaScript/TypeScript">
+    
+```javascript
+import { Laminar as L, observe } from '@lmnr-ai/lmnr';
+
+L.initialize()
+
+await observe('myFunction', async () => {
+    // ...
+    L.evaluateEvent(
+        "my_event_name",
+        "my_pipeline_name",
+        {"input_node_name": "Is your AI agent working at all???!!!"},
+        {"OPENAI_API_KEY": "my_openai_api_key"},
+    )
+    // ..
+});
+```
+
+</Tab>
+</Tabs>
 
 `evaluate_event` function will trigger the background process on Laminar side and the event outcome will be recorded in the event outcome tab.
 
-The semantic event's timestamp will be set as the end time of the span to which it belongs.
+The semantic event's timestamp will be set as the time at which it was triggered, unless otherwise specified.
 
 ### Event metrics
 
-All recorded events are available in the event metrics tab. You can track the occurences of the event, the event outcome, and the event instructions.
+All recorded events are available in the event metrics tab. You can track the occurences of the event and the event outcome.
+
+In addition, the trace of the evaluator pipeline is available in the traces page.

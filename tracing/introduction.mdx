@@ -24,25 +24,17 @@ For every run, the entire execution trace is logged, so the information you can 
 
 ## Getting started
 
-### 1. Get project API key
+### Prerequisites
 
-Go to the settings page and get your project API key. Add it to the `.env` file. Laminar automatically picks it up.
-You can also set it as an environment variable `LMNR_PROJECT_API_KEY`.
+Make sure to install the package and get your API key from the Laminar dashboard.
+Read more in [Installation](/overview#installation).
+
+### Annotate your code
 
 <Tabs>
 <Tab title="Python">
+By default, `Laminar.initialize()` will enable OpenLLMetry's automatic tracing of LLM calls, vector DBs calls, and more.
 
-### 2. Install the package
-
-Laminar Python is available on [PyPI](https://pypi.org/project/lmnr). You can install it using pip.
-
-```sh
-pip install lmnr
-```
-
-### 3. Annotate your code
-
-`Laminar.initialize()` will enable OpenLLMetry's automatic tracing of LLM calls, vector DBs calls, and more.
 If you want to instrument other tools and functions, you can use `@observe()` decorator.
 
 ```python
@@ -78,17 +70,8 @@ if __name__ == "__main__":
 </Tab>
 <Tab title="JavaScript/TypeScript">
 
-### 2. Install the package
+By default, `Laminar.initialize()` will enable OpenLLMetry's automatic tracing of LLM calls, vector DBs calls, and more.
 
-Laminar JavaScript is available on [npm](https://www.npmjs.com/package/@lmnr-ai/lmnr). You can install it using npm.
-
-```sh
-npm install @lmnr-ai/lmnr
-```
-
-### 3. Annotate your code
-
-`Laminar.initialize()` will enable OpenLLMetry's automatic tracing of LLM calls, vector DBs calls, and more.
 If you want to instrument other tools and functions, you can wrap them in an async `observe` function.
 
 ```javascript
@@ -115,7 +98,7 @@ async const poemWriter = (topic = "turbulence") => {
 }
 
 // Observe the function like this
-await observe({name: 'poemWriter', async () => { await poemWriter('laminar flow') }});
+await observe('poemWriter', async () => { await poemWriter('laminar flow') });
 ```
 
 </Tab>

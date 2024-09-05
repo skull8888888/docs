@@ -12,6 +12,8 @@ Check our [Github repo](https://github.com/lmnr-ai/lmnr) to learn more about how
 
 ## Getting started
 
+### Installation
+
 <Tabs>
 <Tab title="Python">
 
@@ -20,6 +22,63 @@ Install the package from [PyPI](https://pypi.org/project/lmnr/).
 ```sh
 pip install lmnr
 ```
+
+<Expandable title="other installation options: poetry, uv, rye">
+
+poetry
+
+```sh
+poetry add lmnr
+```
+
+uv
+
+```sh
+uv add lmnr
+```
+
+rye 
+
+```
+rye add lmnr
+```
+</Expandable>
+
+</Tab>
+<Tab title="Javascript/Typescript">
+
+Install the package from [npm](https://www.npmjs.com/package/@lmnr-ai/lmnr).
+
+```sh
+npm add @lmnr-ai/lmnr
+```
+
+<Expandable title="other installation options: yarn, pnpm">
+yarn
+
+```sh
+yarn add @lmnr-ai/lmnr
+```
+
+pnpm
+
+```sh
+pnpm add @lmnr-ai/lmnr
+```
+</Expandable>
+</Tab>
+</Tabs>
+
+### Project API key
+
+To get the project API key, go to the Laminar dashboard, click the project settings,
+and generate a project API key.
+Unless specified at initialization, Laminar will look for the key in the `LMNR_PROJECT_API_KEY` environment variable
+
+### Code change
+
+<Tabs>
+<Tab title="Python">
 
 Annotate your code with `@observe()` decorator to start tracing.
 
@@ -49,12 +108,6 @@ def function_to_trace
 </Tab>
 
 <Tab title="JavaScript/TypeScript">
-
-Install the package from [npm](https://www.npmjs.com/package/@lmnr-ai/lmnr).
-
-```sh
-npm install @lmnr-ai/lmnr
-```
 
 Wrap your function with `observe` to start tracing.
 
@@ -87,11 +140,6 @@ await observe('myFunction', async () => {
 
 </Tabs>
 
-### Project API key
-
-To get the project API key, go to the Laminar dashboard, click the project settings,
-and generate a project API key.
-Unless specified at initialization, Laminar will look for the key in the `LMNR_PROJECT_API_KEY` environment variable.
 
 ## Features
 
