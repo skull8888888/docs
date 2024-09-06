@@ -9,14 +9,35 @@ Regular events are events for which the value is known at the code execution tim
 
 Regular events' timestamp will be recorded at the time, when they are called in the code, unless another timestamp is provided.
 
-Because of the OpenTelemetry compatibility, the `value` of the event can be Boolean, String, or Number, or a sequence of each.
+## Event types
+
+Because of the OpenTelemetry compatibility, the `value` of the event can be Boolean, String, or Number.
+
+You don't have to explicitly specify the event type.
+The first time you send an event, Laminar infers the type and associates it with the event.
+Once the type is set, new values of different types will be ignored.
+
+In Laminar's SDKs, `value` is optional. If value is not provided, it will be set to `true`.
+This is useful for events that are just a signal.
+
+### Example 
+
+```python
+# value will be set to true. fetch_next_page is now a boolean event
+L.event("fetch_next_page")
+
+# this event won't be recorded, because the event type is boolean, not string
+L.event("fetch_next_page", "yes")
+```
+
+## Sending regular events
 
 ### Prerequisites
 
 Make sure to install the package and get your API key from the Laminar dashboard.
 Read more in [Installation](/overview#installation).
 
-### Sending regular events
+### Code example
 
 <Warning>If an event is sent outside of span context, we will have nothing to associate it with, so it
 won't be recorded. Make sure to wrap your function with `observe`.</Warning>

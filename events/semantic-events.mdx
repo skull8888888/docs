@@ -11,13 +11,13 @@ First, you need to create a pipeline in Laminar that will assess the event.
 Proceed to [Pipeline Builder](/pipeline) documentation to learn more.
 The [LLM tutorial](/tutorials/control-flow-with-LLM) may also come in handy.
 
-Create a pipeline, use one or more LLM nodes and write prompts in them to asses an event.
+Create a pipeline using one or more LLM nodes. Write prompts in them to assess an event.
 
-Example prompt for user sentiment detection.
+#### Example prompt for user sentiment detection.
 
-> "Your goal is to detect the sentiment of the user. The user can be either happy, neutral, or sad."
+> "Your goal is to detect the sentiment of the user. The user can be happy, neutral, or sad."
 
-with BAML structured output:
+#### Example BAML structured output:
 
 ```
 enum Sentiment {

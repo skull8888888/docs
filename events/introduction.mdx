@@ -19,7 +19,9 @@ They are triggered from the code manually and the `value` is assigned by the use
 These events are useful when you want to track specific points in your code execution or associate metric values
 with specific points in your code.
 
-Because of the OpenTelemetry compatibility, the `value` of the event can be Boolean, String, or Number, or a sequence of each.
+Because of the OpenTelemetry compatibility, the `value` of the event can be Boolean, String, or Number.
+In Laminar's SDKs, `value` is optional. If value is not provided, it will be set to `true`.
+This is useful for events that are just a signal.
 
 Example of a regular event:
 
