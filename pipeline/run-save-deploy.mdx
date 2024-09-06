@@ -41,11 +41,3 @@ you can deploy expose your pipeline as an API endpoint.
 After the deployment is successful, you can invoke the pipeline execition from your application. Learn more by clicking "use API" in the page
 or refer to [API reference](/api-reference/pipeline/pipeline_run)
 
-## Proxy and version control
-
-Laminar pipeline endpoint can act as a proxy to your LLM calls and their prompts.
-The idea here is that you don't have to store your prompts in code and anybody from the team can access them on Laminar.
-Also people can collaborate on prompts in real-time.
-
-Since our pipeline endpoint acts as a proxy, if something is wrong in the prompt, for example, you can simply edit the prompt, commit another version, set it as target,
-and now Laminar will redirect your calls to this new pipeline target version. You won't have to restart your whole server because of that.

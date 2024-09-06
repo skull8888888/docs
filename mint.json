@@ -89,9 +89,9 @@
           "group": "Overview",
           "pages": [
             "pipeline/introduction",
-            "pipeline/page-navigation",
+            "pipeline/run-save-deploy",
             "pipeline/env-variables",
-            "pipeline/run-save-deploy"
+            "pipeline/page-navigation"
           ]
         },
         {
