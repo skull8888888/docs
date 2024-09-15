@@ -4,7 +4,8 @@ title: Introduction
 
 ## General
 
-Events are building blocks of the analytics in Laminar. Events are powerful way to mine metrics from your trace data. There are two types of events:
+Events are the building blocks of the analytics in Laminar.
+Events are a powerful way to mine metrics from your trace data. There are two types of events:
 
 - Regular events
 - Semantic events
@@ -14,14 +15,14 @@ Laminar Events are OpenTelemetry-compatible.
 ### Regular events
 
 Regular events are programmatically triggered events.
-They are triggered from the code manually and the `value` is assigned by the user.
+You can trigger them from your code manually and assign a `value` to it.
 
 These events are useful when you want to track specific points in your code execution or associate metric values
 with specific points in your code.
 
 Because of the OpenTelemetry compatibility, the `value` of the event can be Boolean, String, or Number.
 In Laminar's SDKs, `value` is optional. If value is not provided, it will be set to `true`.
-This is useful for events that are just a signal.
+This is useful for associating simple tags with spans.
 
 Example of a regular event:
 
@@ -55,9 +56,10 @@ L.event("user_reaction", "left_conversation")
 The values for semantic events are assigned by LLM. They can be either Boolean, String, or Number [Learn more](/events/semantic-events)
 
 First, you need to create a pipeline in Laminar that will assess the event.
-Typically, this will be an LLM or chain of LLMs, that assesses whether the event has happened or assigns a value to it.
+Typically, this will be an LLM or chain of LLMs that assesses whether the event has happened or assigns a value to it.
 
-To be more specific, they will be processed on the Laminar backend, so there is no overhead for your code.
-An example of a semantic event would be a user sentiment detection.
+When you send an evaluate event from the code, the pipeline will be excuted on the Laminar backend,
+so there is no overhead for your code.
+An example of a semantic event would be user sentiment detection.
 
 [Learn more](/events/semantic-events)

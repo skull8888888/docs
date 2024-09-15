@@ -32,16 +32,16 @@ Commit versions can be deployed as targets and called via an API.
 ## Proxy and version control
 
 Laminar pipeline can act as a proxy to your LLM calls and their prompts.
-The idea here is that you don't have to store your prompts in code and anybody from the team can access them on Laminar.
+The idea here is that you don't have to store your prompts in code and anybody from your team can access them on Laminar.
 Also people can collaborate on prompts in real-time.
 
 For example, if you want to switch models or if something is wrong in the prompt, you can simply 
 
 1. edit the prompt,
 1. commit the new version, and set it as target,
-1. and now Laminar will redirect your calls to this new pipeline target version.
+1. Voilà! Laminar will redirect your calls to this new pipeline target version.
 
-You don't have to go through another deployment of your entire codebase for each small change.
+You don't have to go through another deployment of your entire codebase for every small change.
 
 ## Getting started
 

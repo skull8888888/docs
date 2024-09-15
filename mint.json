@@ -64,6 +64,7 @@
       "group": "Tracing",
       "pages": [
         "tracing/introduction",
+        "tracing/sessions",
         "tracing/otel"
       ]
     },
@@ -71,8 +72,8 @@
       "group": "Events",
       "pages": [
         "events/introduction",
-        "events/semantic-events",
         "events/regular-events",
+        "events/semantic-events",
         "events/otel"
       ]
     },

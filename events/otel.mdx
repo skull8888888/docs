@@ -35,5 +35,5 @@ you can simply pass the `Date` / `datetime` object and the client will convert i
 | Attribute | Description | Type | Example |
 | --- | --- | --- | --- |
 | `lmnr.event.evaluator` | Name of the evaluator pipeline | string | `my_pipeline` |
-| `lmnr.event.data` | Input to the evaluator pipeline | Key-value pair | `{"input_node_name": "Is your AI agent working at all???!!!"}` |
-| `lmnr.event.env` | Enviroment for the evaluator pipeline. This gets sent with every event, and is not recorded in Laminar, so that none of your API keys are stored. | Key-value pair | `{"OPENAI_API_KEY": "my_openai_api_key"}` |
+| `lmnr.event.data` | Input to the evaluator pipeline | Key-value pair, stringified json | `{"input_node_name": "Is your AI agent working at all???!!!"}` |
+| `lmnr.event.env` | Enviroment for the evaluator pipeline. This gets sent with every event, and is not recorded in Laminar, so that none of your API keys are stored. | Key-value pair, stringified JSON | `{"OPENAI_API_KEY": "my_openai_api_key"}` |

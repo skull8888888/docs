@@ -18,7 +18,7 @@ The first time you send an event, Laminar infers the type and associates it with
 Once the type is set, new values of different types will be ignored.
 
 In Laminar's SDKs, `value` is optional. If value is not provided, it will be set to `true`.
-This is useful for events that are just a signal.
+This is useful for events that are just a tag.
 
 ### Example 
 
@@ -26,7 +26,8 @@ This is useful for events that are just a signal.
 # value will be set to true. fetch_next_page is now a boolean event
 L.event("fetch_next_page")
 
-# this event won't be recorded, because the event type is boolean, not string
+# this event won't be recorded, because the event type is
+# inferred as boolean, not string
 L.event("fetch_next_page", "yes")
 ```
 
@@ -40,7 +41,7 @@ Read more in [Installation](/overview#installation).
 ### Code example
 
 <Warning>If an event is sent outside of span context, we will have nothing to associate it with, so it
-won't be recorded. Make sure to wrap your function with `observe`.</Warning>
+won't be recorded. Make sure to wrap your function with `observe` or within a manual span context.</Warning>
 
 <Tabs>
 <Tab title = "Python">
@@ -48,7 +49,7 @@ won't be recorded. Make sure to wrap your function with `observe`.</Warning>
 ```python
 from lmnr import Laminar as L, observe
 
-L.initialize()
+L.initialize(project_api_key='<YOUR_PROJECT_API_KEY>')
 
 @observe()
 def my_function():
@@ -63,7 +64,7 @@ def my_function():
 ```javascript
 import { Laminar as L, observe } from '@lmnr-ai/lmnr';
 
-L.initialize()
+L.initialize({projectApiKey: '<YOUR_PROJECT_API_KEY>'});
 
 await observe('myFunction', async () => {
     // ...
@@ -77,5 +78,5 @@ await observe('myFunction', async () => {
 
 ### Event metrics
 
-All recorded events are available in the event metrics tab.
-You can track the occurences of the event and the event outcome
+All recorded events are available in the Laminar dashboard and in the events page.
+Events can also be seen in the traces they are associated with.

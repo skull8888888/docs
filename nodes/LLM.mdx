@@ -28,33 +28,38 @@ LLM node executes a prompt and optional chat messages against a selected model (
 
 ## Supported models
 
-### OpenAI
+Below is the list of supported models. However, you can 
+set "Supply model name as an input" and pass any model for any of these providers in the format `provider:model`.
+
+### OpenAI (`openai`)
 
 - `gpt-3.5-turbo`
-- `gpt-3.5-turbo-16k` (on deprecation path by OpenAI)
 - `gpt-4-turbo-preview`
 - `gpt-4o`
+- `gpt-4o-mini`
+- `o1-preview`
+- `o1-mini`
 
-### Anthropic
+### Anthropic (`anthropic`)
 
 - `claude-3-haiku` (20240307)
 - `claude-3-sonnet` (20240229)
 - `claude-3-opus` (20240229)
 - `claude-3-5-sonnet` (20240620)
 
-### Groq
+### Groq (`groq`)
 
 - `groq-llama3-8b-8192`
 - `groq-llana3-70b-8192`
 - `groq-mixtral-8x7b-32768`
 - `groq:gemma-7b-it`
 
-### Mistral
+### Mistral (`mistral`)
 
 - `mistral-small`
 - `mistral-tiny`
 
-### Amazon Bedrock
+### Amazon Bedrock (`bedrock`)
 
 - `bedrock-anthropic.claude-v2`
 - `bedrock-anthropic.claude-v2:1`
@@ -63,6 +68,18 @@ LLM node executes a prompt and optional chat messages against a selected model (
 - `bedrock-anthropic.claude-3-haiku-20240307-v1:0`
 - `bedrock-anthropic.claude-3-opus-20240229-v1:0`
 - `bedrock-anthropic.claude-instant-v1`
+
+Because we are focused on Bedrock for Anthropic, if system message only is specified with no chat history,
+the system message will be converted to a chat message with the role `user`, because Anthropic requires at least one user message.
+
+### Gemini (`gemini`)
+
+- `gemini-1.5-flash`
+- `gemini-1.5-pro`
+
+### OpenAI Azure (`openai-azure`)
+
+Any Custom GPT deployment
 
 ## Model params
 
@@ -94,16 +111,14 @@ Classes are useful to specify the JSON. You can nest classes and add enums insid
     src="/images/pipeline-builder/llm-structured-output.png" alt="LLM node with structured output example"/>
 </Frame>
 
-Read more about BAML syntax here: https://docs.boundaryml.com/docs/syntax/class
+Read more about BAML syntax here: https://docs.boundaryml.com/docs/snippets/class
 
 ## Stream
 
 This switch is used to select which LLM nodes' content to stream during [endpoint call](/api-reference/pipeline/pipeline_run).
 When call to endpoint is made, set "stream" to true in request params, so that LLM nodes which have "stream" enabled are streamed using server-sent events.
 
-Note that for now only selected models such as OpenAI, OpenAI Azure, Anthropic, and Bedrock Anthropic support streaming.
-
-Note that when running pipelines in pipeline builder, LLM node will always be streamed.
+Note that, when running pipelines in pipeline builder, LLM node will be streamed whenever possible regardless of this flag.
 
 ## Tool calling
 
