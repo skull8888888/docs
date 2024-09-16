@@ -69,39 +69,45 @@ pnpm add @lmnr-ai/lmnr
 </Tab>
 </Tabs>
 
-### Project API key
-
-To get the project API key, go to the Laminar dashboard, click the project settings,
-and generate a project API key.
-Unless specified at initialization, Laminar will look for the key in the `LMNR_PROJECT_API_KEY` environment variable
-
 ### Code change
 
 <Tabs>
 <Tab title="Python">
 
-Annotate your code with `@observe()` decorator to start tracing.
+Annotate your code with `@observe()` decorator to start tracing and turn on the OpenAI auto-instrumentation.
 
 ```python
-from lmnr import observe, Laminar as L
+import os
 from openai import OpenAI
-# ...
+from lmnr import Laminar as L, Instruments, observe
 
-# Initialize Laminar
-L.initialize(project_api_key="<YOUR_PROJECT_API_KEY>")
+L.initialize(
+    project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
+    instruments={Instruments.OPENAI},
+)
 
-# ...
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
-# Annotate all functions you want to trace
-@observe()
-def function_to_trace
-    # LLM calls are automatically traced with OpenLLMetry
-    openai_client.chat.completions.create(
-        # ...
+def poem_writer(topic: str):
+    prompt = f"write a poem about {topic}"
+    # OpenAI calls are automatically instrumented
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt},
+        ],
     )
-    # events can be sent with L.event. Event values are OpenTelemetry compliant,
-    # so they have to be strings, numbers, booleans, or arrays of those.
-    L.event("event_name", "event_value")
+    poem = response.choices[0].message.content
+    return poem
+
+@observe() # annotate all functions you want to trace
+def handle_user_request(...):
+    ...
+
+    poem = poem_writer(topic="laminar flow")
+    
+    ...
 
 ```
 
@@ -139,6 +145,14 @@ await observe('myFunction', async () => {
 </Tab>
 
 </Tabs>
+
+Learn more about instrumenting your code by checking our [Python SDK](https://github.com/lmnr-ai/lmnr-python) and [JavaScript/TypeScript SDK](https://github.com/lmnr-ai/lmnr-ts).
+
+### Project API key
+
+To get the project API key, go to the Laminar dashboard, click the project settings,
+and generate a project API key.
+Unless specified at initialization, Laminar will look for the key in the `LMNR_PROJECT_API_KEY` environment variable
 
 
 ## Features

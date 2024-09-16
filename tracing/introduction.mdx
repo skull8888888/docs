@@ -5,12 +5,12 @@ description: OpenTelemetry-compatible tracing with Laminar
 
 ## Glossary
 
-- Span – a unit of work representing a single operation in your application. A single "block" on the "waterfall" trace.
-- Trace – collection of spans involved in processing a request in your LLM application.
+- **Span** – a unit of work representing a single operation in your application. A single "block" on the "waterfall" trace.
+- **Trace** – collection of spans involved in processing a request in your LLM application.
 Consists of one or more nested spans. A root span is the first span in a trace, and marks the beginning and end of the trace.
 Trace holds spans and aggregated metadata from the spans.
-- Event – a key-value pair of data with a timestamp representing an event within your application. Must happen within a span.
-- Session – a collection of traces that were serving the same user or the same interaction.
+- **Event** – a key-value pair of data with a timestamp representing an event within your application. Must happen within a span.
+- **Session** – a collection of traces that were serving the same user or the same interaction.
 
 ## Concept
 
@@ -33,24 +33,27 @@ Read more in [Installation](/overview#installation).
 
 <Tabs>
 <Tab title="Python">
-By default, `Laminar.initialize()` will enable OpenLLMetry's automatic tracing of LLM calls, vector DBs calls, and more.
+Below is an example of how to initialize Laminar and instrument your code.
 
-If you want to instrument other tools and functions, you can use `@observe()` decorator.
+You can instrument your code by adding the `@observe()` decorator to your functions and setting the `instruments` parameter to the libraries you want to be automatically instrumented.
 
 ```python
 import os
 from openai import OpenAI
 
-from lmnr import observe, Laminar as L
+from lmnr import observe, Laminar as L, Instruments
 
-L.initialize(project_api_key=os.environ["LMNR_PROJECT_API_KEY"])
+L.initialize(
+    project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
+    instruments={Instruments.OPENAI},
+)
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 @observe()  # annotate all functions you want to trace
 def poem_writer(topic="turbulence"):
     prompt = f"write a poem about {topic}"
 
-    # OpenAI call is automatically traced with OpenLLMetry
+    # OpenAI calls are automatically instrumented due to adding `Instruments.OPENAI` in `initialize`
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
@@ -103,6 +106,8 @@ await observe('poemWriter', async () => { await poemWriter('laminar flow') });
 
 </Tab>
 </Tabs>
+
+Learn more about instrumenting your code by checking our [Python SDK](https://github.com/lmnr-ai/lmnr-python) and [JavaScript/TypeScript SDK](https://github.com/lmnr-ai/lmnr-ts).
 
 
 ## Accessing traces
