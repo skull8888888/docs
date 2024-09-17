@@ -78,7 +78,6 @@ By default, `Laminar.initialize()` will enable OpenLLMetry's automatic tracing o
 If you want to instrument other tools and functions, you can wrap them in an async `observe` function.
 
 ```javascript
-const { Configuration, OpenAIApi } = require("openai");
 import { OpenAI } from 'openai';
 import { Laminar as L, observe } from '@lmnr-ai/lmnr';
 
@@ -86,9 +85,9 @@ L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
 
 const o = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-async const poemWriter = (topic = "turbulence") => {
+const poemWriter = async (topic = "turbulence") => {
   const prompt = `write a poem about ${topic}`;
-  const response = await client.chat.completions.create({
+  const response = await o.chat.completions.create({
     model: "gpt-4o",
     messages: [
       { role: "system", content: "You are a helpful assistant." },
@@ -101,7 +100,10 @@ async const poemWriter = (topic = "turbulence") => {
 }
 
 // Observe the function like this
-await observe('poemWriter', async () => { await poemWriter('laminar flow') });
+await observe(
+  { name: 'poemWriter' },
+  async () => { await poemWriter('laminar flow') }
+);
 ```
 
 </Tab>
