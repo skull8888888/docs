@@ -5,7 +5,9 @@ description: OpenTelemetry-compatible tracing with Laminar
 
 ## Glossary
 
-- **Span** – a unit of work representing a single operation in your application. A single "block" on the "waterfall" trace.
+- **Span** – a unit of work representing a single operation in your application.
+Typically, a span corresponds to a function invocation or an API call.
+A single "block" on the "waterfall" trace.
 - **Trace** – collection of spans involved in processing a request in your LLM application.
 Consists of one or more nested spans. A root span is the first span in a trace, and marks the beginning and end of the trace.
 Trace holds spans and aggregated metadata from the spans.
@@ -31,29 +33,46 @@ Read more in [Installation](/overview#installation).
 
 ### Annotate your code
 
+By default, `Laminar.initialize()` will enable OpenLLMetry's automatic tracing of
+LLM calls, vector DBs calls, and more. See [Configure automatic instrumentation](/tracing/configuration#configure-automatic-instrumentation)
+to learn more about granular configuration or opting out.
+
+You can trace other parts of your code as well by adding `observe`.
+
 <Tabs>
 <Tab title="Python">
-Below is an example of how to initialize Laminar and instrument your code.
 
-You can instrument your code by adding the `@observe()` decorator to your functions and setting the `instruments` parameter to the libraries you want to be automatically instrumented.
+You can instrument your code by adding the `@observe()` decorator to your functions.
 
 ```python
 import os
 from openai import OpenAI
 
-from lmnr import observe, Laminar as L, Instruments
+from lmnr import observe, Laminar as L
 
 L.initialize(
     project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
-    instruments={Instruments.OPENAI},
 )
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 @observe()  # annotate all functions you want to trace
-def poem_writer(topic="turbulence"):
-    prompt = f"write a poem about {topic}"
+def validate_topic(topic: str):
+    # assume you call the database to validate if the topic exists
+    result = call_db(topic)
+    if result:
+        return result
+    else:
+        return "Topic not found"
 
-    # OpenAI calls are automatically instrumented due to adding `Instruments.OPENAI` in `initialize`
+# enable this at caller level, so that both `observe`d function and the 
+# auto-instrumented OpenAI calls are grouped in one trace
+@observe()
+def poem_writer(topic="turbulence"):
+    validated_topic = validate_topic(topic)
+
+    prompt = f"write a poem about {validated_topic}"
+
+    # OpenAI calls are automatically instrumented
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
@@ -73,9 +92,7 @@ if __name__ == "__main__":
 </Tab>
 <Tab title="JavaScript/TypeScript">
 
-By default, `Laminar.initialize()` will enable OpenLLMetry's automatic tracing of LLM calls, vector DBs calls, and more.
-
-If you want to instrument other tools and functions, you can wrap them in an async `observe` function.
+You can instrument your functions by wraping them in an async `observe()` functions.
 
 ```javascript
 import { OpenAI } from 'openai';
@@ -85,8 +102,23 @@ L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
 
 const o = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+const validateTopic = async (topic: string) => {
+  // assume you call the database to validate if the topic exists
+  const result = await callDb(topic);
+  if (result) {
+    return result;
+  } else {
+    return "Topic not found";
+  }
+}
+
 const poemWriter = async (topic = "turbulence") => {
-  const prompt = `write a poem about ${topic}`;
+  const validatedTopic = await observe( // observe the function
+    {name: 'validate'},
+    async () => await validateTopic(topic)
+  );
+
+  const prompt = `write a poem about ${validatedTopic}`;
   const response = await o.chat.completions.create({
     model: "gpt-4o",
     messages: [
@@ -99,7 +131,8 @@ const poemWriter = async (topic = "turbulence") => {
   return poem;
 }
 
-// Observe the function like this
+// Observe the top level call to trace both `observe`d function and the OpenAI call
+// in one trace
 await observe(
   { name: 'poemWriter' },
   async () => { await poemWriter('laminar flow') }
@@ -109,7 +142,9 @@ await observe(
 </Tab>
 </Tabs>
 
-Learn more about instrumenting your code by checking our [Python SDK](https://github.com/lmnr-ai/lmnr-python) and [JavaScript/TypeScript SDK](https://github.com/lmnr-ai/lmnr-ts).
+Learn more about instrumenting your code by checking our
+[Python SDK](https://github.com/lmnr-ai/lmnr-python) and
+[JavaScript/TypeScript SDK](https://github.com/lmnr-ai/lmnr-ts).
 
 
 ## Accessing traces
@@ -135,7 +170,8 @@ Laminar is compatible with OpenTelemetry tracing through the means of [OpenLLMet
 This means that you can use OpenTelemetry SDKs to send traces to Laminar, and they will be displayed in the Laminar UI.
 
 To get started, in your application,
-set the OpenTelemetry exporter to the Laminar gRPC endpoint: `https://api.lmnr.ai:8443/v1/traces`.
+set the OpenTelemetry exporter to the Laminar gRPC endpoint:
+`https://api.lmnr.ai:8443/v1/traces`.
 
-Read on to the [Next section](/tracing/otel) to learn more about the OpenTelemetry
-objects and attributes that Laminar uses.
+Read on to the [Otel section](/tracing/otel) to learn more about the OpenTelemetry
+objects and attributes that Laminar uses in more detail.

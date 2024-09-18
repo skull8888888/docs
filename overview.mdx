@@ -39,7 +39,7 @@ uv add lmnr
 
 rye 
 
-```
+```sh
 rye add lmnr
 ```
 </Expandable>
@@ -71,25 +71,26 @@ pnpm add @lmnr-ai/lmnr
 
 ### Code change
 
+Major LLM providers, frameworks including LangChain and LlamaIndex, and even vector
+db calls are instrumented automatically.
+
 <Tabs>
 <Tab title="Python">
-
-Annotate your code with `@observe()` decorator to start tracing and turn on the OpenAI auto-instrumentation.
 
 ```python
 import os
 from openai import OpenAI
-from lmnr import Laminar as L, Instruments, observe
+from lmnr import Laminar as L
 
 L.initialize(
     project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
-    instruments={Instruments.OPENAI},
 )
 
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 def poem_writer(topic: str):
     prompt = f"write a poem about {topic}"
+
     # OpenAI calls are automatically instrumented
     response = client.chat.completions.create(
         model="gpt-4o",
@@ -101,52 +102,128 @@ def poem_writer(topic: str):
     poem = response.choices[0].message.content
     return poem
 
-@observe() # annotate all functions you want to trace
-def handle_user_request(...):
-    ...
-
-    poem = poem_writer(topic="laminar flow")
-    
-    ...
-
+if __name__ == "__main__":
+    print(poem_writer("laminar flow"))
 ```
 
 </Tab>
-
 <Tab title="JavaScript/TypeScript">
 
-Wrap your function with `observe` to start tracing.
-
 ```javascript
-import { observe, Laminar as L } from '@lmnr-ai/lmnr';
 import { OpenAI } from 'openai';
-// ...
+import { Laminar as L, observe } from '@lmnr-ai/lmnr';
 
-// Initialize Laminar
-L.initialize({ projectApiKey: "<YOUR_PROJECT_API_KEY>" });
+L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
 
-// ...
+const o = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-// Wrap all functions you want to trace
-await observe('myFunction', async () => {
-    /// ...
+const poemWriter = async (topic = "turbulence") => {
+  const prompt = `write a poem about ${topic}`;
 
-    // LLM calls are automatically traced with OpenLLMetry
-    openai.chat.completions.create(
-        // ...
-    )
-    // events can be sent with L.event. Event values are OpenTelemetry compliant,
-    // so they have to be strings, numbers, booleans, or arrays of those.
-    L.event("event_name", "event_value")
-});
+  // OpenAI calls are automatically instrumented
+  const response = await o.chat.completions.create({
+    model: "gpt-4o",
+    messages: [
+      { role: "system", content: "You are a helpful assistant." },
+      { role: "user", content: prompt }
+    ]
+  });
 
+  const poem = response.choices[0].message.content;
+  return poem;
+}
+
+poemWriter("laminar flow")
+    .then(console.log)
+    .finally(() => L.shutdown());
 ```
-
 </Tab>
-
 </Tabs>
 
-Learn more about instrumenting your code by checking our [Python SDK](https://github.com/lmnr-ai/lmnr-python) and [JavaScript/TypeScript SDK](https://github.com/lmnr-ai/lmnr-ts).
+If you want to trace your own functions for their durations, inputs and outputs, or want to group 
+them into one trace,
+you can use `@observe` decorator in Python or async `observe` function in JavaScript/TypeScript.
+
+<Tabs>
+<Tab title="Python">
+
+```python
+import os
+from openai import OpenAI
+from lmnr import observe, Laminar as L
+
+L.initialize(project_api_key=os.environ["LMNR_PROJECT_API_KEY"])
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+
+@observe()
+def request_handler(data: dict):
+    # some other logic, e.g. data preprocessing
+
+    response1 = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": data["prompt_1"]},
+        ],
+    )
+
+    # some other logic, e.g. a conditional DB call
+
+    response2 = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": data["prompt_2"]},
+        ],
+    )
+
+    return response2.choices[0].message.content
+```
+</Tab>
+<Tab title="JavaScript/TypeScript">
+
+```javascript
+import { OpenAI } from 'openai';
+import { Laminar as L, observe } from '@lmnr-ai/lmnr';
+
+L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
+const o = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+const requestHandler = async (data: Record<string, string>) => 
+    await observe({name: 'requestHandler'}, async () => {
+        // some other logic, e.g. data preprocessing
+
+        const response1 = await o.chat.completions.create({
+            model: "gpt-4o",
+            messages: [
+                { role: "system", content: "You are a helpful assistant." },
+                { role: "user", content: data["prompt_1"] },
+            ],
+        });
+
+        // some other logic, e.g. a conditional DB call
+
+        const response2 = await o.chat.completions.create({
+            model: "gpt-4o",
+            messages: [
+                { role: "system", content: "You are a helpful assistant." },
+                { role: "user", content: data["prompt_2"] },
+            ],
+        });
+
+        return response2.choices[0].message.content;
+    });
+
+```
+</Tab>
+</Tabs>
+
+#### Next steps
+
+[Learn more](/tracing/configuration##grouping-separate-llm-calls-in-one-trace) about using observe.
+
+For more language-specific instructions, check our [Python SDK](https://github.com/lmnr-ai/lmnr-python)
+and [JavaScript/TypeScript SDK](https://github.com/lmnr-ai/lmnr-ts).
 
 ### Project API key
 
@@ -160,9 +237,9 @@ Unless specified at initialization, Laminar will look for the key in the `LMNR_P
 ### Observability
 
 With Laminar, you can instrument your entire LLM application and track the full execution trace.
-Adding instrumentation is as simple as adding a Python decorator to your function (wrapping into another function in the case of Javascript/Typescript).
 
-It is compatible with [OpenTelemetry](https://opentelemetry.io/docs/specs/otel/) tracing through the means of [OpenLLMetry](https://github.com/traceloop/openllmetry).
+Laminar's observability is based on [OpenLLMetry](https://github.com/traceloop/openllmetry),
+and it is compatible with [OpenTelemetry](https://opentelemetry.io/docs/specs/otel/).
 
 Get started with [Tracing](/tracing/introduction).
 

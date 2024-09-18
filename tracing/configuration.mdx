@@ -1,0 +1,345 @@
+---
+title: Configuring tracing
+description: Details on configurations and best practices for tracing with Laminar
+---
+
+## Configure automatic instrumentation
+
+By default, `Laminar.initialize()` will enable OpenLLMetry's automatic tracing of
+LLM calls, vector DBs calls, and more. 
+
+### Fully automatic instrumentation
+
+<Tabs>
+<Tab title="Python">
+
+```python
+from lmnr import Laminar as L
+import os
+from openai import OpenAI
+# ...
+L.initialize(project_api_key=os.environ["LMNR_PROJECT_API_KEY"])
+```
+
+</Tab>
+<Tab title="JavaScript/TypeScript">
+
+<Tip> For automatic instrumentation, import *AND* initialize Laminar before importing any instrumentable modules. 
+This is because JavaScript binds the imported module to its name at import time, so introducing
+instrumentation afterwards is not possible. </Tip>
+
+```javascript
+import { Laminar as L } from '@lmnr-ai/lmnr';
+L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
+// and then import the instrumentable modules
+import { OpenAI } from 'openai';
+// ...
+```
+</Tab>
+</Tabs>
+
+### No automatic instrumentation
+
+<Tabs>
+<Tab title="Python">
+
+`initialize()` also accepts
+an optional `instruments` parameter. If you explicitly pass an empty set,
+no automatic instrumentation will be enabled.
+
+```python
+from lmnr import Laminar as L
+import os
+from openai import OpenAI
+# ...
+L.initialize(
+    project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
+    instruments=set()
+)
+```
+
+</Tab>
+<Tab title="JavaScript/TypeScript">
+
+`initialize()` also accepts an optional `instrumentModules` parameter.
+If you explicitly pass an empty object, no automatic instrumentation will be enabled.
+
+```javascript
+import { Laminar as L } from '@lmnr-ai/lmnr';
+import { OpenAI } from 'openai';
+// ...
+
+L.initialize({
+  projectApiKey: process.env.LMNR_PROJECT_API_KEY,
+  instrumentModules: {}
+});
+```
+</Tab>
+</Tabs>
+
+### Instrument specific modules only
+
+Let's say we call OpenAI and Antrhopic models to perform the same task, and 
+we only want to instrument the Anthropic calls, but not OpenAI.
+
+<Tabs>
+<Tab title="Python">
+
+`initialize()` accepts
+an optional `instruments` parameter. Pass a set of instruments you want to enable.
+In this case we only want to pass `Instruments.ANTHROPIC`.
+
+See available instruments in [the next subsection](./#available-instruments).
+
+```python
+import os
+from anthropic import Anthropic
+from openai import OpenAI
+
+from lmnr import observe, Laminar as L, Instruments
+
+L.initialize(
+    project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
+    instruments={ Instruments.ANTHROPIC }  # only enable anthropic, not openai
+)
+
+openai_client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+anthropic_client = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+
+def poem_writer(topic="turbulence"):
+    prompt = f"write a poem about {topic}"
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": prompt},
+    ]
+
+    # OpenAI calls are NOT instrumented
+    openai_response = openai_client.chat.completions.create(
+        model="gpt-4o",
+        messages=messages,
+    )
+
+    # Anthropic calls are instrumented
+    anthropic_response = anthropic_client.messages.create(
+        max_tokens=1024,
+        messages=messages,
+        model="claude-3-5-sonnet-20240620",
+    )
+
+    openai_poem = openai_response.choices[0].message.content
+    anthropic_poem = anthropic_response.content[0].text
+
+    return {"o": openai_poem, "a": anthropic_poem}
+
+if __name__ == "__main__":
+    print(poem_writer(topic="laminar flow"))
+```
+
+</Tab>
+<Tab title="JavaScript/TypeScript">
+
+`initialize()` accepts
+an optional `instrumentModules` parameter. It takes in an object with string keys
+and values are the entire modules you have imported.
+
+See available instruments in [the next subsection](/tracing/configuration#available-instruments).
+
+```javascript
+import { OpenAI } from 'openai';
+import Anthropic from '@anthropic-ai/sdk';
+import { Laminar as L, observe } from '@lmnr-ai/lmnr';
+
+L.initialize(
+  { projectApiKey: process.env.LMNR_PROJECT_API_KEY,
+    instrumentModules: {
+      anthropic: Antrhopic // only enable anthropic, not openai
+    }
+  }
+);
+
+const openAIClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const AnthropicClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+const poemWriter = async (topic = "turbulence") => {
+  const prompt = `write a poem about ${topic}`;
+  const messages = [
+    { role: "system", content: "You are a helpful assistant." },
+    { role: "user", content: prompt }
+  ];
+
+  // openai calls are NOT instrumented
+  const openAIResponse = await openAIClient.chat.completions.create({
+    model: "gpt-4o",
+    messages,
+  });
+  
+  // anthropic calls are instrumented
+  const anthropicResponse = await Antrhropic.messages.create({
+    max_tokens: 1024,
+    messages,
+    model: "claude-3-5-sonnet-20240620",
+  })
+
+  const openAIPoem = response.choices[0].message.content;
+  const anthropicPoem = anthropicResponse.content[0].text;
+  return {o: openAIPoem, a: anthropicPoem};
+}
+```
+
+</Tab>
+</Tabs>
+
+### Available instruments
+
+<Tabs>
+<Tab title="Python">
+See available instruments by importing `Instruments` from `lmnr`
+or [view source](https://github.com/lmnr-ai/lmnr-python/blob/main/src/lmnr/traceloop_sdk/instruments.py).
+
+These exact modules are auto-instrumented, if you do not pass `instruments` to `L.initialize()`.
+
+</Tab>
+<Tab title="JavaScript/TypeScript">
+
+<Expandable title="full list of modules that you can instrument in JS">
+
+- `openAI`
+- `anthropic`
+- `azureOpenAI`
+- `cohere`
+- `bedrock`
+- `google_vertexai`
+- `google_aiplatform`
+- `pinecone`
+- `langchain`: 
+  - `chainsModule`
+  - `agentsModule`
+  - `toolsModule`
+  - `runnablesModule`
+  - `vectorStoreModule`
+- `llamaIndex`
+- `chromadb`
+- `qdrant`
+</Expandable>
+</Tab>
+</Tabs>
+
+## Grouping separate LLM calls in one trace
+
+Automatic instrumentation creates spans for LLM calls within the current context.
+
+If, however, by the time of an LLM call, there was no active context,
+every call will end up in a separate trace.
+
+If you want to group several LLM/VectorDB calls in one trace,
+simply `observe` the top-level function that makes these calls.
+
+### Example
+
+In this example, the `request_handler` makes a call to OpenAI to determine the user
+intent. If the intent matches the expected one, the handler makes another call to
+OpenAI (possibly with additional RAG) to generate a response.
+
+<Tabs>
+<Tab title="Python">
+
+`request_handler` is observed, so all calls to OpenAI are grouped in one trace.
+
+```python
+from lmnr import Laminar as L, observe
+from openai import OpenAI
+import os
+
+L.initialize(project_api_key=os.environ['LMNR_PROJECT_API_KEY'])
+
+openai_client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
+
+@observe()
+def request_handler(user_message: str):
+    router_prompt = """Your goal is to determine if the user is asking for \
+help with onboarding to the service. Answer 'yes' or 'no' without any \
+explanation.""" + f"User message: {user_message}"
+
+    user_intent = openai_client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "user",
+                "content": router_prompt
+            }
+        ]
+    )
+    if user_intent.choices[0].message.content[:3].lower() == "yes":
+        # likely some RAG here to enrich the content
+        # ...
+
+        model_response = openai_client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {
+                    "role": "user",
+                    "content": user_message
+                }
+            ]
+        )
+        return model_response.choices[0].message.content
+    return "the user is not asking for help with onboarding to the service"
+```
+</Tab>
+<Tab title="JavaScript/TypeScript">
+
+`requestHandler` is observed, so all calls to OpenAI are grouped in one trace.
+
+```javascript
+import { Laminar as L, observe } from '@lmnr-ai/lmnr';
+import { OpenAI } from 'openai';
+
+L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+const routerPrompt = "Your goal is to determine if the user is asking for " +
+  "help with onboarding to the service. Answer 'yes' or 'no' without any " +
+  "explanation. User message: ";
+
+const handle = async (userMessage: string) => 
+    await observe({name: 'requestHandler'}, async () => {
+        const routerResponse = await openai.chat.completions.create({
+            messages: [
+                {role: 'user', content: routerPrompt + userMessage}
+            ],
+            model: 'gpt-4o-mini',
+        })
+        
+        const userIntent = routerResponse
+            .choices[0]
+            .message
+            .content
+            ?.substring(0, 3)
+            .toLowerCase();
+
+        if (userIntent === 'yes') {
+            // Likely some RAG here to enrich the content
+            // ...
+            const modelResponse = await openai.chat.completions.create({
+                messages: [
+                    {role: 'user', content: userMessage}
+                ],
+                model: 'gpt-4o',
+            });
+
+            return modelResponse.choices[0].message.content;
+        }
+
+        return "the user is not asking for help with onboarding";
+    });
+```
+</Tab>
+</Tabs>
+
+As a result, you will get a nested trace with the `request_handler` span as the top level span,
+and the OpenAI calls as child spans.
+
+![screenshot of the example span](/images/traces/nested-trace-example.png)
+
+

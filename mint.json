@@ -38,10 +38,6 @@
   },
   "tabs": [
     {
-      "name": "Tutorials",
-      "url": "tutorials"
-    },
-    {
       "name": "API Reference",
       "url": "api-reference"
     }
@@ -64,6 +60,7 @@
       "group": "Tracing",
       "pages": [
         "tracing/introduction",
+        "tracing/configuration",
         "tracing/sessions",
         "tracing/otel"
       ]
@@ -121,12 +118,6 @@
       "group": "Pipelines - API",
       "pages": [
         "api-reference/pipeline/pipeline_run"
-      ]
-    },
-    {
-      "group": "Tutorials",
-      "pages": [
-        "tutorials/control-flow-with-LLM"
       ]
     }
   ],
