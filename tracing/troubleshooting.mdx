@@ -61,7 +61,7 @@ See [originating commit](https://github.com/open-telemetry/opentelemetry-js/comm
 
 ### Solution
 
-Use Laminars `shutdown()` function to ensure that the traces are sent before the process exits.
+Use Laminar's `shutdown()` function to ensure that the traces are sent before the process exits.
 
 ```javascript
 import { Laminar as L } from '@lmnr-ai/lmnr';
@@ -83,14 +83,16 @@ Our UI relies on the presence of a "parent" span in every trace. If the parent s
 ### Cause
 
 Parent span may have not been sent correctly from the SDK.
-This typically happens when an exception occurs before the parent span is properly closed.
+This typically happens when an exception occurs before the parent span is properly ended.
 
 Common causes:
 - `observe()` function is not awaited in JS
-- span is [created manually](/tracing/introduction#manually-creating-spans) in Python, but 
+- Node process exits before the last span to finish (commonly, parent span)
+is sent. See [My JS traces are not showing up in the Laminar UI](#my-js-traces-are-not-showing-up-in-the-laminar-ui).
+- span is [created manually](/tracing/introduction#manually-creating-spans) in Python, but a
 `with` statement is not used, or the span is not ended properly in the `finally` block.
 
-If this happens elsewhere, especially in Python's `@observe` decorator, it is likely a bug in the SDK.
+If this happens elsewhere, especially in the Python's `@observe` decorator, it is likely a bug in the SDK.
 Please report it in our [Discord server](https://discord.gg/nNFUUDAKub).
 
 ### Solution
@@ -103,7 +105,7 @@ If you are sure that the spans are created correctly, but the issue persists, pl
 
 ### Problem
 
-`@observe` decorator in Python is not capturing the spans when I use async generators, e.g. when I am streaming responses from a model.
+`@observe` decorator in Python is not correctly capturing the spans when I use async generators, e.g. when I am streaming responses from a model.
 
 ### Cause
 
