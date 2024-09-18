@@ -24,9 +24,9 @@ L.initialize(project_api_key=os.environ["LMNR_PROJECT_API_KEY"])
 </Tab>
 <Tab title="JavaScript/TypeScript">
 
-<Tip> For automatic instrumentation, import *AND* initialize Laminar before importing any instrumentable modules. 
+<Tip> For automatic instrumentation, import **AND** initialize Laminar before importing any instrumentable modules. 
 This is because JavaScript binds the imported module to its name at import time, so introducing
-instrumentation afterwards is not possible. </Tip>
+instrumentation afterwards statically is not possible. </Tip>
 
 ```javascript
 import { Laminar as L } from '@lmnr-ai/lmnr';
@@ -79,7 +79,9 @@ L.initialize({
 
 ### Instrument specific modules only
 
-Let's say we call OpenAI and Antrhopic models to perform the same task, and 
+You can also enable instrumentation for specific modules only.
+
+Let's say, for example, we call OpenAI and Antrhopic models to perform the same task, and 
 we only want to instrument the Anthropic calls, but not OpenAI.
 
 <Tabs>
@@ -270,7 +272,7 @@ explanation.""" + f"User message: {user_message}"
         ]
     )
     if user_intent.choices[0].message.content[:3].lower() == "yes":
-        # likely some RAG here to enrich the content
+        # likely some RAG here to enrich the context
         # ...
 
         model_response = openai_client.chat.completions.create(
@@ -319,7 +321,7 @@ const handle = async (userMessage: string) =>
             .toLowerCase();
 
         if (userIntent === 'yes') {
-            // Likely some RAG here to enrich the content
+            // Likely some RAG here to enrich the context
             // ...
             const modelResponse = await openai.chat.completions.create({
                 messages: [
@@ -333,6 +335,12 @@ const handle = async (userMessage: string) =>
 
         return "the user is not asking for help with onboarding";
     });
+
+/// ...
+
+/// Finally, at exit from your program
+await L.shutdown();
+
 ```
 </Tab>
 </Tabs>
@@ -343,3 +351,38 @@ and the OpenAI calls as child spans.
 ![screenshot of the example span](/images/traces/nested-trace-example.png)
 
 
+## Manually creating spans
+
+In Laminar's Python SDK, you can manually create spans. This is useful if you want a more
+granular control than `@observe` provides.
+
+It is highly recommended that you use `with` statements to ensure that the span is closed.
+If you do not want to use `with` statements, you can use a `try`/`finally` block and call
+`span.end()` in the `finally` block.
+
+### Example
+
+```python
+from lmnr import Laminar as L
+from openai import OpenAI
+
+L.initialize(project_api_key=os.environ['LMNR_PROJECT_API_KEY'])
+openai_client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
+
+def request_handler(user_message: str):
+    with L.start_as_current_span(name="handler", input=user_message) as span:
+        response = openai_client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "user",
+                    "content": user_message
+                }
+            ]
+        )
+        result = response.choices[0].message.content
+        
+        L.set_span_output(result) # this will set the output of the current span
+
+        return result
+```

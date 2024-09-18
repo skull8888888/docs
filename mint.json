@@ -62,7 +62,8 @@
         "tracing/introduction",
         "tracing/configuration",
         "tracing/sessions",
-        "tracing/otel"
+        "tracing/otel",
+        "tracing/troubleshooting"
       ]
     },
     {

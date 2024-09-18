@@ -45,7 +45,7 @@ rye add lmnr
 </Expandable>
 
 </Tab>
-<Tab title="Javascript/Typescript">
+<Tab title="JavaScript/Typescript">
 
 Install the package from [npm](https://www.npmjs.com/package/@lmnr-ai/lmnr).
 
@@ -133,9 +133,9 @@ const poemWriter = async (topic = "turbulence") => {
   return poem;
 }
 
-poemWriter("laminar flow")
-    .then(console.log)
-    .finally(() => L.shutdown());
+// somewhere in async context
+await poemWriter("laminar flow");
+await L.shutdown();
 ```
 </Tab>
 </Tabs>
