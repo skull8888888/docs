@@ -353,12 +353,7 @@ and the OpenAI calls as child spans.
 
 ## Manually creating spans
 
-In Laminar's Python SDK, you can manually create spans. This is useful if you want a more
-granular control than `@observe` provides.
-
-It is highly recommended that you use `with` statements to ensure that the span is closed.
-If you do not want to use `with` statements, you can use a `try`/`finally` block and call
-`span.end()` in the `finally` block.
+Also, you can use `start_as_current_span` if you want to record a chunk of your code using `with` statement.
 
 ### Example
 
