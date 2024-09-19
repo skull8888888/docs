@@ -1,14 +1,16 @@
 ---
-title: Configuring tracing
-description: Details on configurations and best practices for tracing with Laminar
+title: Instrumentation
+description: Details on code instrumentation and best practices for tracing with Laminar
 ---
 
-## Configure automatic instrumentation
+import AutoInstrumentableJSModules from "/snippets/autoinstrumentable-js-modules.mdx"
 
-By default, `Laminar.initialize()` will enable OpenLLMetry's automatic tracing of
-LLM calls, vector DBs calls, and more. 
+## Automatic instrumentation
 
-### Fully automatic instrumentation
+By default, `Laminar.initialize()` will automatically instrument majority of the most popular LLM and VectorDB libraries for tracing.
+For example, OpenAI, Anthropic, Langchain, Pinecone, and many more.
+
+### Instrument all available libraries
 
 <Tabs>
 <Tab title="Python">
@@ -35,8 +37,13 @@ L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
 import { OpenAI } from 'openai';
 // ...
 ```
+
+<Warning> If you are using NextJS, you may need to manually pass all libraries which you want Laminar to auto-instrument. Check [next section](#instrument-specific-modules-only)  </Warning>
+
 </Tab>
 </Tabs>
+
+See all available auto-instrumentable modules [here](#available-instruments).
 
 ### No automatic instrumentation
 
@@ -45,34 +52,37 @@ import { OpenAI } from 'openai';
 
 `initialize()` also accepts
 an optional `instruments` parameter. If you explicitly pass an empty set,
-no automatic instrumentation will be enabled.
+no automatic instrumentations will be applied.
 
 ```python
 from lmnr import Laminar as L
 import os
 from openai import OpenAI
-# ...
+
 L.initialize(
     project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
     instruments=set()
 )
+
+# When you call OpenAI, it will NOT be instrumented
 ```
 
 </Tab>
 <Tab title="JavaScript/TypeScript">
 
 `initialize()` also accepts an optional `instrumentModules` parameter.
-If you explicitly pass an empty object, no automatic instrumentation will be enabled.
+If you explicitly pass an empty object, no automatic instrumentations will be applied.
 
 ```javascript
 import { Laminar as L } from '@lmnr-ai/lmnr';
 import { OpenAI } from 'openai';
-// ...
 
 L.initialize({
   projectApiKey: process.env.LMNR_PROJECT_API_KEY,
   instrumentModules: {}
 });
+
+// When you call OpenAI, it will NOT be instrumented
 ```
 </Tab>
 </Tabs>
@@ -81,7 +91,10 @@ L.initialize({
 
 You can also enable instrumentation for specific modules only.
 
-Let's say, for example, we call OpenAI and Antrhopic models to perform the same task, and 
+This is useful if you either want more control over what is being instrumented, or if you are using NextJS,
+where you need to manually pass all libraries which you want Laminar to auto-instrument.
+
+Let's say, for example, we call OpenAI and Anthropic models to perform the same task, and 
 we only want to instrument the Anthropic calls, but not OpenAI.
 
 <Tabs>
@@ -148,19 +161,19 @@ See available instruments in [the next subsection](/tracing/configuration#availa
 
 ```javascript
 import { OpenAI } from 'openai';
-import Anthropic from '@anthropic-ai/sdk';
+import * as anthropic from '@anthropic-ai/sdk';
 import { Laminar as L, observe } from '@lmnr-ai/lmnr';
 
 L.initialize(
   { projectApiKey: process.env.LMNR_PROJECT_API_KEY,
     instrumentModules: {
-      anthropic: Antrhopic // only enable anthropic, not openai
+      anthropic: anthropic // only enable anthropic, not openai
     }
   }
 );
 
 const openAIClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const AnthropicClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const anthropicClient = new anthropic.Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const poemWriter = async (topic = "turbulence") => {
   const prompt = `write a poem about ${topic}`;
@@ -176,7 +189,7 @@ const poemWriter = async (topic = "turbulence") => {
   });
   
   // anthropic calls are instrumented
-  const anthropicResponse = await Antrhropic.messages.create({
+  const anthropicResponse = await anthropicClient.messages.create({
     max_tokens: 1024,
     messages,
     model: "claude-3-5-sonnet-20240620",
@@ -204,29 +217,14 @@ These exact modules are auto-instrumented, if you do not pass `instruments` to `
 <Tab title="JavaScript/TypeScript">
 
 <Expandable title="full list of modules that you can instrument in JS">
-
-- `openAI`
-- `anthropic`
-- `azureOpenAI`
-- `cohere`
-- `bedrock`
-- `google_vertexai`
-- `google_aiplatform`
-- `pinecone`
-- `langchain`: 
-  - `chainsModule`
-  - `agentsModule`
-  - `toolsModule`
-  - `runnablesModule`
-  - `vectorStoreModule`
-- `llamaIndex`
-- `chromadb`
-- `qdrant`
+<AutoInstrumentableJSModules />
 </Expandable>
 </Tab>
 </Tabs>
 
-## Grouping separate LLM calls in one trace
+## Manual instrumentation
+
+### Use `observe` to group separate LLM calls in one trace
 
 Automatic instrumentation creates spans for LLM calls within the current context.
 
@@ -236,7 +234,7 @@ every call will end up in a separate trace.
 If you want to group several LLM/VectorDB calls in one trace,
 simply `observe` the top-level function that makes these calls.
 
-### Example
+#### Example
 
 In this example, the `request_handler` makes a call to OpenAI to determine the user
 intent. If the intent matches the expected one, the handler makes another call to
@@ -351,7 +349,7 @@ and the OpenAI calls as child spans.
 ![screenshot of the example span](/images/traces/nested-trace-example.png)
 
 
-## Manually creating spans
+### Observe specific code chunks
 
 Also, you can use `start_as_current_span` if you want to record a chunk of your code using `with` statement.
 

@@ -1,6 +1,11 @@
 ---
 name: Overview
 ---
+
+import LaminarInstall from '/snippets/laminar-install.mdx';
+import LaminarInitialize from '/snippets/laminar-initialize.mdx';
+import GetProjectApiKey from '/snippets/get-project-api-key.mdx';
+
 Laminar is an open-source observability and analytics platform for complex LLM apps. 
 Laminar helps developers build better LLM applications by providing a comprehensive
 set of tools for observability, analytics, and prompt chain management.
@@ -14,65 +19,17 @@ Check our [Github repo](https://github.com/lmnr-ai/lmnr) to learn more about how
 
 ### Installation
 
-<Tabs>
-<Tab title="Python">
+<LaminarInstall />
 
-Install the package from [PyPI](https://pypi.org/project/lmnr/).
+### Add 2 lines of code to instrument your code
 
-```sh
-pip install lmnr
-```
+<LaminarInitialize />
 
-<Expandable title="other installation options: poetry, uv, rye">
+### Project API key
 
-poetry
+<GetProjectApiKey />
 
-```sh
-poetry add lmnr
-```
-
-uv
-
-```sh
-uv add lmnr
-```
-
-rye 
-
-```sh
-rye add lmnr
-```
-</Expandable>
-
-</Tab>
-<Tab title="JavaScript/Typescript">
-
-Install the package from [npm](https://www.npmjs.com/package/@lmnr-ai/lmnr).
-
-```sh
-npm add @lmnr-ai/lmnr
-```
-
-<Expandable title="other installation options: yarn, pnpm">
-yarn
-
-```sh
-yarn add @lmnr-ai/lmnr
-```
-
-pnpm
-
-```sh
-pnpm add @lmnr-ai/lmnr
-```
-</Expandable>
-</Tab>
-</Tabs>
-
-### Code change
-
-Major LLM providers, frameworks including LangChain and LlamaIndex, and even vector
-db calls are instrumented automatically.
+## Example: Instrument OpenAI calls with Laminar
 
 <Tabs>
 <Tab title="Python">
@@ -82,6 +39,7 @@ import os
 from openai import OpenAI
 from lmnr import Laminar as L
 
+# OpenAI calls will be automatically patched on initialization
 L.initialize(
     project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
 )
@@ -113,6 +71,7 @@ if __name__ == "__main__":
 import { OpenAI } from 'openai';
 import { Laminar as L, observe } from '@lmnr-ai/lmnr';
 
+// OpenAI calls will be automatically patched on initialization
 L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
 
 const o = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -139,6 +98,8 @@ await L.shutdown();
 ```
 </Tab>
 </Tabs>
+
+### Adding manual instrumentation
 
 If you want to trace your own functions for their durations, inputs and outputs, or want to group 
 them into one trace,
@@ -218,28 +179,21 @@ const requestHandler = async (data: Record<string, string>) =>
 </Tab>
 </Tabs>
 
-#### Next steps
+### Next steps
 
-[Learn more](/tracing/configuration##grouping-separate-llm-calls-in-one-trace) about using observe.
+[Learn more](/tracing/configuration#use-observe-to-group-separate-llm-calls-in-one-trace) about using observe.
 
 For more language-specific instructions, check our [Python SDK](https://github.com/lmnr-ai/lmnr-python)
 and [JavaScript/TypeScript SDK](https://github.com/lmnr-ai/lmnr-ts).
-
-### Project API key
-
-To get the project API key, go to the Laminar dashboard, click the project settings,
-and generate a project API key.
-Unless specified at initialization, Laminar will look for the key in the `LMNR_PROJECT_API_KEY` environment variable
 
 
 ## Features
 
 ### Observability
 
-With Laminar, you can instrument your entire LLM application and track the full execution trace.
+Track the full execution trace of your LLM application.
 
-Laminar's observability is based on [OpenLLMetry](https://github.com/traceloop/openllmetry),
-and it is compatible with [OpenTelemetry](https://opentelemetry.io/docs/specs/otel/).
+Laminar's manual and automatic instrumentation is compatible with [OpenTelemetry](https://opentelemetry.io/docs/specs/otel/).
 
 Get started with [Tracing](/tracing/introduction).
 

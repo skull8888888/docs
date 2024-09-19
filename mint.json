@@ -61,6 +61,7 @@
       "pages": [
         "tracing/introduction",
         "tracing/configuration",
+        "tracing/nextjs",
         "tracing/sessions",
         "tracing/otel",
         "tracing/troubleshooting"

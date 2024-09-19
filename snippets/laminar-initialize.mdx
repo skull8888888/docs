@@ -1,0 +1,23 @@
+<Tabs>
+<Tab title="Python">
+
+```python
+from lmnr import Laminar as L
+L.initialize("LMNR_PROJECT_API_KEY")
+```
+</Tab>
+<Tab title="JavaScript/TypeScript">
+
+```javascript
+import { Laminar as L } from '@lmnr-ai/lmnr';
+L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
+```
+
+</Tab>
+</Tabs>
+
+This will automatically instrument all major LLM providers, frameworks including LangChain and LlamaIndex, and even vector
+db calls. If you execute your code, you will see traces in the Laminar dashboard.
+
+See [Configure automatic instrumentation](/tracing/configuration#configure-automatic-instrumentation)
+to learn more about granular configuration or opting out.

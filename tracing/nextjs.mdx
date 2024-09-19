@@ -1,0 +1,43 @@
+---
+title: NextJS
+description: Instrument your NextJS app based on App Router with Laminar
+---
+
+import AutoInstrumentableJSModules from '/snippets/autoinstrumentable-js-modules.mdx';
+
+## 1. Install Laminar
+
+```bash
+npm install @lmnr-ai/lmnr
+```
+
+## 2. Initialize Laminar
+
+You would usually need to import and initialize Laminar before importing any instrumentable modules.
+This is because JavaScript binds the imported module to its name at import time, so introducing
+instrumentation afterwards statically is not possible.
+However, this is not a very clean solution and it may not always work.
+
+Thus, the best workaround is to pass `instrumentModules` to `.initialize()`.
+The example below shows how to do this for OpenAI and Anthropic.
+
+```javascript
+import OpenAI from 'openai';
+import * as anthropic from '@anthropic-ai/sdk';
+import { Laminar as L } from '@lmnr-ai/lmnr';
+
+L.initialize({
+    projectApiKey: process.env.LMNR_PROJECT_API_KEY,
+    instrumentModules: {openAI: OpenAI, anthropic: anthropic}
+});
+```
+
+Here's the list of modules that you can instrument:
+
+<AutoInstrumentableJSModules />
+
+## 3. Add Laminar initialization to every API route
+
+Similarly to previous step, import and initialize Laminar at the top of every API route.
+
+Don't hesitate to contact us if you need help with this.

@@ -3,6 +3,10 @@ title: Introduction
 description: OpenTelemetry-compatible tracing with Laminar
 ---
 
+import LaminarInstall from '/snippets/laminar-install.mdx';
+import LaminarInitialize from '/snippets/laminar-initialize.mdx';
+import GetProjectApiKey from '/snippets/get-project-api-key.mdx';
+
 ## Glossary
 
 - **Span** – a unit of work representing a single operation in your application.
@@ -26,18 +30,19 @@ For every run, the entire execution trace is logged, so the information you can 
 
 ## Getting started
 
-### Prerequisites
+### Installation
 
-Make sure to install the package and get your API key from the Laminar dashboard.
-Read more in [Installation](/overview#installation).
+<LaminarInstall />
 
-### Annotate your code
+### Add 2 lines of code to instrument your code
 
-By default, `Laminar.initialize()` will enable OpenLLMetry's automatic tracing of
-LLM calls, vector DBs calls, and more. See [Configure automatic instrumentation](/tracing/configuration#configure-automatic-instrumentation)
-to learn more about granular configuration or opting out.
+<LaminarInitialize />
 
-You can trace other parts of your code as well by adding `observe`.
+### Project API key
+
+<GetProjectApiKey />
+
+### Adding manual instrumentation with `observe`
 
 <Tabs>
 <Tab title="Python">
@@ -165,7 +170,9 @@ Click on each span to see its details, including inputs, outputs and metadata, a
 
 ## OpenTelemetry compatibility
 
-Laminar is compatible with OpenTelemetry tracing through the means of [OpenLLMetry](https://github.com/traceloop/openllmetry).
+Laminar's manual and automatic instrumentation is compatible with [OpenTelemetry](https://opentelemetry.io/docs/specs/otel/).
+Our backend is Opentelemetry-compatible destination and serves ingestion through gRPC.
+Majority of the Opentelemetry-compatible instrumentations for LLM and VectorDB libraries are provided by [OpenLLMetry](https://github.com/traceloop/openllmetry).
 
 This means that you can use OpenTelemetry SDKs to send traces to Laminar, and they will be displayed in the Laminar UI.
 

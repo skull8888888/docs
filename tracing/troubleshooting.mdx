@@ -51,13 +51,14 @@ I have instrumented my JavaScript code with Laminar, but I don't see any traces 
 
 ### Cause
 
-This often happens in Edge runtimes, or in one-off scripts that are not running in a long-lived process.
+This often happens in Edge runtimes, Lambda functions, or in one-off scripts that are not running in a long-lived process.
 
 JavaScript's OpenTelemetry batch span processor runs in a background async function, and, if the process exits before the function has a chance to
 send the traces, they will be lost. In theory, there is a way to force flush the pending spans `onShutdown`, but it is not implemented in the
 OpenTelemetry JS SDK. Apparently, doing that may cause the consequent incoming spans to block the process.
 
-See [originating commit](https://github.com/open-telemetry/opentelemetry-js/commit/23db7f0ba383a3043964eb03be11c09df3f7453a) where the `onShutdown` was only implemented for the browser contexts.
+See [originating commit](https://github.com/open-telemetry/opentelemetry-js/commit/23db7f0ba383a3043964eb03be11c09df3f7453a) where the `onShutdown` was only implemented for the browser contexts,
+but not for Node.js.
 
 ### Solution
 
