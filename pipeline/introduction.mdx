@@ -3,12 +3,14 @@ title: 'Introduction'
 description: "Get started with laminar's pipeline builder."
 ---
 
-## Prompt management
+## Overview
 
 Laminar allows you to store and version your prompts and chains of prompts.
 
 Our pipeline builder lets you quickly iterate on each prompt in your app, but also shape of your LLM logic
 by chaining prompts together, adding parallel executions, and even self-reflection loops.
+
+Also pipelines can be used for evaluating [semantic events](/events/semantic-events).
 
 <Frame caption = "A sample Mixture of agents pipeline">
 ![Screenshot of a pipeline implementing a mixture of agents](/images/pipeline-builder/moa.png)
@@ -59,10 +61,33 @@ Click "Run" to test the pipeline execution. You can also add breakpoints and ins
 ### 2. Saving and deploying
 
 Once you are happy with your pipeline, click "Commit" to save the current version.
-Then go to the newly created commit and click "Set as Target".
+Then go to the newly created commit by selecting it in the dropdown in the top-left corner of the pipeline builder.
+
+Then, click "Set as Target" button.
 This will make the pipeline available for external calls through API or using Laminar's JS and Python SDKs.
 
-### 3. Calling the pipeline from code
+### 3. Calling the pipelines
+
+Below, we describe use-cases for calling the pipelines.
+
+Also, check our [Python SDK](https://github.com/lmnr-ai/lmnr-python)
+and [JavaScript/TypeScript SDK](https://github.com/lmnr-ai/lmnr-ts)
+for more details.
+
+#### Use as evaluator for a semantic event
+
+Simply pass the name of the pipeline as a value for the `evaluator` parameter in the `evaluate_event` function.
+
+<Warning>
+Double check that your pipeline has only one output node. If you need to cast the output to a different type,
+set the desired cast type on the `Output` node.
+
+Additionally, don't forget to pass `env` parameter to `evaluate_event`.
+</Warning>
+
+#### Calling the pipeline via API
+
+You can also call Laminar pipeline from the code of your application.
 
 For a quick start, once you've set the version as a target, 
 click the "Use API" button in the commit page. This will show you the code snippet to call the pipeline from your code.

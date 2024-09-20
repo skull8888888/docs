@@ -2,63 +2,86 @@
 title: Introduction
 ---
 
-## General
+## Why do we need events and events-based analytics?
 
-Events are the building blocks of the analytics in Laminar.
-Events are a powerful way to mine metrics from your trace data. There are two types of events:
+LLM applications generate thousands of logs and traces every day.
+Analyzing them manually and making sense of it is hard, if not impossible, considering the amount of data generated.
 
-- Regular events
-- Semantic events
+That's where events-based analytics comes in.
 
-Laminar Events are OpenTelemetry-compatible.
+1. **Catch failures in real-time**
+
+Use Laminar's Semantic Events to catch failures in your agents in real-time based on the online evaluations.
+
+2. **Evaluate and gather metrics on agent behavior**
+
+Use Laminar's Semantic Events and Regular Events to gather metrics on the user or agent behavior based on the semantic meaning.
+
+## Overview
+
+Events are the building blocks of the analytics in Laminar
+
+Laminar Events are [OpenTelemetry-compatible](/events/otel).
+
+All events belong to a span. In other words, events must be sent within a function or code, which is [instrumented](/tracing/configuration) with Laminar.
+
+### Event properties
+
+Each event has the following properties:
+1. **Name**
+
+Name is needed to identify the event. Event name must be unique within the project.
+
+For example, name can be `user_sentiment`.
+
+2. **Event type**
+
+There are two types of events:
+- `Regular`
+- `Semantic`
+
+Event type is a virtual concept needed to distinguish on how the event value is generated.
+You can record the event with the same name both by generating it as a regular event or a semantic event.
+
+3. **Value type**
+
+There are three types of event values:
+- `Boolean`
+- `String`
+- `Number`
+
+4. **Value**
+
+Based on the event value type, each event will have a value.
+
+For example, we can have `Boolean` value type, and the value will be `True` or `False`.
+
+5. **Timestamp**
+
+Timestamp is the time when the event has been created.
+If you don't specify the timestamp, the time at which the event was sent will be used.
 
 ### Regular events
 
-Regular events are programmatically triggered events.
-You can trigger them from your code manually and assign a `value` to it.
+Regular events are events for which the value is known at the code execution time.
+You can simply send them from code and assign a value to them.
 
-These events are useful when you want to track specific points in your code execution or associate metric values
-with specific points in your code.
+These events are useful when you want to make assertions, record known actions which agent takes, or things which are important for you.
 
-Because of the OpenTelemetry compatibility, the `value` of the event can be Boolean, String, or Number.
-In Laminar's SDKs, `value` is optional. If value is not provided, it will be set to `true`.
-This is useful for associating simple tags with spans.
+For example, you can record if the response matches regular expressions, if the chat assistant has found the answer to the user's question, or how many times and which tool has been used.
 
-Example of a regular event:
-
-<Tabs>
-<Tab title = "Python">
-    
-```python
-from lmnr import Laminar as L
-
-L.initialize()
-L.event("user_reaction", "left_conversation")
-```
-
-</Tab>
-<Tab title = "JavaScript/TypeScript">
-    
-```javascript
-import { Laminar as L } from '@lmnr-ai/lmnr';
-
-L.initialize()
-L.event("user_reaction", "left_conversation")
-```
-
-</Tab>
-</Tabs>
-
-[Learn more](/events/regular-events)
+[Learn more](/events/regular-events) on how to set up regular events and the use-cases.
 
 ### Semantic events
 
-The values for semantic events are assigned by LLM. They can be either Boolean, String, or Number [Learn more](/events/semantic-events)
+Semantic events are events for which the value is **not** known at the code execution time.
 
-First, you need to create a pipeline in Laminar that will assess the event.
-Typically, this will be an LLM or chain of LLMs that assesses whether the event has happened or assigns a value to it.
+It may be not needed to evaluate `value` at the code execution time, as it does not affect the execution logic.
+However, event values are crucial for the analysis of the LLM behavior and user experience.
 
-When you send an evaluate event from the code, the pipeline will be excuted on the Laminar backend,
+The values for semantic events are evaluated on the Laminar backend by LLMs, pipelines you build, or our evaluators.
+
+When you send an evaluate event from the code, the pipeline will be executed on the Laminar backend,
 so there is no overhead for your code.
 An example of a semantic event would be user sentiment detection.
 
