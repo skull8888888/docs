@@ -101,7 +101,6 @@ data = [
 ]
 
 evaluate(
-    name="py-evaluation-async",
     data=data,
     executor=get_capital,
     evaluators={'check_capital_correctness': evaluator},
@@ -121,7 +120,7 @@ const evaluationData = [
     { data: { country: 'Tanzania' }, target: { capital: 'Dodoma' } },
 ]
 
-evaluate( 'my-evaluation', {
+evaluate({
     data: evaluationData,
     executor: async (data) => await getCapital(data),
     evaluators: { checkCapitalCorrectness: evaluator },
@@ -149,7 +148,6 @@ pass these values to the `evaluate` function.
 ```python
 from lmnr import evaluate
 evaluate(
-    name="py-evaluation-async",
     data=data,
     executor=get_capital,
     evaluators={'check_capital_correctness': evaluator_A},
@@ -163,7 +161,7 @@ evaluate(
 <Tab title = "JavaScript/TypeScript">
 ```javascript
 import { evaluate } from '@lmnr-ai/lmnr';
-evaluate( 'my-evaluation', {
+evaluate({
     data: evaluationData,
     executor: async (data) => await getCapital(data),
     evaluators: [evaluatorA],
@@ -177,3 +175,5 @@ evaluate( 'my-evaluation', {
 ```
 </Tab>
 </Tabs>
+
+Run this file either by executing it, or by running it with `lmnr eval` CLI.

@@ -16,7 +16,8 @@ This is useful for testing your models, checking the performance of your AI agen
 
 - Executor – the function being evaluated, often your prompt or (to-be-)production logic
 - Evaluator - the function evaluating the results
-- Dataset format – two fixed JSON objects: `target` and `data` each with any keys.
+- Dataset - collection of datapoints to run executors and evaluators against
+- Datapoint – two fixed JSON objects: `target` and `data` each with any keys.
   - `target` – data sent to the evaluator. Usually, contains the expected or target outputs of certain parts of your executor.
   - `data` – data sent to the executor.
 
@@ -45,12 +46,6 @@ This is stored in the results of the evaluation.
 
 <LaminarInstall />
 
-### Requirements and definitions
-
-- Executor takes in a `Map<string, any>` (set to the value of `data`) parameter and returns anything
-- Evaluator takes in a `Map<string, any` (set to the value of `target`) parameter and the output of the executor
-- Evaluator returns either a single numeric score or a JSON object / dict, with string keys and numeric values for multiple scores
-
 ### Example. Running and registering evaluations
 
 #### 1. Create an evaluation file.
@@ -58,10 +53,10 @@ This is stored in the results of the evaluation.
 <Tabs>
 <Tab title = "Python">
 
-Create a file named `my-first-evaluation.py` and add the following code:
+Create a file named `my_first_evaluation.py` and add the following code:
 
 ```python
-# my-first-evaluation.py
+# my_first_evaluation.py
 from lmnr import evaluate
 
 def write_poem(topic: str) -> str:
@@ -120,11 +115,13 @@ To run the evaluation from the CLI, execute the following command:
 # 1. Make sure `lmnr` is installed in a virtual environment
 # lmnr --help
 # 2. Run the evaluation
-lmnr eval my-first-evaluation.py
+export LMNR_PROJECT_API_KEY=<YOUR_PROJECT_API_KEY>
+lmnr eval my_first_evaluation.py
 ```
 </Tab>
 <Tab title = "JavaScript/TypeScript">
 ```sh
+export LMNR_PROJECT_API_KEY=<YOUR_PROJECT_API_KEY>
 npx lmnr eval my-first-evaluation.ts
 ```
 </Tab>
@@ -133,6 +130,12 @@ npx lmnr eval my-first-evaluation.ts
 
 To run the evaluation directly from code, simply call the `evaluate` function, i.e. import or
 run the file created in the previous step.
+
+### Concepts
+
+- Executor takes in a `Map<string, any>` (set to the value of `data`) parameter and returns anything
+- Evaluator takes in a `Map<string, any` (set to the value of `target`) parameter and the output of the executor
+- Evaluator returns either a single numeric score or a JSON object / dict, with string keys and numeric values for multiple scores
 
 ## Viewing evaluation results and traces
 
