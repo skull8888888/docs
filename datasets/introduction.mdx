@@ -7,13 +7,13 @@ title: Introduction
 Dataset is a collection of datapoints. It can be used for the following purposes:
 1. Data storage for use in future fine-tuning or prompt-tuning.
 1. Datasource for semantic search.
-1. Provide inputs and expected outputs for [Evaluations](evaluations/introduction).
-
-In this page, you can learn how to use datasets for semantic search, how to use for evaluations, and how to add datapoints.
+1. Provide inputs and expected outputs for [Evaluations](/evaluations/introduction).
 
 ## Format
 
-Every datapoint has two fixed JSON objects: `data` and `target`, each with any keys.
+Every datapoint has two fixed JSON objects: `data` and `target`, each with arbitrary keys.
+`target` is only used in evaluations.
+
 - `data` – the actual datapoint data
 - `target` – data additionally sent to the evaluator pipeline. See [evaluations](/evaluations/introduction)
 
@@ -44,6 +44,7 @@ This is an example of a valid datapoint.
     }
 }
 ```
+
 ## Indexing
 
 In order to be able to retrieve semantically relevant data points, we must index the dataset on a certain key.
@@ -63,7 +64,7 @@ because it has an array of strings.
 
 ## Use case: Semantic Search
 
-Datasets can be used as a [Semantic Search node](nodes/semantic-search)'s datasource.
+Datasets can be used as a [Semantic Search node](/nodes/semantic-search)'s datasource.
 
 In this case, dataset MUST be indexed
 
@@ -72,4 +73,4 @@ In this case, dataset MUST be indexed
 Datasets can be used for evaluations to specify inputs and expected outputs.
 
 You will need to make sure the dataset keys match the input and output node names of the pipelines.
-See more in the [Evaluations](evaluations/introduction) page.
+See more in the [Evaluations](/evaluations/introduction) page.

@@ -77,18 +77,18 @@
       ]
     },
     {
+      "group": "Evaluations",
+      "pages": [
+        "evaluations/introduction",
+        "evaluations/examples"
+      ]
+    },
+    {
       "group": "Datasets",
       "pages": [
         "datasets/introduction",
         "datasets/label-spans",
         "datasets/adding-data"
-      ]
-    },
-    {
-      "group": "Evaluations",
-      "pages": [
-        "evaluations/introduction",
-        "evaluations/examples"
       ]
     },
     {
