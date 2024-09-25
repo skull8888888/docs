@@ -48,6 +48,8 @@ For every run, the entire execution trace is logged, so the information you can 
 <Tab title="Python">
 
 You can instrument your code by adding the `@observe()` decorator to your functions.
+This is especially helpful when you want to trace specific functions, or group
+separate functions into a single trace.
 
 ```python
 import os
@@ -62,10 +64,10 @@ client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 @observe()  # annotate all functions you want to trace
 def validate_topic(topic: str):
-    # assume you call the database to validate if the topic exists
-    result = call_db(topic)
-    if result:
-        return result
+    # assume you call the database
+    # or run custom logic to validate if the topic exists
+    if topic == "laminar flow":
+        return topic
     else:
         return "Topic not found"
 
@@ -98,6 +100,8 @@ if __name__ == "__main__":
 <Tab title="JavaScript/TypeScript">
 
 You can instrument your functions by wraping them in an async `observe()` functions.
+This is especially helpful when you want to trace specific functions, or group
+separate functions into a single trace.
 
 ```javascript
 import { OpenAI } from 'openai';
@@ -108,10 +112,10 @@ L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
 const o = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const validateTopic = async (topic: string) => {
-  // assume you call the database to validate if the topic exists
-  const result = await callDb(topic);
-  if (result) {
-    return result;
+  // assume you call the database 
+  // or run custom logicto validate if the topic exists
+  if (topic === "laminar flow") {
+    return topic;
   } else {
     return "Topic not found";
   }
@@ -171,8 +175,9 @@ Click on each span to see its details, including inputs, outputs and metadata, a
 ## OpenTelemetry compatibility
 
 Laminar's manual and automatic instrumentation is compatible with [OpenTelemetry](https://opentelemetry.io/docs/specs/otel/).
-Our backend is Opentelemetry-compatible destination and serves ingestion through gRPC.
-Majority of the Opentelemetry-compatible instrumentations for LLM and VectorDB libraries are provided by [OpenLLMetry](https://github.com/traceloop/openllmetry).
+Our backend is an OpenTelemetry-compatible destination and serves ingestion through gRPC.
+
+Instrumentations for LLM and VectorDB libraries are provided by [OpenLLMetry](https://github.com/traceloop/openllmetry).
 
 This means that you can use OpenTelemetry SDKs to send traces to Laminar, and they will be displayed in the Laminar UI.
 

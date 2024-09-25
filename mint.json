@@ -61,8 +61,8 @@
       "pages": [
         "tracing/introduction",
         "tracing/configuration",
-        "tracing/nextjs",
         "tracing/sessions",
+        "tracing/nextjs",
         "tracing/otel",
         "tracing/troubleshooting"
       ]
@@ -77,9 +77,18 @@
       ]
     },
     {
+      "group": "Datasets",
+      "pages": [
+        "datasets/introduction",
+        "datasets/label-spans",
+        "datasets/adding-data"
+      ]
+    },
+    {
       "group": "Evaluations",
       "pages": [
-        "evaluations/introduction"
+        "evaluations/introduction",
+        "evaluations/examples"
       ]
     },
     {

@@ -12,19 +12,19 @@ when real-world interactions happen. Then, you want to surface the issues and se
 
 Let's go through the setup of a semantic event.
 
-## 1. Select name for your event
+## 1. Select a name for your event
 
-Select any name for your event. In current example, let's assume you have the RAG pipeline and you want to evaluate how much the answer to the question is grounded in context.
+Select any name for your event. In this example, let's assume you have the RAG pipeline and you want to evaluate how much the answer to the question is grounded in context.
 We will name the event `Groundedness_score`.
 
 <Tip>
-The use-cases are not limited to RAG, but you can also evaluate other types of semantic events:
+The use cases are not limited to RAG, but you can also evaluate other types of semantic events:
 
 1. Evaluate the user sentiment: `Positive`, `Negative`, `Neutral`. Use `String` type.
-2. Evaluate the category of the user's inquirt: `PURCHASE`, `REFUND`, or `OTHER`. Use `String` type.
-3. Evaluate if the user's question was related to the product. Based on that, check if the bot has correctly identified the user's intent and acted accordingly. Use `Boolean` type.
+1. Evaluate the category of the user's inquiry: `PURCHASE`, `REFUND`, or `OTHER`. Use `String` type.
+1. Evaluate if the user's question was related to the product. Based on that, check if the bot has correctly identified the user's intent and acted accordingly. Use `Boolean` type.
 
-To see how to evaluate events for these use-cases, create a new pipeline,
+To see how to evaluate events for these use cases, create a new pipeline,
 and you will see suggested templates in the "Semantic Event Evaluation" section.
 </Tip>
 
@@ -32,32 +32,33 @@ Event name must be unique within the project.
 
 ## 2. Value type
 
-Value type can be either `Boolean`, `String`, or `Number`.
+Value type can be `Boolean`, `String`, or `Number`.
 
 We will create a pipeline which takes `answer`, `question`, and `context` as inputs and outputs a `Number`.
 
-You don't have to explicitly specify the value type - the value type is inferred based on output of the pipeline.
+You don't have to explicitly specify the value type of a semantic event when you send it
+– the type is inferred from the output type of the pipeline.
 
 ## 3. Create a pipeline
 
 1. Go to the pipelines page and click on "New pipeline".
 
-2. Enter the name as `get_groundedness_score` and select a pipeline from templates called `RAG relevance score` in "Semantic Event Evaluation" section.
-That will open the pipeline builder with the pipeline created.
+1. Enter the name `get_groundedness_score` and select a pipeline from templates called `RAG relevance score` in "Semantic Event Evaluation" section.
+This will open the pipeline builder with the pipeline created.
 Note that the `Output` node casts the output to `Number` type.
 
-3. Click "Commit" to commit this pipeline and enter commit name "v1". Then, go to the newly-created commit by selecting "v1" in the dropdown in the top left corner.
+1. Click "Commit" to commit this pipeline and enter commit name "v1". Then, go to the newly-created commit by selecting "v1" in the dropdown in the top-left corner.
 
-4. Click "Set as target" to set "v1" commit as the target version. Target version is the version of the pipeline that will be used for evaluation.
+1. Click "Set as target" to set "v1" commit as the target version. Target version is the version of the pipeline that will be used for evaluation.
 
-Check [pipeline docs](/pipeline/introduction) to learn more how to create a pipeline by yourself.
+Check [pipeline docs](/pipeline/introduction) to learn more about how to create pipelines.
 
 ## 4. Trigger a semantic event
 
 To trigger a semantic event, call the `evaluate_event` function inside a function instrumented with `observe`.
 
 If an event is sent outside of span context, we will have nothing to associate it with, so it
-won't be recorded. Make sure to wrap your function with `observe`.
+won't be recorded. Make sure to wrap the function where event is sent, or one of its parent functions, with `observe` or with a manual span context.
 
 `evaluate_event` function takes the following arguments:
 
@@ -137,15 +138,12 @@ await observe('myFunction', async () => {
 </Tab>
 </Tabs>
 
-`evaluate_event` function will trigger the background process on Laminar side and the event outcome will be recorded in the event outcome tab.
-
+`evaluate_event` function will trigger the background process on Laminar's side and the event outcome will be recorded in the event outcome tab.
 
 ### Event metrics
 
-After executing the code, you will be able to see traces in the traces page.
+After executing the code, you will be able to see the traces in the traces page.
 If you open the trace by clicking on it, you will see the semantic event attached to the span.
 
 Statistics of the events are available in the Laminar dashboard and the events can be seen in the events page.
 If you click on the event, you will be able to access the trace where the event was triggered.
-
-Traces of the evaluator pipelines are also available in the traces page.

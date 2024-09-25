@@ -1,0 +1,179 @@
+---
+title: Evaluation examples
+description: Examples of evaluations in Laminar
+---
+
+## Basic correctness evaluation.
+
+In this example our executor function calls an LLM to get the capital of a country. 
+We then evaluate the correctness of the prediction by comparing it to the target capital.
+The evaluator function returns 1 if the prediction is correct and 0 otherwise.
+
+### 1. Define an executor function
+
+An executor function calls OpenAI to get the capital of a country.
+The prompt also asks to only name the city and nothing else. In a real scenario,
+you will likely want to use structured output to get the city name only.
+
+<Tabs>
+<Tab title = "Python">
+```python
+from openai import AsyncOpenAI
+import os
+
+openai_client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
+
+async def get_capital(data):
+    country = data["country"]
+    response = await openai_client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {
+                "role": "user",
+                "content": f"What is the capital of {country}? Just name the "
+                "city and nothing else",
+            },
+        ],
+    )
+    return response.choices[0].message.content.strip()
+
+```
+</Tab>
+<Tab title = "JavaScript/TypeScript">
+```javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
+
+const getCapital = async ({country} : {country: string}): Promise<string> => {
+    const response = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+            {
+                role: 'system',
+                content: 'You are a helpful assistant.'
+            }, {
+                role: 'user',
+                content: `What is the capital of ${country}?` +
+                ' Just name the city and nothing else'
+            }
+        ],
+    });
+    return response.choices[0].message.content ?? ''
+}
+
+```
+</Tab>
+</Tabs>
+
+#### 2. Define an evaluator function
+
+<Tabs>
+<Tab title = "Python">
+```python
+def evaluator(output, target):
+    return 1 if output == target["capital"] else 0
+```
+</Tab>
+<Tab title = "JavaScript/TypeScript">
+
+```javascript
+
+const evaluator = async (output, target) =>
+        (await output) === target.capital ? 1 : 0
+```
+
+</Tab>
+</Tabs>
+
+#### 3. Define data and run the evaluation
+
+<Tabs>
+<Tab title = "Python">
+```python
+from lmnr import evaluate
+
+data = [
+    {"data": {"country": "Germany"}, "target": {"capital": "Berlin"}},
+    {"data": {"country": "Canada"}, "target": {"capital": "Ottawa"}},
+    {"data": {"country": "Tanzania"}, "target": {"capital": "Dodoma"}},
+]
+
+evaluate(
+    name="py-evaluation-async",
+    data=data,
+    executor=get_capital,
+    evaluators={'check_capital_correctness': evaluator},
+    project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
+)
+
+```
+</Tab>
+<Tab title = "JavaScript/TypeScript">
+
+```javascript
+import { evaluate } from '@lmnr-ai/lmnr';
+
+const evaluationData = [
+    { data: { country: 'Canada' }, target: { capital: 'Ottawa' } },
+    { data: { country: 'Germany' }, target: { capital: 'Berlin' } },
+    { data: { country: 'Tanzania' }, target: { capital: 'Dodoma' } },
+]
+
+evaluate( 'my-evaluation', {
+    data: evaluationData,
+    executor: async (data) => await getCapital(data),
+    evaluators: { checkCapitalCorrectness: evaluator },
+    config: {
+        projectApiKey: process.env.LMNR_PROJECT_API_KEY
+    }
+})
+```
+
+</Tab>
+</Tabs>
+
+## Configuring the evaluation to report results to locally self-hosted Laminar
+
+In this example, we configure the evaluation to report results to a locally self-hosted Laminar instance.
+
+Evaluations send data to Laminar over both HTTP and gRPC. HTTP is used to create an evaluation and report
+the datapoints, stats, and trace ids. OpenTelemetry traces themselves are sent over gRPC.
+
+Assuming you have configured Laminar to run on ports 8000 and 8001 on your `localhost`, you will need to
+pass these values to the `evaluate` function.
+
+<Tabs>
+<Tab title = "Python">
+```python
+from lmnr import evaluate
+evaluate(
+    name="py-evaluation-async",
+    data=data,
+    executor=get_capital,
+    evaluators={'check_capital_correctness': evaluator_A},
+    project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
+    base_url="http://localhost",
+    http_port=8000,
+    grpc_port=8001,
+)
+```
+</Tab>
+<Tab title = "JavaScript/TypeScript">
+```javascript
+import { evaluate } from '@lmnr-ai/lmnr';
+evaluate( 'my-evaluation', {
+    data: evaluationData,
+    executor: async (data) => await getCapital(data),
+    evaluators: [evaluatorA],
+    config: {
+        projectApiKey: process.env.LMNR_PROJECT_API_KEY,
+        baseUrl: 'http://localhost',
+        httpPort: 8000,
+        grpcPort: 8001,
+    }
+})
+```
+</Tab>
+</Tabs>

@@ -3,7 +3,7 @@
 
 ```python
 from lmnr import Laminar as L
-L.initialize("LMNR_PROJECT_API_KEY")
+L.initialize(project_api_key="LMNR_PROJECT_API_KEY")
 ```
 </Tab>
 <Tab title="JavaScript/TypeScript">
@@ -16,8 +16,8 @@ L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
 </Tab>
 </Tabs>
 
-This will automatically instrument all major LLM providers, frameworks including LangChain and LlamaIndex, and even vector
-db calls. If you execute your code, you will see traces in the Laminar dashboard.
+This will automatically instrument all major LLM providers, LLM frameworks including LangChain and LlamaIndex, and even vector
+DB calls. If you execute your code, you will see traces in the Laminar dashboard.
 
-See [Configure automatic instrumentation](/tracing/configuration#configure-automatic-instrumentation)
-to learn more about granular configuration or opting out.
+To disable or configure automatic instrumentation,
+see the section on [Automatic instrumentation](/tracing/configuration#automatic-instrumentation).

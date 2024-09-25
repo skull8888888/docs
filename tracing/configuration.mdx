@@ -7,8 +7,8 @@ import AutoInstrumentableJSModules from "/snippets/autoinstrumentable-js-modules
 
 ## Automatic instrumentation
 
-By default, `Laminar.initialize()` will automatically instrument majority of the most popular LLM and VectorDB libraries for tracing.
-For example, OpenAI, Anthropic, Langchain, Pinecone, and many more.
+By default, `Laminar.initialize()` will automatically instrument majority of common LLM and VectorDB libraries for tracing.
+This includes OpenAI, Anthropic, Langchain, Pinecone, and many more.
 
 ### Instrument all available libraries
 
@@ -45,7 +45,7 @@ import { OpenAI } from 'openai';
 
 See all available auto-instrumentable modules [here](#available-instruments).
 
-### No automatic instrumentation
+### Disable automatic instrumentation
 
 <Tabs>
 <Tab title="Python">
@@ -91,8 +91,8 @@ L.initialize({
 
 You can also enable instrumentation for specific modules only.
 
-This is useful if you either want more control over what is being instrumented, or if you are using NextJS,
-where you need to manually pass all libraries which you want Laminar to auto-instrument.
+This is useful if you either want more control over what is being instrumented.
+Also, use this if you are using NextJS and having issues with automatic instrumentation – [learn more](/tracing/nextjs).
 
 Let's say, for example, we call OpenAI and Anthropic models to perform the same task, and 
 we only want to instrument the Anthropic calls, but not OpenAI.
@@ -104,7 +104,7 @@ we only want to instrument the Anthropic calls, but not OpenAI.
 an optional `instruments` parameter. Pass a set of instruments you want to enable.
 In this case we only want to pass `Instruments.ANTHROPIC`.
 
-See available instruments in [the next subsection](./#available-instruments).
+See available instruments in [the next subsection](/tracing/configuration#available-instruments).
 
 ```python
 import os
@@ -173,7 +173,9 @@ L.initialize(
 );
 
 const openAIClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const anthropicClient = new anthropic.Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const anthropicClient = new anthropic.Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY
+});
 
 const poemWriter = async (topic = "turbulence") => {
   const prompt = `write a poem about ${topic}`;
@@ -226,12 +228,11 @@ These exact modules are auto-instrumented, if you do not pass `instruments` to `
 
 ### Use `observe` to group separate LLM calls in one trace
 
-Automatic instrumentation creates spans for LLM calls within the current context.
+Automatic instrumentation creates spans for LLM calls within the current trace context.
 
-If, however, by the time of an LLM call, there was no active context,
-every call will end up in a separate trace.
+Unless you start a new trace before calling an LLM, each LLM call will create a new trace.
 
-If you want to group several LLM/VectorDB calls in one trace,
+If you want to group several auto-instrumented calls in one trace,
 simply `observe` the top-level function that makes these calls.
 
 #### Example
@@ -243,7 +244,7 @@ OpenAI (possibly with additional RAG) to generate a response.
 <Tabs>
 <Tab title="Python">
 
-`request_handler` is observed, so all calls to OpenAI are grouped in one trace.
+`request_handler` is observed, so all calls to OpenAI inside it are grouped in one trace.
 
 ```python
 from lmnr import Laminar as L, observe
@@ -269,7 +270,7 @@ explanation.""" + f"User message: {user_message}"
             }
         ]
     )
-    if user_intent.choices[0].message.content[:3].lower() == "yes":
+    if user_intent.choices[0].message.content == "yes":
         # likely some RAG here to enrich the context
         # ...
 
@@ -313,10 +314,7 @@ const handle = async (userMessage: string) =>
         
         const userIntent = routerResponse
             .choices[0]
-            .message
-            .content
-            ?.substring(0, 3)
-            .toLowerCase();
+            .message;
 
         if (userIntent === 'yes') {
             // Likely some RAG here to enrich the context
@@ -351,7 +349,7 @@ and the OpenAI calls as child spans.
 
 ### Observe specific code chunks
 
-Also, you can use `start_as_current_span` if you want to record a chunk of your code using `with` statement.
+Also, in Python, you can use `start_as_current_span` if you want to record a chunk of your code using `with` statement.
 
 ### Example
 

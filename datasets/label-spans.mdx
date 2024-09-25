@@ -1,0 +1,31 @@
+---
+title: Label spans
+---
+
+## Introduction
+
+One good way to filter correct data for a dataset is labelling spans from both
+traces and evaluation traces. This is useful when you want to filter out only
+the relevant data from the traces.
+
+## Span label types
+
+Supported span label types are `Boolean` and `Categorical`.
+
+### Boolean
+
+Boolean span can take a `true` or `false` value. This is useful if you want to
+tag spans with a binary label.
+
+### Categorical
+
+Categorical labels can take one of the predefined values. One way to think about
+this is to consider the categorical label as a tag. For example, you can tag
+spans with `positive`, `negative`, or `neutral` sentiment.
+
+## Label spans
+
+To label a span, first, open a trace and click on the span you want to label.
+
+Then, click on the "Add Label" button in the top right corner. Here you can choose
+one of the existing labels or create a new one.

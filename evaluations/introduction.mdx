@@ -1,13 +1,16 @@
 ---
 title: Introduction
-description: Evaluate the results of your application
+description: Evaluate the results of your LLM applications with Laminar
 ---
+
+import LaminarInstall from '/snippets/laminar-install.mdx';
 
 ## Introduction
 
 Evaluation is the concept of running your logic against some dataset
 and evaluating its results with another function.
 
+This is useful for testing your models, checking the performance of your AI agents, or comparing different versions of your propmpts.
 
 ## Key concepts
 
@@ -40,8 +43,7 @@ This is stored in the results of the evaluation.
 
 ### Prerequisites
 
-Make sure to install the package and get your API key from the Laminar dashboard.
-Read more in [Installation](/overview#installation).
+<LaminarInstall />
 
 ### Requirements and definitions
 
@@ -51,139 +53,92 @@ Read more in [Installation](/overview#installation).
 
 ### Example. Running and registering evaluations
 
-#### 1. Define an executor function
+#### 1. Create an evaluation file.
 
 <Tabs>
 <Tab title = "Python">
+
+Create a file named `my-first-evaluation.py` and add the following code:
+
 ```python
-from openai import AsyncOpenAI
-from lmnr import Evaluation
-import asyncio
-import os
+# my-first-evaluation.py
+from lmnr import evaluate
 
-openai_client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
+def write_poem(topic: str) -> str:
+    # replace this with your LLM call or custom logic
+    return f"This is a good poem about {topic}"
 
-async def get_capital(data):
-    country = data["country"]
-    response = await openai_client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {
-                "role": "user",
-                "content": f"What is the capital of {country}? Just name the "
-                "city and nothing else",
-            },
-        ],
-    )
-    return response.choices[0].message.content.strip()
+def contains_poem(output: str, target: str) -> int:
+    return 1 if target in output else 0
 
+evaluate(
+    data=[
+        {"data": {"topic": "flowers"}, "target": {"poem": "This is a good poem about flowers"}},
+        {"data": {"topic": "cats"}, "target": {"poem": "I like cats"}},
+    ],
+    executor=write_poem,
+    evaluators={"containsPoem": contains_poem}
+)
 ```
+
 </Tab>
 <Tab title = "JavaScript/TypeScript">
+
+Create a file named `my-first-evaluation.ts` and add the following code:
+
 ```javascript
-import { Evaluation } from '@lmnr-ai/lmnr';
+// my-first-evaluation.ts
+import { evaluate } from '@lmnr-ai/lmnr';
 
-import OpenAI from 'openai';
-
-const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
-
-const getCapital = async ({country} : {country: string}): Promise<string> => {
-    const response = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-            {
-                role: 'system',
-                content: 'You are a helpful assistant.'
-            }, {
-                role: 'user',
-                content: `What is the capital of ${country}? 
-                Just name the city and nothing else`
-            }
-        ],
-    });
-    return response.choices[0].message.content ?? ''
+const writePoem = ({topic}: {topic: string}) => {
+    // replace this with your LLM call or custom logic
+    return `This is a good poem about ${topic}`
 }
 
-```
-</Tab>
-</Tabs>
-
-#### 2. Define an evaluator function
-
-<Tabs>
-<Tab title = "Python">
-```python
-def evaluator_A(output, target):
-    return 1 if output == target["capital"] else 0
-```
-</Tab>
-<Tab title = "JavaScript/TypeScript">
-
-```javascript
-
-const evaluatorA = async (output, target) =>
-        (await output) === target.capital ? 1 : 0
-```
-
-</Tab>
-</Tabs>
-
-#### 3. Define data and run the evaluation
-
-<Tabs>
-<Tab title = "Python">
-```python
-# Evaluation data
-data = [
-    {"data": {"country": "Germany"}, "target": {"capital": "Berlin"}},
-    {"data": {"country": "Canada"}, "target": {"capital": "Ottawa"}},
-    {"data": {"country": "Tanzania"}, "target": {"capital": "Dodoma"}},
-]
-
-# Create an Evaluation instance
-e = Evaluation(
-    name="py-evaluation-async",
-    data=data,
-    executor=get_capital,
-    evaluators=[evaluator_A],
-    project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
-)
-
-# Run the evaluation
-asyncio.run(e.run())
-```
-</Tab>
-<Tab title = "JavaScript/TypeScript">
-
-```javascript
-
-const evaluationData = [
-    { data: { country: 'Canada' }, target: { capital: 'Ottawa' } },
-    { data: { country: 'Germany' }, target: { capital: 'Berlin' } },
-    { data: { country: 'Tanzania' }, target: { capital: 'Dodoma' } },
-]
-
-const e = new Evaluation( 'my-evaluation', {
-    data: evaluationData,
-    executor: async (data) => await getCapital(data),
-    evaluators: [evaluatorA],
-    config: {
-        projectApiKey: process.env.LMNR_PROJECT_API_KEY
+evaluate({
+    data: [
+        { data: { topic: 'flowers' }, target: { poem: 'This is a good poem about flowers' } },
+        { data: { topic: 'cats' }, target: { poem: 'I like cats' } },
+    ],
+    executor: (data) => writePoem(data),
+    evaluators: {
+        containsPoem: (output, target) => target.poem.includes(output) ? 1 : 0
     }
 })
-
-e.run();
 ```
-
 </Tab>
 </Tabs>
 
-## Status and results of the evaluation
+#### 2. Run the evaluation
 
-Possible statuses of evaluations:
-- Started
-- Finished
-- Error
+You can run the evaluations both from Laminar CLI and from code.
+To run the evaluation from the CLI, execute the following command:
 
-Individual datapoint statuses "Success" / "Failed" are stored at datapoint level.
+<Tabs>
+<Tab title = "Python">
+```sh
+# 1. Make sure `lmnr` is installed in a virtual environment
+# lmnr --help
+# 2. Run the evaluation
+lmnr eval my-first-evaluation.py
+```
+</Tab>
+<Tab title = "JavaScript/TypeScript">
+```sh
+npx lmnr eval my-first-evaluation.ts
+```
+</Tab>
+
+</Tabs>
+
+To run the evaluation directly from code, simply call the `evaluate` function, i.e. import or
+run the file created in the previous step.
+
+## Viewing evaluation results and traces
+
+When you run an evaluation from the CLI, Laminar will output the link to the dashboard
+where you can view the evaluation results.
+
+Laminar stores every evaluation result.
+A run for every datapoint is represented as a trace.
+You can view the results and corresponding traces in the evaluations page.

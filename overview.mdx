@@ -6,12 +6,10 @@ import LaminarInstall from '/snippets/laminar-install.mdx';
 import LaminarInitialize from '/snippets/laminar-initialize.mdx';
 import GetProjectApiKey from '/snippets/get-project-api-key.mdx';
 
-Laminar is an open-source observability and analytics platform for complex LLM apps. 
-Laminar helps developers build better LLM applications by providing a comprehensive
-set of tools for observability, analytics, and prompt chain management.
+Laminar is an open-source LLM engineering platform.
 
-Living at the intersection of tracing and event-based analytics, Laminar is
-like Datadog + PostHog for LLM applications.
+Laminar powers the data flywheel for your LLM applications. With Laminar, you can
+trace, evaluate, annotate, analyze, and re-use your LLM data.
 
 Check our [Github repo](https://github.com/lmnr-ai/lmnr) to learn more about how it works or if you are interested in self-hosting.
 
@@ -21,7 +19,7 @@ Check our [Github repo](https://github.com/lmnr-ai/lmnr) to learn more about how
 
 <LaminarInstall />
 
-### Add 2 lines of code to instrument your code
+### Add 2 lines to instrument your code
 
 <LaminarInitialize />
 
@@ -39,7 +37,6 @@ import os
 from openai import OpenAI
 from lmnr import Laminar as L
 
-# OpenAI calls will be automatically patched on initialization
 L.initialize(
     project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
 )
@@ -68,11 +65,10 @@ if __name__ == "__main__":
 <Tab title="JavaScript/TypeScript">
 
 ```javascript
-import { OpenAI } from 'openai';
 import { Laminar as L, observe } from '@lmnr-ai/lmnr';
-
-// OpenAI calls will be automatically patched on initialization
 L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
+/// ...
+import { OpenAI } from 'openai';
 
 const o = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -181,10 +177,8 @@ const requestHandler = async (data: Record<string, string>) =>
 
 ### Next steps
 
-[Learn more](/tracing/configuration#use-observe-to-group-separate-llm-calls-in-one-trace) about using observe.
-
-For more language-specific instructions, check our [Python SDK](https://github.com/lmnr-ai/lmnr-python)
-and [JavaScript/TypeScript SDK](https://github.com/lmnr-ai/lmnr-ts).
+[Learn more](/tracing/configuration#use-observe-to-group-separate-llm-calls-in-one-trace) about
+using `observe` and manual instrumentation.
 
 
 ## Features
@@ -193,7 +187,7 @@ and [JavaScript/TypeScript SDK](https://github.com/lmnr-ai/lmnr-ts).
 
 Track the full execution trace of your LLM application.
 
-Laminar's manual and automatic instrumentation is compatible with [OpenTelemetry](https://opentelemetry.io/docs/specs/otel/).
+Laminar's instrumentation is compatible with [OpenTelemetry](https://opentelemetry.io/docs/specs/otel/).
 
 Get started with [Tracing](/tracing/introduction).
 
@@ -215,6 +209,24 @@ to Laminar.
 
 Learn more about [Events](/events/introduction) extraction.
 
+### Data labeling and re-ingestion
+
+Laminar provides you with a UI where you can label and annotate the traces of your LLM applications.
+Organize the labeled data into datasets and use them to update your prompts or fine-tune your models.
+
+Perform advanced hybrid search on datasets to augment your prompts with the most semantically relevant.
+
+Learn more about [Data labeling](/datasets/label-spans) and [Datasets](/datasets/introduction).
+
+### Evaluations
+
+In addition to semantic events, Laminar allows you to run evaluations offline and analyze their
+results in the dashboard.
+
+You can use Laminar's JavaScript and Python SDKs to set up and ran your evaluations.
+
+Learn more about [Evaluations](/evaluations/introduction).
+
 ### Prompt chain management
 
 You can build and host chains of prompts and LLMs and then call them as if each chain was a single function.
@@ -222,12 +234,3 @@ It is especially useful when you want to experiment with techniques, such as Mix
 and self-reflecting agents, without or before hosting prompts and model configs in your code.
 
 Learn more about [Pipeline builder](/pipeline/introduction) for prompt chains.
-
-### Evaluations
-
-In addition to semantic events, Laminar allows you to run evaluations and analyze their
-results in the dashboard.
-
-You can use Laminar's JavaScript and Python SDKs to set up and ran your evaluations.
-
-Learn more about [Evaluations](/evaluations/introduction).

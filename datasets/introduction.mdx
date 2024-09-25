@@ -5,6 +5,7 @@ title: Introduction
 ## Concept
 
 Dataset is a collection of datapoints. It can be used for the following purposes:
+1. Data storage for use in future fine-tuning or prompt-tuning.
 1. Datasource for semantic search.
 1. Provide inputs and expected outputs for [Evaluations](evaluations/introduction).
 
@@ -12,15 +13,13 @@ In this page, you can learn how to use datasets for semantic search, how to use 
 
 ## Format
 
-Every datapoint has two fixed JSON objects: `target` and `data`, each with any keys.
+Every datapoint has two fixed JSON objects: `data` and `target`, each with any keys.
 - `data` – the actual datapoint data
 - `target` – data additionally sent to the evaluator pipeline. See [evaluations](/evaluations/introduction)
 
-For every key inside `data` and `target`, the value can either be a string or
-a list of ChatMessage objects (see [Handle Types](/pipeline/working-with-nodes#handle-types)).
-Non-string values cannot be indexed, but are stringified otherwise.
+For every key inside `data` and `target`, the value can be any JSON value.
 
-### Examples
+### Example
 
 This is an example of a valid datapoint.
 
@@ -45,34 +44,6 @@ This is an example of a valid datapoint.
     }
 }
 ```
-
-Let's consider a similar datapoint but `"color"` is now an array. Also `"expected_output"` is `null`.
-
-```json
-{
-    "data": {
-        "color": ["red", "magenta"],
-        "size": "large",
-        "messages": [
-            {
-                "role": "user",
-                "content": "Hello, can you help me choose a T-shirt?"
-            },
-            {
-                "role": "assistant",
-                "content": "I'm afraid, we don't sell T-shirts"
-            }
-        ]
-    },
-    "target": {
-        "expected_output": null
-    }
-}
-```
-
-If used for evaluations, `"color"` value will be converted to `"[\"red\", \"magenta\"]"`, and `"expected_output"` will be converted to
-the string: `"null".
-
 ## Indexing
 
 In order to be able to retrieve semantically relevant data points, we must index the dataset on a certain key.

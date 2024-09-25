@@ -4,19 +4,29 @@ title: 'Adding data'
 
 You can add datapoints either from file or by manually adding datapoints one-by-one.
 
-## 1. File upload
+## 1. Export from a span
 
-You can upload datapoints either from a structured file, which contains datapoints, or from an unstructured file of various formats.
+You can export a span as a datapoint from both Traces and Evaluation traces. To do so,
+select a span and click "Export to dataset" in the top right corner.
+
+You will be prompted to modify or keep only the necessary fields. Select the dataset
+you want to export to and click "Export".
+
+This will fill the `data` field of the datapoint with the selected attributes of the span.
+
+## 2. File upload
+
+You can upload datapoints from a structured file with datapoints.
 
 To do that, click "Add from source" at the top of the Datasets page. Then, select in the tab whether you want to upload in a structured or unstructured way.
 
-### 1.1 Structured file
+### File format
 
 Supported file formats are: `.csv`, `.json`, `.jsonl`. We infer the format based on the file extension.
 
 - csv - **header is required**, default separator and minimal quoting are assumed. If a row has an empty value or less values than headers, missing values will be filled with empty strings.
 - json - the file must contain **one array** of datapoints.
-- jsonlines - each line must contain one datapoint.
+- jsonlines - every line must contain one datapoint.
 
 For each datapoint, we first construct the key-value object, and then parse it according to the following rules:
 1. If the only key is `"data"`, and the corresponding value is a JSON object, place that object in datapoint's `"data"`.
@@ -28,6 +38,7 @@ This is needed to ensure that at the top level `"data"` and `"target"` are both 
 If there is an error parsing the file, no datapoints will be added.
 If a single value in the file does not conform to format, it will be silently ignored.
 
+<Expandable title="examples of uploaded data">
 #### Examples
 
 <Tabs>
@@ -68,17 +79,10 @@ If a single value in the file does not conform to format, it will be silently ig
         ```
     </Tab>
 </Tabs>
+</Expandable>
 
-### 1.2 Unstructured file
+## 3. Add manually
 
-Laminar supports converting many other files to datasets including txt, pdf, and docx. Such files will be parsed, chunked,
-and added to the dataset. Every chunk will have one datapoint with the following info in `"data"`:
-- `"content"` – the actual chunk content
-- `"page_number"` – for multipage documents, the number of the page this chunk belongs to
-- `"page_content"` – content of the entire page
-
-<Tip> **Having trouble uploading a text file with an extension, such as .mdx or .json?** Rename the file to .txt locally and re-upload </Tip>
-
-## 2. Add manually
-
-Click "Add datapoint" at the top of the Datasets page and new empty row will be added. Then, you can fill out the content of "data" and "target" for newly created datapoint.
+Click "Add datapoint" at the top of the Datasets page and new empty row will be added.
+Then, you can fill out the content of "data" and "target" for newly created datapoint.
+Make sure to keep both `data` and `target` as JSON objects. 

@@ -9,7 +9,7 @@ Analyzing them manually and making sense of it is hard, if not impossible, consi
 
 That's where events-based analytics comes in.
 
-1. **Catch failures in real-time**
+1. **Catch failures in real time**
 
 Use Laminar's Semantic Events to catch failures in your agents in real-time based on the online evaluations.
 
@@ -19,11 +19,12 @@ Use Laminar's Semantic Events and Regular Events to gather metrics on the user o
 
 ## Overview
 
-Events are the building blocks of the analytics in Laminar
+Events are the building blocks of the analytics in Laminar.
 
 Laminar Events are [OpenTelemetry-compatible](/events/otel).
 
-All events belong to a span. In other words, events must be sent within a function or code, which is [instrumented](/tracing/configuration) with Laminar.
+All events belong to a span. In other words, every event must be sent within a function
+[instrumented](/tracing/configuration) with Laminar.
 
 ### Event properties
 
@@ -54,7 +55,7 @@ There are three types of event values:
 
 Based on the event value type, each event will have a value.
 
-For example, we can have `Boolean` value type, and the value will be `True` or `False`.
+For example, an event of `Boolean` value type will be `true` or `false`.
 
 5. **Timestamp**
 
@@ -66,11 +67,11 @@ If you don't specify the timestamp, the time at which the event was sent will be
 Regular events are events for which the value is known at the code execution time.
 You can simply send them from code and assign a value to them.
 
-These events are useful when you want to make assertions, record known actions which agent takes, or things which are important for you.
+These events are useful when you want to make assertions, record known actions which agent takes, or track metrics important for your use case.
 
 For example, you can record if the response matches regular expressions, if the chat assistant has found the answer to the user's question, or how many times and which tool has been used.
 
-[Learn more](/events/regular-events) on how to set up regular events and the use-cases.
+[Learn more](/events/regular-events) on how to set up regular events and the use cases.
 
 ### Semantic events
 

@@ -94,7 +94,6 @@ is sent. See [My JS traces are not showing up in the Laminar UI](#my-js-traces-a
 `with` statement is not used, or the span is not ended properly in the `finally` block.
 
 If this happens elsewhere, especially in the Python's `@observe` decorator, it is likely a bug in the SDK.
-Please report it in our [Discord server](https://discord.gg/nNFUUDAKub).
 
 ### Solution
 
@@ -120,5 +119,4 @@ One possible workaround is to observe only the functions that are calling the as
 and handle the final result, not the generator itself.
 
 However, if you want to track partial stream results as well, you can create the spans manually.
-
 Refer to [manually creating spans](/tracing/introduction#manually-creating-spans) for more information.

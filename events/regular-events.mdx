@@ -3,11 +3,15 @@ title: Regular events
 description: Quickstart on how to setup regular events in Laminar
 ---
 
+import LaminarInstall from '/snippets/laminar-install.mdx';
+import LaminarInitialize from '/snippets/laminar-initialize.mdx';
+import GetProjectApiKey from '/snippets/get-project-api-key.mdx';
+
 ## Regular event
 
-Regular events are events for which the value is known at the code execution time. Similarly to semantic events, they belong to a span.
+Regular events are events for which the value is known at the code execution time. Just like semantic events, they belong to a span.
 
-Regular events are timestamped when the code calls them, unless you specify a different time.
+Regular events are timestamped when your code reports them, unless you explicitly specify a different time.
 
 ## Value types
 
@@ -15,8 +19,8 @@ The `value` of the event can be `Boolean`, `String`, or `Number`.
 
 You don't have to explicitly specify the value type - the value type is inferred based on the first value sent to the event.
 
-For example, if you send value named "is_calculator_tool_used" with value `True`, the event will be registered with the type `Boolean` in the current project.
-Next time, if you send non-boolean value to "is_calculator_tool_used", it will be ignored.
+For example, if you send value named "is_calculator_tool_used" with value `true`, the event will be registered with the type `Boolean` in the current project.
+Next time, if you send a non-boolean value to "is_calculator_tool_used", it will be ignored.
 
 Note that the value type is project-specific. Similarly named events can have different types in different projects.
 
@@ -25,14 +29,19 @@ This is useful for events that are just a tag.
 
 ## Sending regular events
 
-### Prerequisites
+### Installation
 
-Make sure to install the package and get your API key from the Laminar dashboard.
-Read more in [Installation](/overview#installation).
+<LaminarInstall />
+
+### Project API key
+
+<GetProjectApiKey />
 
 ### Example: Assertions
 
-Let's consider an example where you want to assert that LLM response never contains the name of the particular competitor in the response.
+Let's consider an example where you want to assert that LLM response never contains the
+name of a particular competitor. Each time the response does contain the competitor's name,
+you want to record an event.
 
 <Tabs>
 <Tab title = "Python">
@@ -87,14 +96,14 @@ await observe('myFunction', async () => {
 </Tabs>
 
 <Warning>If an event is sent outside of span context, we will have nothing to associate it with, so it
-won't be recorded. Make sure to wrap the function where event is sent, or one of its parent functions, with `observe` or within a manual span context.</Warning>
+won't be recorded. Make sure to wrap the function where event is sent, or one of its parent functions, with `observe` or with a manual span context.</Warning>
 
 Other use-cases for regular events may include:
 - Record if the user's issue has been resolved by the assistant or not. Use `Boolean` value type.
 - Track how many times and which tool has been used. Use `Boolean` value type for each tool call occurrence or `Number` value type for the total number of tool calls per conversation.
 - Check if the assistant's response matches regular expressions. Use `Boolean` value type.
 
-### Event metrics
+## Event metrics
 
 All recorded events are available in the Laminar dashboard and in the events page.
 In the events page, if you select an event, you can go to the specific trace where it was sent.
