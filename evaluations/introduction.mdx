@@ -7,19 +7,31 @@ import LaminarInstall from '/snippets/laminar-install.mdx';
 
 ## Introduction
 
-Evaluation is the concept of running your logic against some dataset
+Evaluation is the concept of running your production logic against some dataset
 and evaluating its results with another function.
 
-This is useful for testing your models, checking the performance of your AI agents, or comparing different versions of your propmpts.
+### Why do we need evaluations?
+
+TL;DR: Evaluations help bring rigor to AI development process.
+
+During the development process, it is natural to "vibe-check" the outputs of LLMs.
+It is a good way to get a sense of how well your model or prompt is performing.
+However, this is both not scalable and not reliable. We like to think of evaluations as
+almost like unit tests, where you can test your models against a dataset. The difference
+is that the output is not binary (pass/fail), but a score or a set of scores.
+
+This almost scientific approach allows you to control most variables and only
+check one thing in isolation, e.g., how does the new prompt perform in comparison
+to the existing one.
 
 ## Key concepts
 
 - Executor – the function being evaluated, often your prompt or (to-be-)production logic
 - Evaluator - the function evaluating the results
 - Dataset - collection of datapoints to run executors and evaluators against
-- Datapoint – two fixed JSON objects: `target` and `data` each with any keys.
-  - `target` – data sent to the evaluator. Usually, contains the expected or target outputs of certain parts of your executor.
+- Datapoint – two fixed JSON maps: `data` and `target` each with any keys.
   - `data` – data sent to the executor.
+  - `target` – data sent to the evaluator. Usually, contains the expected or target outputs of certain parts of your executor.
 
 ## Flow overview
 
@@ -36,7 +48,7 @@ For every datapoint in the dataset, evaluation does the following:
 1. Pass the `data` as an argument to the executor.
 1. Run the executor.
 1. Executor output is stored.
-1. Output of the executor, and `target` are passed to the _evaluator_ function.
+1. Output of the executor and `target` are passed to the _evaluator_ function.
 1. Evaluator pipeline produces a numeric output or a json object with several numeric outputs.
 This is stored in the results of the evaluation.
 
@@ -53,10 +65,10 @@ This is stored in the results of the evaluation.
 <Tabs>
 <Tab title = "Python">
 
-Create a file named `my_first_evaluation.py` and add the following code:
+Create a file named `my-first-evaluation.py` and add the following code:
 
 ```python
-# my_first_evaluation.py
+# my-first-evaluation.py
 from lmnr import evaluate
 
 def write_poem(topic: str) -> str:
@@ -68,8 +80,14 @@ def contains_poem(output: str, target: str) -> int:
 
 evaluate(
     data=[
-        {"data": {"topic": "flowers"}, "target": {"poem": "This is a good poem about flowers"}},
-        {"data": {"topic": "cats"}, "target": {"poem": "I like cats"}},
+        {
+            "data": {"topic": "flowers"},
+            "target": {"poem": "This is a good poem about flowers"}
+        },
+        {
+            "data": {"topic": "cats"},
+            "target": {"poem": "I like cats"}
+        },
     ],
     executor=write_poem,
     evaluators={"containsPoem": contains_poem}
@@ -92,8 +110,14 @@ const writePoem = ({topic}: {topic: string}) => {
 
 evaluate({
     data: [
-        { data: { topic: 'flowers' }, target: { poem: 'This is a good poem about flowers' } },
-        { data: { topic: 'cats' }, target: { poem: 'I like cats' } },
+        {
+            data: { topic: 'flowers' },
+            target: { poem: 'This is a good poem about flowers' }
+        },
+        {
+            data: { topic: 'cats' },
+            target: { poem: 'I like cats' }
+        },
     ],
     executor: (data) => writePoem(data),
     evaluators: {
@@ -116,7 +140,7 @@ To run the evaluation from the CLI, execute the following command:
 # lmnr --help
 # 2. Run the evaluation
 export LMNR_PROJECT_API_KEY=<YOUR_PROJECT_API_KEY>
-lmnr eval my_first_evaluation.py
+lmnr eval my-first-evaluation.py
 ```
 </Tab>
 <Tab title = "JavaScript/TypeScript">

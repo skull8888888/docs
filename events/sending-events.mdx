@@ -1,30 +1,29 @@
 ---
-title: Regular events
-description: Quickstart on how to setup regular events in Laminar
+title: Sending events
+description: Quickstart on how to send events to Laminar
 ---
 
 import LaminarInstall from '/snippets/laminar-install.mdx';
 import LaminarInitialize from '/snippets/laminar-initialize.mdx';
 import GetProjectApiKey from '/snippets/get-project-api-key.mdx';
 
-## Regular event
+## Key concepts
 
-Regular events are events for which the value is known at the code execution time. Just like semantic events, they belong to a span.
-
-Regular events are timestamped when your code reports them, unless you explicitly specify a different time.
+Event value is known at the code execution time. Events belong to a span.
+Events are timestamped when your code reports them, unless you explicitly specify a different time.
 
 ## Value types
 
 The `value` of the event can be `Boolean`, `String`, or `Number`.
 
-You don't have to explicitly specify the value type - the value type is inferred based on the first value sent to the event.
+You don't have to explicitly specify the value type - the value type is inferred based on the first value sent with the event.
 
 For example, if you send value named "is_calculator_tool_used" with value `true`, the event will be registered with the type `Boolean` in the current project.
 Next time, if you send a non-boolean value to "is_calculator_tool_used", it will be ignored.
 
-Note that the value type is project-specific. Similarly named events can have different types in different projects.
+Note that the value type is project-specific. Events with the same name can have different types in different projects.
 
-In Laminar's SDKs, `value` is optional. If value is not provided, it will be inferred to be `Boolean` and set to `true`.
+In Laminar's SDKs, `value` is optional. If a value is not provided, it will be inferred to be `Boolean` and set to `true`.
 This is useful for events that are just a tag.
 
 ## Sending regular events
@@ -51,7 +50,7 @@ from lmnr import Laminar as L, observe
 
 L.initialize(project_api_key='<YOUR_PROJECT_API_KEY>')
 
-competitor_name = "The Greatest Car Dealership in the Bay Area"
+competitor_name = "The Greatest Hospital in the Bay Area"
 
 @observe()
 def generate_response():
@@ -75,7 +74,7 @@ import { Laminar as L, observe } from '@lmnr-ai/lmnr';
 
 L.initialize({projectApiKey: '<YOUR_PROJECT_API_KEY>'});
 
-const competitorName = "The Greatest Car Dealership in the Bay Area";
+const competitorName = "The Greatest Hospital in the Bay Area";
 
 await observe('myFunction', async () => {
     const response = await openai.chat.completions.create({
@@ -98,7 +97,7 @@ await observe('myFunction', async () => {
 <Warning>If an event is sent outside of span context, we will have nothing to associate it with, so it
 won't be recorded. Make sure to wrap the function where event is sent, or one of its parent functions, with `observe` or with a manual span context.</Warning>
 
-Other use-cases for regular events may include:
+Other use-cases for events may include:
 - Record if the user's issue has been resolved by the assistant or not. Use `Boolean` value type.
 - Track how many times and which tool has been used. Use `Boolean` value type for each tool call occurrence or `Number` value type for the total number of tool calls per conversation.
 - Check if the assistant's response matches regular expressions. Use `Boolean` value type.

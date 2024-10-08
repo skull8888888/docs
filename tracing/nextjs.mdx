@@ -39,15 +39,14 @@ import { Laminar as L } from '@lmnr-ai/lmnr';
 
 L.initialize({
     projectApiKey: process.env.LMNR_PROJECT_API_KEY,
-    instrumentModules: {openAI: OpenAI, anthropic: anthropic}
+    instrumentModules: { openAI: OpenAI, anthropic: anthropic }
 });
 ```
 
 If you want to try it quickly without manually importing and instrumenting all modules,
-you can do simple initialization, however, you will need to import and initialize Laminar **before importing LLM client libraries**.
+you can do simple initialization, however, you will need to import _and_ initialize Laminar **before importing LLM client libraries**.
 This is because JavaScript binds the imported module to its name at import time, so introducing
 instrumentation afterwards statically is not possible.
-However, we do not recommend this approach for production as it may lead to unexpected behavior in the future.
 
 ### Auto-instrumentable modules
 

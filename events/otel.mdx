@@ -5,7 +5,7 @@ description: 'Details on Events and attributes in OpenTelemetry-compatible traci
 
 Laminar events are fully-compatible with OpenTelemetry events. They are stored in the `events` field of the span object.
 
-This page is solely for information purposes. As a user of Laminar, you don't have to deeply understand the internals of OpenTelemetry.
+This page is solely for information purposes. As a user of Laminar, you don't have to deal with the internals of OpenTelemetry.
 
 ## Event object
 
@@ -15,8 +15,8 @@ This page is solely for information purposes. As a user of Laminar, you don't ha
 | time_unix_nano | Timestamp of the events in nanoseconds [1] | number | timestamp with Utc timezone | `1630000000000000000` |
 | attributes | Attributes associated with the event. See below | Key-value pair. Value must be of `AttributeType` [2] | | `{"gen_ai.usage.output_tokens": 369}` |
 
-[1] In most OpenTelemetry client implementations, you don't have to convert the timestamp to nanoseconds manually,
-you can simply pass the `Date` / `datetime` object and the client will convert it to nanoseconds.
+[1] In most OpenTelemetry client implementations, you don't have to convert the timestamp to nanoseconds manually.
+You can simply pass the `Date` / `datetime` object and the client will convert it to nanoseconds.
 
 [2] `AttributeType` is a union of `string`, `number`, `boolean`, `Array<string>`, `Array<number>`, `Array<boolean>`
 
@@ -24,18 +24,10 @@ you can simply pass the `Date` / `datetime` object and the client will convert i
 
 | Attribute | Description | Type | Example |
 | --- | --- | --- | --- |
-| `lmnr.event.type` | Type of the event. Must be `default` or `evaluate` for default and semantic events respectively | string | `default` |
+| `lmnr.event.type` | Type of the event. Must be `default` | string | `default` |
 
-### Default event attributes
+### Event attributes
 
 | Attribute | Description | Type | Example |
 | --- | --- | --- | --- |
 | `lmnr.event.value` | Value of the event. Can be Boolean, String, or Number, or a sequence of each. | `AttributeType` | `369` |
-
-### Evaluate event attributes
-
-| Attribute | Description | Type | Example |
-| --- | --- | --- | --- |
-| `lmnr.event.evaluator` | Name of the evaluator pipeline | string | `my_pipeline` |
-| `lmnr.event.data` | Input to the evaluator pipeline | Key-value pair, stringified json | `{"input_node_name": "Is your AI agent working at all???!!!"}` |
-| `lmnr.event.env` | Enviroment for the evaluator pipeline. This gets sent with every event, and is not recorded in Laminar, so that none of your API keys are stored. | Key-value pair, stringified JSON | `{"OPENAI_API_KEY": "my_openai_api_key"}` |
