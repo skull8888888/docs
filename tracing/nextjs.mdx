@@ -16,7 +16,7 @@ npm install @lmnr-ai/lmnr
 We suggest to disable Next.js OpenTelemetry instrumentation to avoid excessive tracing.
 
 ```bash
-export NEXT_OTEL_FETCH_DISABLED=1  # Disable next.js otel instrumentation to avoid excessive tracing
+export NEXT_OTEL_FETCH_DISABLED=1
 ```
 
 Then, choose the route you want to instrument and initialize Laminar at the top of your route file.
@@ -24,7 +24,7 @@ Then, choose the route you want to instrument and initialize Laminar at the top 
 ```javascript
 import { Laminar as L } from '@lmnr-ai/lmnr';
 
-L.initialize({projectApiKey: process.env.LMNR_PROJECT_API_KEY});
+L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
 ```
 
 Simple initialization may not work for all cases.

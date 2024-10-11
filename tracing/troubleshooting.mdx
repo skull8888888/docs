@@ -84,7 +84,8 @@ Our UI relies on the presence of a "parent" span in every trace. If the parent s
 ### Cause
 
 Parent span may have not been sent correctly from the SDK.
-This typically happens when an exception occurs before the parent span is properly ended.
+This typically happens when an exception occurs before the parent span is properly ended. It could also be that everything is sent correctly,
+and you are just looking at the trace too early, before the parent span is sent.
 
 Common causes:
 - `observe()` function is not awaited in JS
@@ -97,9 +98,69 @@ If this happens elsewhere, especially in the Python's `@observe` decorator, it i
 
 ### Solution
 
-Make sure that the `observe()` function is awaited in JavaScript, and that the `with` statement is used in Python for manual span creation.
+If the trace is very recent (and possibly very nested and large), wait a few seconds and refresh the page.
+
+If the problem still persists, make sure that the `observe()` function is awaited in JavaScript, and that the `with` statement is used in Python for manual span creation.
 
 If you are sure that the spans are created correctly, but the issue persists, please report it in our [Discord server](https://discord.gg/nNFUUDAKub).
+
+## Many of my JS route requests are instrumented in the Laminar UI, even though I don't want that.
+
+### Problem
+
+I see many traces and spans in the UI, but most of them are just noise, they merely are route requests.
+
+Some examples of noise spans:
+- `GET /my/route`
+- `POST /my/other/route`
+- `dns.lookup`
+- `middleware - query`
+- `tcp - connect`
+- `fs statSync`
+
+### Cause
+
+Even though Laminar only enables OpenLLMetry-specific instrumentations, i.e. just model calls, some other dependency in your code
+may have enabled other instrumentations for Node libraries. In particular, we have seen this issue when such initialization is done
+_before_ Laminar's initialization. For example:
+
+```javascript
+const { NodeSDK } = require('@opentelemetry/sdk-node');
+const { getNodeAutoInstrumentations } = require(
+  '@opentelemetry/auto-instrumentations-node'
+);
+const { BatchSpanProcessor, SamplingDecision } = require(
+  '@opentelemetry/sdk-trace-base'
+);
+
+// this can also be not raw OpenTelemetry, but some other observability library
+const sdk = new NodeSDK({
+  instrumentations: [getNodeAutoInstrumentations()],
+  spanProcessors: new BatchSpanProcessor(exporter),
+});
+
+const { Laminar: L } = require('@lmnr-ai/lmnr');
+L.initialize({ projectApiKey: "...", });
+```
+
+[Read more](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/metapackages/auto-instrumentations-node#usage-auto-instrumentation) on OpenTelemetry's Node.js auto-instrumentations in OpenTelemetry.
+
+### Solution
+
+The most effective solution is to disable the unwanted instrumentations by exporting `OTEL_NODE_DISABLED_INSTRUMENTATIONS` environment variable.
+
+The most noisy ones are: `fs`, `http`, `dns`, `undici` (GET/POST requests), `express` (if you are using Express JS).
+
+```sh
+export OTEL_NODE_DISABLED_INSTRUMENTATIONS="fs,http,dns,undici,express"
+```
+
+For Next JS in particular, you can also disable most of the noise by setting `NEXT_OTEL_FETCH_DISABLED=1`. [Read more](/tracing/nextjs#2-initialize-laminar).
+
+However, if you still want to use the basic instrumentations above, you could:
+
+- Initialize Laminar first, and then the OpenTelemetry SDK.
+- Explicitly enable only the instrumentations you need in the OpenTelemetry SDK.
 
 ## Observe decorator is not working in Python with async generators, i.e. model stream responses
 
@@ -115,7 +176,7 @@ way OpenTelemetry's contexts work, there is no way to ensure that `@observe` wor
 
 ### Solution
 
-One possible workaround is to observe only the functions that are calling the async generator, 
+One possible workaround is to observe only the outer functions that are calling the async generator, 
 and handle the final result, not the generator itself.
 
 However, if you want to track partial stream results as well, you can create the spans manually.
