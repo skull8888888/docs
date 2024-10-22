@@ -20,13 +20,13 @@ Trace holds spans and aggregated metadata from the spans.
 
 ## Concept
 
-Laminar offers comprehensive tracing and analytics of your entire application.
-For every run, the entire execution trace is logged, so the information you can see in logs includes, but is not limited to:
+Laminar offers comprehensive tracing of your entire application.
+For every run, the entire execution trace is logged, so the information you can see in the traces includes:
 
+- Inputs and outputs of each span
 - Total execution time
 - Total execution tokens and cost
 - Span-level execution time and token counts
-- Inputs and outputs of each span
 
 ## Getting started
 
@@ -123,7 +123,7 @@ const validateTopic = async (topic: string) => {
 
 const poemWriter = async (topic = "turbulence") => {
   const validatedTopic = await observe( // observe the function
-    {name: 'validate'},
+    { name: 'validate' },
     async () => await validateTopic(topic)
   );
 
@@ -158,7 +158,7 @@ Learn more about instrumenting your code by checking our
 
 ## Accessing traces
 
-1. Go to the traces page from the navbar on the left side of the page
+1. Go to the traces page from the navbar on the left side of the page.
 1. Click on each row to see the detailed breakdown, and waterfalll of each log on the sidebar.
 1. Click "Filter" and filter by the required criteria.
 
@@ -177,12 +177,11 @@ Click on each span to see its details, including inputs, outputs and metadata, a
 Laminar's manual and automatic instrumentation is compatible with [OpenTelemetry](https://opentelemetry.io/docs/specs/otel/).
 Our backend is an OpenTelemetry-compatible destination and serves ingestion through gRPC.
 
-Instrumentations for LLM and VectorDB libraries are provided by [OpenLLMetry](https://github.com/traceloop/openllmetry).
+Instrumentations for LLM and vector DB libraries are provided by [OpenLLMetry](https://github.com/traceloop/openllmetry).
 
 This means that you can use OpenTelemetry SDKs to send traces to Laminar, and they will be displayed in the Laminar UI.
 
-To get started, in your application,
-set the OpenTelemetry exporter to the Laminar gRPC endpoint:
+To get started, in your application, set the OpenTelemetry exporter to the Laminar gRPC endpoint:
 `https://api.lmnr.ai:8443/v1/traces`.
 
 Read on to the [Otel section](/tracing/otel) to learn more about the OpenTelemetry

@@ -1,12 +1,12 @@
 {
   "$schema": "https://mintlify.com/schema.json",
   "name": "laminar docs",
-  "logo": {
-    "dark": "/logo/laminar-white.svg",
-    "light": "/logo/laminar.svg"
-  },
+  "logo": "/logo/logo.png",
   "favicon": "/favicon.png",
   "colors": {
+    "background": {
+      "dark": "#17171C"
+    },
     "primary": "#ED6E40",
     "light": "#ED6E40",
     "dark": "#ED6E40",
@@ -68,18 +68,11 @@
       ]
     },
     {
-      "group": "Events",
-      "pages": [
-        "events/introduction",
-        "events/sending-events",
-        "events/otel"
-      ]
-    },
-    {
       "group": "Evaluations",
       "pages": [
         "evaluations/introduction",
-        "evaluations/examples"
+        "evaluations/examples",
+        "evaluations/online-evaluations"
       ]
     },
     {
@@ -88,6 +81,14 @@
         "datasets/introduction",
         "datasets/label-spans",
         "datasets/adding-data"
+      ]
+    },
+    {
+      "group": "Events",
+      "pages": [
+        "events/introduction",
+        "events/sending-events",
+        "events/otel"
       ]
     },
     {

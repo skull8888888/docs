@@ -11,6 +11,15 @@ To help you filter traces and export only relevant ones to datasets, you can add
 labels to spans. Laminar provides you with a UI for that. This page explains label
 types.
 
+## Label classes
+
+Every label on a span has a class. The class defines the type of the label,
+the possible values, and the name of the label. For example `sentiment` can be
+a class of a categorical label with possible values `positive`, `negative`, and
+`neutral`.
+
+Every user can assign one label value per label class per span.
+
 ## Span label types
 
 Supported span label types are `Boolean` and `Categorical`.

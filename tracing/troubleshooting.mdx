@@ -57,7 +57,7 @@ JavaScript's OpenTelemetry batch span processor runs in a background async funct
 send the traces, they will be lost. In theory, there is a way to force flush the pending spans `onShutdown`, but it is not implemented in the
 OpenTelemetry JS SDK. Apparently, doing that may cause the consequent incoming spans to block the process.
 
-See [originating commit](https://github.com/open-telemetry/opentelemetry-js/commit/23db7f0ba383a3043964eb03be11c09df3f7453a) where the `onShutdown` was only implemented for the browser contexts,
+See [originating commit](https://github.com/open-telemetry/opentelemetry-js/commit/23db7f0ba383a3043964eb03be11c09df3f7453a) where `onShutdown` was only implemented for the browser contexts,
 but not for Node.js.
 
 ### Solution
@@ -149,7 +149,7 @@ L.initialize({ projectApiKey: "...", });
 
 The most effective solution is to disable the unwanted instrumentations by exporting `OTEL_NODE_DISABLED_INSTRUMENTATIONS` environment variable.
 
-The most noisy ones are: `fs`, `http`, `dns`, `undici` (GET/POST requests), `express` (if you are using Express JS).
+The most noisy ones are `fs`, `http`, `dns`, `undici` (GET/POST requests), `express` (if you are using Express JS).
 
 ```sh
 export OTEL_NODE_DISABLED_INSTRUMENTATIONS="fs,http,dns,undici,express"
