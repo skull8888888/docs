@@ -33,11 +33,10 @@ can be a code snippet or a prompt for LLM as a judge.
 
 
 You can register one evaluator per label class. For example, you could have a
-code evaluator check for the presence of a certain keyword in the output of your (label class `keyword`)
-and an LLM evaluator that checks the sentiment of the output (label class `sentiment`). In that case,
-you would not be able to add another evaluator for neither the `sentiment` nor the `keyword` label class.
+code evaluator check for the presence of a certain keyword in the output of your LLM app and assigns label class `keyword`.
+In that case, you would not be able to add another evaluator for the `keyword` label class.
 
-Every span path can have multiple span labels, but only one evaluator per label class.
+Every span path can have multiple span labels, but only one evaluator per label.
 
 ## Creating an online evaluation
 
