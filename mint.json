@@ -76,10 +76,15 @@
       ]
     },
     {
+      "group": "Labels",
+      "pages": [
+        "labels/introduction"
+      ]
+    },
+    {
       "group": "Datasets",
       "pages": [
         "datasets/introduction",
-        "datasets/label-spans",
         "datasets/adding-data"
       ]
     },
