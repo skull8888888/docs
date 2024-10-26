@@ -12,9 +12,16 @@ import GetProjectApiKey from '/snippets/get-project-api-key.mdx';
 - **Span** – a unit of work representing a single operation in your application.
 Typically, a span corresponds to a function invocation or an API call.
 A single "block" on the "waterfall" trace.
+  - **Span attributes** – key-value pairs of data attached to a span. We use attributes to store inputs and outputs of a span
+    as well as other metadata.
+  - **Span path** – a special attribute used to identify where in your code a span originates from. For example, if
+    a function `call_agent` calls a function `get_response`, and `get_response` then calls `openai.chat.completions.create`,
+    the span path for the LLM span would be `call_agent.get_response.openai.chat`. This is helpful to group spans by their origin,
+    track performance or other metrics for each particular LLM call or funciton. Span path is stored in attributes under the key
+    `lmnr.span.path`.
 - **Trace** – collection of spans involved in processing a request in your LLM application.
-Consists of one or more nested spans. A root span is the first span in a trace, and marks the beginning and end of the trace.
-Trace holds spans and aggregated metadata from the spans.
+Consists of one or more nested spans. A root span (a.k.a. top span, top-level span) is the first span in a trace,
+and marks the beginning and end of the trace. Trace holds spans and aggregated metadata from the spans.
 - **Event** – a key-value pair of data with a timestamp representing an event within your application. Must happen within a span.
 - **Session** – a collection of traces that were serving the same user or the same interaction.
 

@@ -44,7 +44,7 @@ def my_function():
 <Tab title="JavaScript/TypeScript">
 
 Use the `Laminar.contextWithSession` within to create a context with a sessionId.
-All the subsequent spans will be associated with the session.
+All the spans within the context will be associated with the session.
 
 ```javascript
 import { Laminar as L } from "@lmnr-ai/lmnr";
@@ -61,5 +61,5 @@ contextApi.with(context, () => {
 
 ## Viewing sessions
 
-Go to Laminar traces page and swithc the tab to sessions.
+Go to Laminar traces page and switch the tab to sessions.
 Click on the session to view all the traces associated with the session.

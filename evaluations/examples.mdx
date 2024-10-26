@@ -7,9 +7,9 @@ description: Examples of evaluations in Laminar
 
 Evaluations in Laminar are configured using the `evaluate` function. The function takes the following arguments:
 - `data`: Either (1) A list of dictionaries, where each dictionary contains the data and target for a single evaluation; or
-(2) An instance of `LaminarDataset` – read more in (#using-a-laminar-dataset-for-evaluations).
+(2) An instance of `LaminarDataset` – read more in [the dedicated section](#using-a-laminar-dataset-for-evaluations) below.
 - `executor`: An optionally async function that takes a single argument, the data dictionary, and returns the output.
-- `evaluators`: A dictionary of async functions that take the output and target as arguments and return a score.
+- `evaluators`: A dictionary of async functions that take the output and target as arguments and return a score. Keys in the dictionary are the names of the evaluators.
 - `name` (optional): Evaluation name, so it is easier to identify the evaluation in the UI. If not provided, a random name is assigned.
 - `group_id`/`groupId` (optional): An optional string that groups evaluations together. Only evaluations with the same `group_id` can be visually compared.
 
@@ -19,7 +19,7 @@ Additional optional configuration parameters are passed directly to `evaluate` i
 <Tab title="Python">
 - `project_api_key`: The API key of the project where the evaluation results will be stored.
 Required, unless you set the `LMNR_PROJECT_API_KEY` environment variable.
-- `batch_size`: The number of evaluations to run in parallel. Default is 5.
+- `batch_size`: The number of evaluations to run in parallel. Default is `5`.
 - `base_url`: The base URL of the Laminar instance. Do NOT include port here. Default is `https://api.lmnr.ai`.
 - `http_port`: The port of the Laminar instance for HTTP. Used to send evaluation results and metadata.
 Default is 443. For local self-hosted Laminar, use 8000.
@@ -31,7 +31,7 @@ Read more in the [instrumentation guide](/tracing/automatic-instrumentation#inst
 <Tab title="JavaScript/TypeScript">
 - `projectApiKey`: The API key of the project where the evaluation results will be stored.
 Required, unless you set the `LMNR_PROJECT_API_KEY` environment variable.
-- `batchSize`: The number of evaluations to run in parallel. Default is 5.
+- `batchSize`: The number of evaluations to run in parallel. Default is `5`.
 - `baseUrl`: The base URL of the Laminar instance. Do NOT include port here. Default is `https://api.lmnr.ai`.
 - `httpPort`: The port of the Laminar instance for HTTP. Used to send evaluation results and metadata.
 Default is 443. For local self-hosted Laminar, use 8000.
@@ -91,7 +91,7 @@ evaluate({
 
 ### Technical details and extension
 
-`LaminarDataset` is an implementation of an abstract class `Dataset` which defines 2 methods besides initialization:
+`LaminarDataset` is an implementation of an abstract class `EvaluationDataset` which defines 2 methods besides initialization:
 - `__len__` (`size` in JS): Returns the number of datapoints in the dataset.
 - `__getitem__` (`get` in JS): Returns a single datapoint by index.
 
@@ -100,7 +100,101 @@ We also implement a concrete `slice` method to make slicing easier than using `_
 This is inspired by the PyTorch `Dataset` [class](https://pytorch.org/tutorials/beginner/basics/data_tutorial.html#creating-a-custom-dataset-for-your-files),
 and is designed to be used in a similar way.
 
-You can re-use the `Dataset` class to create your own dataset classes, for example, to fetch data from a database or an API.
+You can re-use the `EvaluationDataset` class to create your own dataset classes, for example, to fetch data from a database or an API.
+
+<Tabs>
+<Tab title="Python">
+```python
+from lmnr import EvaluationDataset
+class MyCustomDataset(EvaluationDataset):
+    def __init__(self, custom_property):
+        super().__init__()
+        # Your custom initialization code here
+    
+    def __len__(self):
+        # Your custom implementation here
+        return 0
+    
+    def __getitem__(self, index):
+        # Your custom implementation here
+        return Datapoint(data={}, target={})
+
+    # Optionally, you can implement other custom methods here
+```
+</Tab>
+<Tab title="JavaScript/TypeScript">
+```javascript
+import { EvaluationDataset } from '@lmnr-ai/lmnr';
+
+class MyCustomDataset extends EvaluationDataset {
+    constructor(customProperty) {
+        super();
+        // Your custom initialization code here
+    }
+
+    public async size() {
+        // Your custom implementation here
+        return 0;
+    }
+
+    public async get(index: number) {
+        // Your custom implementation here
+        return { data: {}, target: {} };
+    }
+
+    // Optionally, you can implement other custom methods here
+}
+```
+</Tab>
+</Tabs>
+
+## Example. Comparing evaluations side-by-side
+
+Laminar allows you to compare evaluations side-by-side in the UI.
+
+<Frame caption = "Example comparison of two evaluation runs.">
+    <img
+        height="300"
+        src="/images/evaluations/compare-evals.png"
+        alt="Screenshot of the comparison of two evaluation runs."
+    />
+</Frame>
+
+To do this, you need to group evaluations together. This can be achieved by passing the `group_id` parameter to the `evaluate` function.
+
+<Tabs>
+<Tab title="Python">
+```python
+from lmnr import evaluate, LaminarDataset
+import os
+
+evaluate(
+    data=LaminarDataset("name_of_your_dataset"),
+    executor=your_executor_function,
+    evaluators={"evaluator_name": your_evaluator},
+    project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
+    group_id="evals_group_1",
+    # ... other optional parameters
+)
+```
+</Tab>
+<Tab title="JavaScript/TypeScript">
+```javascript
+import { evaluate, LaminarDataset } from '@lmnr-ai/lmnr';
+
+evaluate({
+    data: new LaminarDataset("name_of_your_dataset"),
+    executor: yourExecutorFunction,
+    evaluators: {evaluatorName: yourEvaluator},
+    groupId: "evals_group_1",
+    config: {
+        projectApiKey: process.env.LMNR_PROJECT_API_KEY,
+        // ... other optional parameters
+    }
+});
+```
+</Tab>
+</Tabs>
 
 ## Example. Basic correctness evaluation.
 
@@ -144,7 +238,7 @@ import OpenAI from 'openai';
 
 const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
 
-const getCapital = async ({country} : {country: string}): Promise<string> => {
+const getCapital = async ({country}: {country: string}): Promise<string> => {
     const response = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
@@ -228,7 +322,6 @@ evaluate({
     }
 })
 ```
-
 </Tab>
 </Tabs>
 
