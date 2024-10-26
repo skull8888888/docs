@@ -3,46 +3,6 @@ title: Troubleshooting
 description: Troubleshooting common issues with Laminar tracing
 ---
 
-## ERR_BUFFER_OUT_OF_BOUNDS in Node.js
-
-### Problem
-
-I see the following error in my Node.js application:
-
-```sh
-node:internal/buffer:1066
-      throw new ERR_BUFFER_OUT_OF_BOUNDS('length');
-      ^
-```
-<Expandable title="full error trace">
-```sh
-RangeError [ERR_BUFFER_OUT_OF_BOUNDS]: "length" is outside of buffer bounds
-    at proto.utf8Write (node:internal/buffer:1066:13)
-    at Op.writeStringBuffer [as fn] (/Users/sebastianscheibe/Code/XXX/node_modules/protobufjs/src/writer_buffer.js:61:13)
-    at BufferWriter.finish (/Users/sebastianscheibe/Code/XXX/node_modules/protobufjs/src/writer.js:453:14)
-    at /Users/sebastianscheibe/Code/XXX/node_modules/@grpc/proto-loader/build/src/index.js:177:109
-    at Array.map (<anonymous>)
-    at createPackageDefinition (/Users/sebastianscheibe/Code/XXX/node_modules/@grpc/proto-loader/build/src/index.js:177:39)
-    at Object.fromJSON (/Users/sebastianscheibe/Code/XXX/node_modules/@grpc/proto-loader/build/src/index.js:230:12)
-    at GrpcClient.loadProtoJSON (/Users/sebastianscheibe/Code/XXX/node_modules/google-gax/build/src/grpc.js:228:51)
-    at new ImageAnnotatorClient (/Users/sebastianscheibe/Code/XXX/node_modules/@google-cloud/vision/build/src/v1/image_annotator_client.js:148:38)
-    at Object.<anonymous> (/Users/sebastianscheibe/Code/XXX/test.js:5:16) {
-  code: 'ERR_BUFFER_OUT_OF_BOUNDS'
-}
-
-Node.js v22.7.0
-```
-</Expandable>
-
-### Cause
-
-This is most likely due to a bug in NodeJS versions 22.6 and 22.7 with
-handling utf-8 buffers. See more in the [Node.js issue](https://github.com/nodejs/node/issues/54518#issuecomment-2307035124).
-
-### Solution
-
-Upgrade to Node.js version 22.8.0 or higher. You can also downgrade to 22.5.
-
 ## My JS traces are not showing up in the Laminar UI.
 
 ### Problem
@@ -103,6 +63,25 @@ If the trace is very recent (and possibly very nested and large), wait a few sec
 If the problem still persists, make sure that the `observe()` function is awaited in JavaScript, and that the `with` statement is used in Python for manual span creation.
 
 If you are sure that the spans are created correctly, but the issue persists, please report it in our [Discord server](https://discord.gg/nNFUUDAKub).
+
+## I can see traces and spans in the UI, but they are not showing inputs and/or outputs.
+
+### Problem
+
+I see traces and spans in the Laminar UI, but they are not showing the inputs and/or outputs. They have attributes and duration, but no inputs or outputs.
+
+### Cause
+
+One possible reason is that we send span inputs and outputs as span attributes, and OpenTelemetry has a limited set of possible attribute types, namely
+`string`, `number`, `boolean`, and `array` of each. If the input or output is not one of these types, it will not be sent as an attribute.
+
+To work around this, we serialize the input and output to JSON and send it as a string. We do our best to serialize the inputs and outputs, but it may be
+that the serialization fails.
+
+### Solution
+
+Make sure inputs and outputs to your functions or spans are serializable to JSON. If you are using custom objects, make sure their fields are serializible.
+In Python, that may mean having to implement `default()` method on some of them, or on the parent object.
 
 ## Many of my JS route requests are instrumented in the Laminar UI, even though I don't want that.
 
@@ -181,3 +160,43 @@ and handle the final result, not the generator itself.
 
 However, if you want to track partial stream results as well, you can create the spans manually.
 Refer to [manually creating spans](/tracing/introduction#manually-creating-spans) for more information.
+
+## ERR_BUFFER_OUT_OF_BOUNDS in Node.js
+
+### Problem
+
+I see the following error in my Node.js application:
+
+```sh
+node:internal/buffer:1066
+      throw new ERR_BUFFER_OUT_OF_BOUNDS('length');
+      ^
+```
+<Expandable title="full error trace">
+```sh
+RangeError [ERR_BUFFER_OUT_OF_BOUNDS]: "length" is outside of buffer bounds
+    at proto.utf8Write (node:internal/buffer:1066:13)
+    at Op.writeStringBuffer [as fn] (/Users/sebastianscheibe/Code/XXX/node_modules/protobufjs/src/writer_buffer.js:61:13)
+    at BufferWriter.finish (/Users/sebastianscheibe/Code/XXX/node_modules/protobufjs/src/writer.js:453:14)
+    at /Users/sebastianscheibe/Code/XXX/node_modules/@grpc/proto-loader/build/src/index.js:177:109
+    at Array.map (<anonymous>)
+    at createPackageDefinition (/Users/sebastianscheibe/Code/XXX/node_modules/@grpc/proto-loader/build/src/index.js:177:39)
+    at Object.fromJSON (/Users/sebastianscheibe/Code/XXX/node_modules/@grpc/proto-loader/build/src/index.js:230:12)
+    at GrpcClient.loadProtoJSON (/Users/sebastianscheibe/Code/XXX/node_modules/google-gax/build/src/grpc.js:228:51)
+    at new ImageAnnotatorClient (/Users/sebastianscheibe/Code/XXX/node_modules/@google-cloud/vision/build/src/v1/image_annotator_client.js:148:38)
+    at Object.<anonymous> (/Users/sebastianscheibe/Code/XXX/test.js:5:16) {
+  code: 'ERR_BUFFER_OUT_OF_BOUNDS'
+}
+
+Node.js v22.7.0
+```
+</Expandable>
+
+### Cause
+
+This is most likely due to a bug in NodeJS versions 22.6 and 22.7 with
+handling utf-8 buffers. See more in the [Node.js issue](https://github.com/nodejs/node/issues/54518#issuecomment-2307035124).
+
+### Solution
+
+Upgrade to Node.js version 22.8.0 or higher. You can also downgrade to 22.5.
