@@ -1,203 +1,46 @@
 ---
-name: Overview
+title: Laminar
 ---
 
-import LaminarInstall from '/snippets/laminar-install.mdx';
-import LaminarInitialize from '/snippets/laminar-initialize.mdx';
-import GetProjectApiKey from '/snippets/get-project-api-key.mdx';
+> **Laminar is an open-source all-in-one platform for engineering best-in-class LLM products.**
 
-Laminar is an open-source LLM engineering platform.
+- **Open-source** - Laminar is fully open-source, free to use and easy to self-host. Check our [Github repo](https://github.com/lmnr-ai/lmnr) to learn more. We also provide a [managed version](https://lmnr.ai/), for high-volume production use cases.
 
-Laminar powers the data flywheel for your LLM applications. With Laminar, you can
-trace, evaluate, annotate, analyze, and re-use your LLM data.
+- **All-in-one** - Laminar provides a full suite of tools for LLM engineering, from observability, evaluations and datasets to prompt chain management, data labeling, and more.
 
-Check our [Github repo](https://github.com/lmnr-ai/lmnr) to learn more about how it works or if you are interested in self-hosting.
+- **Engineering** - building software with LLMs is essentially a form of test-driven development, Laminar facilitates this process by seamlessly integrating observability, evaluations, and data labeling.
 
-## Getting started
+## Tracing
 
-### Installation
+- Laminar tracing is framework-agnostic and based on OpenTelemetry.
+- Just add 2 lines of code and you will be tracing entire execution of your LLM app. Laminar auto-instruments popular LLM SDKs and frameworks, such as OpenAI, Anthropic, Langchain, and more.
+- Traces are sent via gRPC and processed by the Rust 🦀 backend, delivering extremely low-latency and high-throughput.
+- Tracing of images is supported out of the box. Audio is coming soon.
 
-<LaminarInstall />
-
-### Add 2 lines to instrument your code
-
-<LaminarInitialize />
-
-### Project API key
-
-<GetProjectApiKey />
-
-## Example: Instrument OpenAI calls with Laminar
-
-<Tabs>
-<Tab title="Python">
-
-```python
-import os
-from openai import OpenAI
-from lmnr import Laminar as L
-
-L.initialize(
-    project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
-)
-
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-
-def poem_writer(topic: str):
-    prompt = f"write a poem about {topic}"
-
-    # OpenAI calls are automatically instrumented
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt},
-        ],
-    )
-    poem = response.choices[0].message.content
-    return poem
-
-if __name__ == "__main__":
-    print(poem_writer("laminar flow"))
-```
-
-</Tab>
-<Tab title="JavaScript/TypeScript">
-
-```javascript
-import { Laminar as L, observe } from '@lmnr-ai/lmnr';
-L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
-// ...
-import { OpenAI } from 'openai';
-
-const o = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-const poemWriter = async (topic = "turbulence") => {
-  const prompt = `write a poem about ${topic}`;
-
-  // OpenAI calls are automatically instrumented
-  const response = await o.chat.completions.create({
-    model: "gpt-4o",
-    messages: [
-      { role: "system", content: "You are a helpful assistant." },
-      { role: "user", content: prompt }
-    ]
-  });
-
-  const poem = response.choices[0].message.content;
-  return poem;
-}
-
-// somewhere in async context
-await poemWriter("laminar flow");
-await L.shutdown();
-```
-</Tab>
-</Tabs>
-
-### Adding manual instrumentation
-
-If you want to trace your own functions for their durations, inputs and outputs, or want to group 
-them into one trace,
-you can use `@observe` decorator in Python or async `observe` function in JavaScript/TypeScript.
-
-<Tabs>
-<Tab title="Python">
-
-```python
-import os
-from openai import OpenAI
-from lmnr import observe, Laminar as L
-
-L.initialize(project_api_key=os.environ["LMNR_PROJECT_API_KEY"])
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-
-@observe()
-def request_handler(data: dict):
-    # some other logic, e.g. data preprocessing
-
-    response1 = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": data["prompt_1"]},
-        ],
-    )
-
-    # some other logic, e.g. a conditional DB call
-
-    response2 = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": data["prompt_2"]},
-        ],
-    )
-
-    return response2.choices[0].message.content
-```
-</Tab>
-<Tab title="JavaScript/TypeScript">
-
-```javascript
-import { OpenAI } from 'openai';
-import { Laminar as L, observe } from '@lmnr-ai/lmnr';
-
-L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
-const o = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-const requestHandler = async (data: Record<string, string>) => 
-    await observe({ name: 'requestHandler' }, async () => {
-        // some other logic, e.g. data preprocessing
-
-        const response1 = await o.chat.completions.create({
-            model: "gpt-4o",
-            messages: [
-                { role: "system", content: "You are a helpful assistant." },
-                { role: "user", content: data["prompt_1"] },
-            ],
-        });
-
-        // some other logic, e.g. a conditional DB call
-
-        const response2 = await o.chat.completions.create({
-            model: "gpt-4o",
-            messages: [
-                { role: "system", content: "You are a helpful assistant." },
-                { role: "user", content: data["prompt_2"] },
-            ],
-        });
-
-        return response2.choices[0].message.content;
-    });
-
-```
-</Tab>
-</Tabs>
-
-### Next steps
-
-[Learn more](/tracing/manual-instrumentation#use-observe-to-group-separate-llm-calls-in-one-trace) about
-using `observe` and manual instrumentation.
-
-
-## Features
-
-### Observability
-
-Track the full execution trace of your LLM application.
-
-Laminar's instrumentation is compatible with [OpenTelemetry](https://opentelemetry.io/docs/specs/otel/).
 
 Get started with [Tracing](/tracing/introduction).
 
-![Screenshot of observability dashboard](/images/overview.png)
+![Screenshot of observability dashboard](/images/traces.png)
 
-### Data labeling and analytics
+## Evaluations
 
-Make sense of thousands of traces generated by your LLM application.
+### Offline evaluations
 
-Laminar provides a UI where you can label and annotate the traces of your LLM applications.
+Evaluations are unit tests for your prompts. Without them, any iteration attempt is blind. Laminar gives you powerful tools to build and run evaluations to facilitate the iteration process. Run them from the code, terminal, or as a part of your CI/CD pipeline.
+
+Learn more about [offline evaluations](/evaluations/introduction).
+
+### Online evaluations
+
+You can create and configure an LLM-as-a-judge evaluator or a Python scripts evaluators in Laminar UI. Then,
+Laminar hosts this evaluation logic and runs it with the selection of incoming traces. The results are
+stored as labels, and you can use them for further analysis, filtering, and improvement.
+
+Learn more about [online evaluations](/evaluations/online-evaluations).
+
+## Data labeling and analytics
+
+Laminar provides a UI for labeling and annotating the traces of your LLM applications.
 Multiple team members can label the same spans to measure human agreement. In addition, our online
 evaluators can label spans too, so you can measure human alignment of your LLM judge.
 
@@ -205,28 +48,8 @@ You can organize the labeled data into datasets and use them to update your prom
 
 Learn more about [Data labeling](/labels/introduction) and [Datasets](/datasets/introduction).
 
-### Offline evaluations
 
-Laminar allows you to run your prompts and models against datasets, evaluate the performance, and analyze their
-results in the dashboard.
-
-You can use Laminar's JavaScript and Python SDKs to set up and run your evaluations. You are in full control
-of the evaluation logic – you can use code or call LLMs of your choice inside your custom evaluators. We store
-and visualize the results for you.
-
-Learn more about [offline evaluations](/evaluations/introduction).
-
-### Online evaluations
-
-You can also run evaluations online, i.e. as traces of your production LLM applications come in.
-
-You can create and configure an LLM-as-a-judge evaluator or a code-based evaluator in Laminar UI. Then,
-Laminar hosts this evaluation logic and runs it with the selection of incoming traces. The results are
-stored as labels, and you can use them for further analysis, filtering, and improvement.
-
-Learn more about [online evaluations](/evaluations/online-evaluations).
-
-### Prompt chain management
+## Prompt chain management
 
 You can build and host chains of prompts and LLMs and then call them as if each chain was a single function.
 It is especially useful when you want to experiment with techniques, such as Mixture of Agents

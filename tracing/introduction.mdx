@@ -1,6 +1,6 @@
 ---
 title: Introduction
-description: OpenTelemetry-compatible tracing with Laminar
+description: OpenTelemetry-based tracing with Laminar
 ---
 
 import LaminarInstall from '/snippets/laminar-install.mdx';
@@ -9,23 +9,21 @@ import GetProjectApiKey from '/snippets/get-project-api-key.mdx';
 
 ## Glossary
 
-- **Span** – a unit of work representing a single operation in your application.
-Typically, a span corresponds to a function invocation or an API call.
-A single "block" on the "waterfall" trace.
-  - **Span attributes** – key-value pairs of data attached to a span. We use attributes to store inputs and outputs of a span
-    as well as other metadata.
-  - **Span path** – a special attribute used to identify where in your code a span originates from. For example, if
-    a function `call_agent` calls a function `get_response`, and `get_response` then calls `openai.chat.completions.create`,
-    the span path for the LLM span would be `call_agent.get_response.openai.chat`. This is helpful to group spans by their origin,
-    track performance or other metrics for each particular LLM call or funciton. Span path is stored in attributes under the key
-    `lmnr.span.path`.
-- **Trace** – collection of spans involved in processing a request in your LLM application.
-Consists of one or more nested spans. A root span (a.k.a. top span, top-level span) is the first span in a trace,
-and marks the beginning and end of the trace. Trace holds spans and aggregated metadata from the spans.
-- **Event** – a key-value pair of data with a timestamp representing an event within your application. Must happen within a span.
-- **Session** – a collection of traces that were serving the same user or the same interaction.
+- **Span** – Think of this as one step in your LLM application's process. It could be a function call or an API request.
+  - **Span attributes** – Extra information about the span, like input parameters or results
+  - **Span path** – Shows where the span came from in your code. For example: `get_user.validate.api_call`
 
-## Concept
+- **Trace** – A collection of spans, where each span can have parent and child spans. For example, when function A calls function B, function A is the parent span and function B is the child span. This creates a hierarchical view showing how different parts of your code interact with each other.
+
+- **Session** – A group of related traces that belong to the same user or conversation.
+
+<div style={{ border: '1px solid #2B2B30', borderRadius: '8px', overflow: 'hidden' }}>
+<img src="/images/traces/trace-example.png" alt="Screenshot of observability dashboard" style={{ margin: '0px' }}/>
+</div>
+
+Tree on the left shows a trace of an example LLM application. Function `answer_question` calls `fetch_page_and_check`, which in turn calls `check_presence`, which calls `OpenAI`. 
+
+## Tracing overview
 
 Laminar offers comprehensive tracing of your entire application.
 For every run, the entire execution trace is logged, so the information you can see in the traces includes:
@@ -35,154 +33,121 @@ For every run, the entire execution trace is logged, so the information you can 
 - Total execution tokens and cost
 - Span-level execution time and token counts
 
+<div style={{ border: '1px solid #2B2B30', borderRadius: '8px', overflow: 'hidden' }}>
+<img src="/images/traces/trace-attr.png" alt="Screenshot of trace attributes" style={{ margin: '0px' }}/>
+</div>
+
 ## Getting started
 
 ### Installation
 
 <LaminarInstall />
 
-### Add 2 lines of code to instrument your code
-
-<LaminarInitialize />
-
 ### Project API key
 
 <GetProjectApiKey />
 
-### Adding manual instrumentation with `observe`
+### Add 2 lines to start tracing your entire application
 
+<LaminarInitialize />
+
+For example, calling OpenAI after initializing Laminar will create a following span in a dashboard:
 <Tabs>
 <Tab title="Python">
 
-You can instrument your code by adding the `@observe()` decorator to your functions.
-This is especially helpful when you want to trace specific functions, or group
-separate functions into a single trace.
-
 ```python
-import os
 from openai import OpenAI
 
-from lmnr import observe, Laminar as L
-
-L.initialize(
-    project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
-)
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-
-@observe()  # annotate all functions you want to trace
-def validate_topic(topic: str):
-    # assume you call the database
-    # or run custom logic to validate if the topic exists
-    if topic == "laminar flow":
-        return topic
-    else:
-        return "Topic not found"
-
-# enable this at caller level, so that both `observe`d function and the 
-# auto-instrumented OpenAI calls are grouped in one trace
-@observe()
-def poem_writer(topic="turbulence"):
-    validated_topic = validate_topic(topic)
-
-    prompt = f"write a poem about {validated_topic}"
-
-    # OpenAI calls are automatically instrumented
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt},
-        ],
-    )
-
-    poem = response.choices[0].message.content
-
-    return poem
-
-if __name__ == "__main__":
-    print(poem_writer(topic="laminar flow"))
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "What is the capital of France?"}],
+)
 ```
-
 </Tab>
 <Tab title="JavaScript/TypeScript">
-
-You can instrument your functions by wraping them in an async `observe()` functions.
-This is especially helpful when you want to trace specific functions, or group
-separate functions into a single trace.
-
 ```javascript
 import { OpenAI } from 'openai';
-import { Laminar as L, observe } from '@lmnr-ai/lmnr';
 
-L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
-
-const o = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-const validateTopic = async (topic: string) => {
-  // assume you call the database 
-  // or run custom logicto validate if the topic exists
-  if (topic === "laminar flow") {
-    return topic;
-  } else {
-    return "Topic not found";
-  }
-}
-
-const poemWriter = async (topic = "turbulence") => {
-  const validatedTopic = await observe( // observe the function
-    { name: 'validate' },
-    async () => await validateTopic(topic)
-  );
-
-  const prompt = `write a poem about ${validatedTopic}`;
-  const response = await o.chat.completions.create({
-    model: "gpt-4o",
-    messages: [
-      { role: "system", content: "You are a helpful assistant." },
-      { role: "user", content: prompt }
-    ]
-  });
-
-  const poem = response.choices[0].message.content;
-  return poem;
-}
-
-// Observe the top level call to trace both `observe`d function and the OpenAI call
-// in one trace
-await observe(
-  { name: 'poemWriter' },
-  async () => { await poemWriter('laminar flow') }
-);
+const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const response = await client.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: "What is the capital of France?" }],
+});
 ```
 
 </Tab>
 </Tabs>
 
-Learn more about instrumenting your code by checking our
-[Python SDK](https://github.com/lmnr-ai/lmnr-python) and
-[JavaScript/TypeScript SDK](https://github.com/lmnr-ai/lmnr-ts).
+<Note>
+Laminar automatically records latency, cost, and tokens for LLM spans, taking into account the model and the number of tokens in the response.
+</Note>
 
+<div style={{ border: '1px solid #2B2B30', borderRadius: '8px', overflow: 'hidden' }}>
+  <img src="/images/traces/trace-openai.png" alt="OpenAI span" style={{ margin: '0px' }}/>
+</div>
 
-## Accessing traces
+### Tracing specific functions with `observe` and adding children spans
 
-1. Go to the traces page from the navbar on the left side of the page.
-1. Click on each row to see the detailed breakdown, and waterfalll of each log on the sidebar.
-1. Click "Filter" and filter by the required criteria.
+<Tabs>
+<Tab title="Python">
 
-<Frame caption="Example traces page">
-<img height="300" src="/images/traces/traces-page.png" alt="Screenshot of the traces page"/>
-</Frame>
+You can instrument specific functions by adding the `@observe()` decorator.
+This is especially helpful when you want to trace functions, or group
+separate functions into a single trace.
 
-### Viewing more details
+```python
+from lmnr import observe
 
-Simply click on any of the rows in the logs page and you will see the details in the side.
+@observe()  # annotate all functions you want to trace
+def my_function():
+    res = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": "What is the capital of France?"}],
+    )
+    return res.choices[0].message.content
 
-Click on each span to see its details, including inputs, outputs and metadata, as well as associated events.
+my_function()
+```
+
+</Tab>
+<Tab title="JavaScript/TypeScript">
+
+You can instrument specific functions by wrapping them in `observe()`. 
+This is especially helpful when you want to trace functions, or group
+separate functions into a single trace.
+
+```javascript
+import { observe } from '@lmnr-ai/lmnr';
+
+const myFunction = observe(async () => {
+  const response = await client.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: "What is the capital of France?" }],
+  });
+  return response.choices[0].message.content;
+});
+
+await myFunction();
+```
+
+</Tab>
+</Tabs>
+
+We are now recording `my_function` *and* the OpenAI call, which is nested inside it, in the same trace. Notice that the OpenAI span is a child of `my_function`. Parent-child relationships are automatically detected and visualized with tree hierarchy.
+
+<div style={{ border: '1px solid #2B2B30', borderRadius: '8px', overflow: 'hidden' }}>
+  <img src="/images/traces/trace-observe.png" alt="OpenAI span as a child" style={{ margin: '0px' }}/>
+</div>
+
+<Tip>
+You can nest as many spans as you want inside each other. By observing functions and LLM/vector DB calls you can have better visualization of execution flow which is useful for debugging and better understanding of the application.
+</Tip>
 
 ## OpenTelemetry compatibility
 
 Laminar's manual and automatic instrumentation is compatible with [OpenTelemetry](https://opentelemetry.io/docs/specs/otel/).
-Our backend is an OpenTelemetry-compatible destination and serves ingestion through gRPC.
+Our Rust backend is an OpenTelemetry-compatible ingestion endpoint and processes traces using gRPC. This ensures long-lived connections and extremely fast ingestion.
 
 Instrumentations for LLM and vector DB libraries are provided by [OpenLLMetry](https://github.com/traceloop/openllmetry).
 
