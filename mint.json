@@ -5,7 +5,7 @@
   "favicon": "/favicon.png",
   "colors": {
     "background": {
-      "dark": "#17171C"
+      "dark": "#0F0F0F"
     },
     "primary": "#ED6E40",
     "light": "#ED6E40",
@@ -18,7 +18,7 @@
   "theme": "venus",
   "modeToggle": {
     "default": "dark",
-    "isHidden": false
+    "isHidden": true
   },
   "openapi": [
     "/api-reference/openapi.json"
@@ -92,14 +92,6 @@
       ]
     },
     {
-      "group": "Events",
-      "pages": [
-        "events/introduction",
-        "events/sending-events",
-        "events/otel"
-      ]
-    },
-    {
       "group": "Pipeline builder",
       "pages": [
         {
@@ -142,5 +134,11 @@
   ],
   "footerSocials": {
     "discord": "https://discord.gg/nNFUUDAKub"
+  },
+  "analytics": {
+    "posthog": {
+      "apiKey": "phc_dUMdjfNKf11jcHgtn7juSnT4P1pO0tafsPUWt4PuwG7",
+      "apiHost": "https://p.lmnr.ai"
+    }
   }
 }
