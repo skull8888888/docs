@@ -51,7 +51,8 @@ For every run, the entire execution trace is logged, so the information you can 
 
 <LaminarInitialize />
 
-For example, calling OpenAI after initializing Laminar will create a following span in a dashboard:
+For example, calling OpenAI after initializing Laminar like this
+will create the following span in Laminar dashboard:
 <Tabs>
 <Tab title="Python">
 
@@ -143,6 +144,42 @@ We are now recording `my_function` *and* the OpenAI call, which is nested inside
 <Tip>
 You can nest as many spans as you want inside each other. By observing functions and LLM/vector DB calls you can have better visualization of execution flow which is useful for debugging and better understanding of the application.
 </Tip>
+
+### Sending traces to a self-hosted Laminar instance
+
+By default, Laminar client packages send traces to the Laminar cloud at https://api.lmnr.ai.
+
+If you want to send traces to your own self-hosted Laminar instance, you can set the base URL and port numbers at
+initialization. Default settings in our repo are gRPC port 8001 and HTTP port 8000.
+
+<Tabs>
+<Tab title="Python">
+
+```python
+from lmnr import Laminar as L
+L.initialize(
+    project_api_key="<your-project-api-key>",
+    base_url="http://localhost", # do not include ports or trailing slash here
+    http_port=8000,
+    grpc_port=8001
+)
+```
+
+</Tab>
+<Tab title="JavaScript/TypeScript">
+
+```javascript
+import { Laminar as L } from '@lmnr-ai/lmnr';
+L.initialize({
+    project_api_key: "<your-project-api-key>",
+    baseUrl: "http://localhost", // do not include ports or trailing slash here
+    httpPort: 8000,
+    grpcPort: 8001
+});
+```
+
+</Tab>
+</Tabs>
 
 ## OpenTelemetry compatibility
 
