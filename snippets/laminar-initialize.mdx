@@ -2,8 +2,8 @@
 <Tab title="Python">
 
 ```python
-from lmnr import Laminar as L
-L.initialize(project_api_key="LMNR_PROJECT_API_KEY")
+from lmnr import Laminar
+Laminar.initialize(project_api_key="LMNR_PROJECT_API_KEY")
 ```
 </Tab>
 <Tab title="JavaScript/TypeScript">
@@ -19,8 +19,8 @@ export NEXT_OTEL_FETCH_DISABLED=1
 </Expandable>
 
 ```javascript
-import { Laminar as L } from '@lmnr-ai/lmnr';
-L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
+import { Laminar } from '@lmnr-ai/lmnr';
+Laminar.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
 ```
 
 </Tab>

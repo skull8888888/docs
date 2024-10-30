@@ -23,11 +23,11 @@ OpenAI (possibly with additional RAG) to generate a response.
 `request_handler` is observed, so all calls to OpenAI inside it are grouped in one trace.
 
 ```python
-from lmnr import Laminar as L, observe
+from lmnr import Laminar, observe
 from openai import OpenAI
 import os
 
-L.initialize(project_api_key=os.environ['LMNR_PROJECT_API_KEY'])
+Laminar.initialize(project_api_key=os.environ['LMNR_PROJECT_API_KEY'])
 
 openai_client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
 
@@ -68,10 +68,10 @@ explanation.""" + f"User message: {user_message}"
 `requestHandler` is observed, so all calls to OpenAI are grouped in one trace.
 
 ```javascript
-import { Laminar as L, observe } from '@lmnr-ai/lmnr';
+import { Laminar, observe } from '@lmnr-ai/lmnr';
 import { OpenAI } from 'openai';
 
-L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
+Laminar.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -111,7 +111,7 @@ const handle = async (userMessage: string) =>
 /// ...
 
 /// Finally, at exit from your program
-await L.shutdown();
+await Laminar.shutdown();
 
 ```
 </Tab>
@@ -269,14 +269,17 @@ In Python, you can also use `Laminar.start_as_current_span` if you want to recor
 ### Example
 
 ```python
-from lmnr import Laminar as L
+from lmnr import Laminar
 from openai import OpenAI
 
-L.initialize(project_api_key=os.environ['LMNR_PROJECT_API_KEY'])
+Laminar.initialize(project_api_key=os.environ['LMNR_PROJECT_API_KEY'])
 openai_client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
 
 def request_handler(user_message: str):
-    with L.start_as_current_span(name="handler", input=user_message) as span:
+    with Laminar.start_as_current_span(
+        name="handler",
+        input=user_message
+    ) as span:
         response = openai_client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
@@ -288,7 +291,7 @@ def request_handler(user_message: str):
         )
         result = response.choices[0].message.content
         
-        L.set_span_output(result) # this will set the output of the current span
+        Laminar.set_span_output(result) # this will set the output of the current span
 
         return result
 ```
@@ -306,7 +309,7 @@ Laminar-specific attributes.
 
 #### Returns
 - `Span`: the span object. It is a bare OpenTelemetry span, so you can use it to set attributes, etc.
-We still recommend using `L.set_span_output` and `L.set_span_attributes` to set attributes, unless you want
+We still recommend using `Laminar.set_span_output` and `Laminar.set_span_attributes` to set attributes, unless you want
 to set some custom attributes.
 
 #### Usage
@@ -323,23 +326,23 @@ If you absolutely have to use the manual call, we recommend at least wrapping it
 
 ```python
 # [Recommended] `with` statement
-with L.start_as_current_span(name="handler", input=user_message):
+with Laminar.start_as_current_span(name="handler", input=user_message):
     # your code here
-    L.set_span_attributes({"some_attribute": "some_value"})
-    L.set_span_output(result) # this will set the output of the current span
+    Laminar.set_span_attributes({"some_attribute": "some_value"})
+    Laminar.set_span_output(result) # this sets the output of the current span
 
 # [Recommended, advanced] `with` statement with custom attributes
-with L.start_as_current_span(name="handler", input=user_message) as span:
+with Laminar.start_as_current_span(name="handler", input=user_message) as span:
     # your code here
     span.set_attribute("some_attribute", "some_value")
-    L.set_span_output(result) # this will set the output of the current span
+    Laminar.set_span_output(result) # this sets the output of the current span
 
 # [Not recommended] manual span ending
 span = None
 try:
-    span = L.start_as_current_span(name="handler", input=user_message)
+    span = Laminar.start_as_current_span(name="handler", input=user_message)
     # your code here
-    L.set_span_output(result) # this will set the output of the current span
+    Laminar.set_span_output(result) # this sets the output of the current span
 finally:
     if span is not None:
         span.end()
@@ -374,10 +377,10 @@ All of these values can be set in Python and JavaScript/TypeScript using static 
 <Tabs>
 <Tab title="Python">
 
-Use `with L.start_as_current_span` to create a span and set its attributes.
+Use `with Laminar.start_as_current_span` to create a span and set its attributes.
 
 ```python
-from lmnr import Laminar as L, Attributes
+from lmnr import Laminar, Attributes
 
 messages = [
     {
@@ -390,7 +393,7 @@ messages = [
         ],
     },
 ]
-with L.start_as_current_span(
+with Laminar.start_as_current_span(
     name="my_custom_llm_call",
     input=messages,
     span_type="LLM"
@@ -402,8 +405,8 @@ with L.start_as_current_span(
             "messages": messages,
         },
     ).json()
-    L.set_span_output(response["choices"][0]["message"]["content"])
-    L.set_span_attributes(
+    Laminar.set_span_output(response["choices"][0]["message"]["content"])
+    Laminar.set_span_attributes(
         {
             Attributes.PROVIDER: "custom-llm.com",
             Attributes.REQUEST_MODEL: "custom-model-1",
@@ -420,7 +423,7 @@ with L.start_as_current_span(
 Use `observe` to create a span and `Laminar.setSpanAttributes` to set its attributes.
 
 ```javascript
-import { Laminar as L, LaminarAttributes } from '@lmnr-ai/lmnr';
+import { Laminar, LaminarAttributes } from '@lmnr-ai/lmnr';
 
 await observe(
     {
@@ -440,7 +443,7 @@ await observe(
                 ]
             })
         }).then(res => res.json());
-        L.setSpanAttributes({
+        Laminar.setSpanAttributes({
             [LaminarAttributes.PROVIDER]: 'custom-llm.com',
             [LaminarAttributes.REQUEST_MODEL]: 'custom-model-1',
             [LaminarAttributes.RESPONSE_MODEL]: response.model,

@@ -156,8 +156,8 @@ initialization. Default settings in our repo are gRPC port 8001 and HTTP port 80
 <Tab title="Python">
 
 ```python
-from lmnr import Laminar as L
-L.initialize(
+from lmnr import Laminar
+Laminar.initialize(
     project_api_key="<your-project-api-key>",
     base_url="http://localhost", # do not include ports or trailing slash here
     http_port=8000,
@@ -169,8 +169,8 @@ L.initialize(
 <Tab title="JavaScript/TypeScript">
 
 ```javascript
-import { Laminar as L } from '@lmnr-ai/lmnr';
-L.initialize({
+import { Laminar } from '@lmnr-ai/lmnr';
+Laminar.initialize({
     project_api_key: "<your-project-api-key>",
     baseUrl: "http://localhost", // do not include ports or trailing slash here
     httpPort: 8000,

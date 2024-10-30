@@ -25,14 +25,14 @@ but not for Node.js.
 Use Laminar's `shutdown()` function to ensure that the traces are sent before the process exits.
 
 ```javascript
-import { Laminar as L } from '@lmnr-ai/lmnr';
+import { Laminar} from '@lmnr-ai/lmnr';
 
-L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
+Laminar.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
 
 // your code here
 
 // at the end of your script, when you are done tracing
-await L.shutdown(); // NOTE: don't forget to await
+await Laminar.shutdown(); // NOTE: don't forget to await
 ```
 
 ## I can see my trace in the Laminar UI, but it is not showing the spans.
@@ -118,8 +118,8 @@ const sdk = new NodeSDK({
   spanProcessors: new BatchSpanProcessor(exporter),
 });
 
-const { Laminar: L } = require('@lmnr-ai/lmnr');
-L.initialize({ projectApiKey: "...", });
+const { Laminar } = require('@lmnr-ai/lmnr');
+Laminar.initialize({ projectApiKey: "...", });
 ```
 
 [Read more](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/metapackages/auto-instrumentations-node#usage-auto-instrumentation) on OpenTelemetry's Node.js auto-instrumentations in OpenTelemetry.

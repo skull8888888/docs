@@ -95,11 +95,11 @@ Here's an example of how to call the pipeline from:
 <Tabs>
 <Tab title = "Python">
 ```python
-from lmnr import Laminar as L
+from lmnr import Laminar
 
-L.initialize(project_api_key='<YOUR_PROJECT_API_KEY>')
+Laminar.initialize(project_api_key='<YOUR_PROJECT_API_KEY>')
   
-result = L.run(
+result = Laminar.run(
     pipeline = 'my_pipeline',
     inputs = {
         "input_node_name": "input_value"
@@ -118,14 +118,12 @@ print(result)
 
 <Tab title="JavaScript/TypeScript">
 ```javascript
-import { Laminar as L } from '@lmnr-ai/lmnr';
-
 import { Laminar } from '@lmnr-ai/lmnr';
 
-L.initialize({ projectApiKey: '<YOUR_PROJECT_API_KEY>' });
+Laminar.initialize({ projectApiKey: '<YOUR_PROJECT_API_KEY>' });
 
-const result = await L.run({
-  pipeline: '$my_pipeline',
+const result = await Laminar.run({
+  pipeline: 'myPipeline',
   inputs: {
         input_node_name: "input_value"
         chat_message_input_node_name: [

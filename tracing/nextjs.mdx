@@ -23,9 +23,9 @@ Then, choose the [app router](https://nextjs.org/docs/app) route you want to ins
 and initialize Laminar at the top of your route file.
 
 ```javascript
-import { Laminar as L } from '@lmnr-ai/lmnr';
+import { Laminar } from '@lmnr-ai/lmnr';
 
-L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
+Laminar.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
 ```
 
 Simple initialization may not work for all cases.
@@ -36,9 +36,9 @@ The example below shows how to do this for OpenAI and Anthropic.
 ```javascript
 import OpenAI from 'openai';
 import * as anthropic from '@anthropic-ai/sdk';
-import { Laminar as L } from '@lmnr-ai/lmnr';
+import { Laminar } from '@lmnr-ai/lmnr';
 
-L.initialize({
+Laminar.initialize({
     projectApiKey: process.env.LMNR_PROJECT_API_KEY,
     instrumentModules: { openAI: OpenAI, anthropic: anthropic }
 });

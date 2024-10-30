@@ -14,11 +14,11 @@ This includes OpenAI, Anthropic, Langchain, Pinecone, and many more.
 <Tab title="Python">
 
 ```python
-from lmnr import Laminar as L
+from lmnr import Laminar
 import os
 from openai import OpenAI
 # ...
-L.initialize(project_api_key=os.environ["LMNR_PROJECT_API_KEY"])
+Laminar.initialize(project_api_key=os.environ["LMNR_PROJECT_API_KEY"])
 ```
 
 </Tab>
@@ -29,8 +29,8 @@ This is because JavaScript binds the imported module to its name at import time,
 instrumentation afterwards statically is not possible. </Tip>
 
 ```javascript
-import { Laminar as L } from '@lmnr-ai/lmnr';
-L.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
+import { Laminar } from '@lmnr-ai/lmnr';
+Laminar.initialize({ projectApiKey: process.env.LMNR_PROJECT_API_KEY });
 // and then import the instrumentable modules
 import { OpenAI } from 'openai';
 // ...
@@ -53,11 +53,11 @@ See all available auto-instrumentable modules [here](#available-instruments).
 If you explicitly pass an empty set, no automatic instrumentations will be applied.
 
 ```python
-from lmnr import Laminar as L
+from lmnr import Laminar
 import os
 from openai import OpenAI
 
-L.initialize(
+Laminar.initialize(
     project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
     instruments=set()
 )
@@ -72,10 +72,10 @@ L.initialize(
 If you explicitly pass an empty object, no automatic instrumentations will be applied.
 
 ```javascript
-import { Laminar as L } from '@lmnr-ai/lmnr';
+import { Laminar } from '@lmnr-ai/lmnr';
 import { OpenAI } from 'openai';
 
-L.initialize({
+Laminar.initialize({
   projectApiKey: process.env.LMNR_PROJECT_API_KEY,
   instrumentModules: {}
 });
@@ -109,9 +109,9 @@ import os
 from anthropic import Anthropic
 from openai import OpenAI
 
-from lmnr import observe, Laminar as L, Instruments
+from lmnr import observe, Laminar, Instruments
 
-L.initialize(
+Laminar.initialize(
     project_api_key=os.environ["LMNR_PROJECT_API_KEY"],
     instruments={ Instruments.ANTHROPIC }  # only enable anthropic, not openai
 )
@@ -160,9 +160,9 @@ See available instruments in [the next subsection](/tracing/automatic-instrument
 ```javascript
 import { OpenAI } from 'openai';
 import * as anthropic from '@anthropic-ai/sdk';
-import { Laminar as L, observe } from '@lmnr-ai/lmnr';
+import { Laminar, observe } from '@lmnr-ai/lmnr';
 
-L.initialize(
+Laminar.initialize(
   { projectApiKey: process.env.LMNR_PROJECT_API_KEY,
     instrumentModules: {
       anthropic: anthropic // only enable anthropic, not openai
@@ -211,7 +211,7 @@ const poemWriter = async (topic = "turbulence") => {
 See available instruments by importing `Instruments` from `lmnr`
 or [view source](https://github.com/lmnr-ai/lmnr-python/blob/main/src/lmnr/traceloop_sdk/instruments.py).
 
-All modules from this list are auto-instrumented, if you do not pass `instruments` to `L.initialize()`.
+All modules from this list are auto-instrumented, if you do not pass `instruments` to `Laminar.initialize()`.
 
 </Tab>
 <Tab title="JavaScript/TypeScript">

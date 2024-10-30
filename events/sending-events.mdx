@@ -46,9 +46,9 @@ you want to record an event.
 <Tab title = "Python">
     
 ```python
-from lmnr import Laminar as L, observe
+from lmnr import Laminar, observe
 
-L.initialize(project_api_key='<YOUR_PROJECT_API_KEY>')
+Laminar.initialize(project_api_key='<YOUR_PROJECT_API_KEY>')
 
 competitor_name = "The Greatest Hospital in the Bay Area"
 
@@ -60,7 +60,7 @@ def generate_response():
     )
 
     if competitor_name in response:
-        L.event("contains_competitor_name", True)
+        Laminar.event("contains_competitor_name", True)
         return "Sorry, I can't answer that."
     
     return response
@@ -70,9 +70,9 @@ def generate_response():
 <Tab title = "JavaScript/TypeScript">
     
 ```javascript
-import { Laminar as L, observe } from '@lmnr-ai/lmnr';
+import { Laminar, observe } from '@lmnr-ai/lmnr';
 
-L.initialize({projectApiKey: '<YOUR_PROJECT_API_KEY>'});
+Laminar.initialize({projectApiKey: '<YOUR_PROJECT_API_KEY>'});
 
 const competitorName = "The Greatest Hospital in the Bay Area";
 
@@ -83,7 +83,7 @@ await observe('myFunction', async () => {
     });
 
     if (response.includes(competitorName)) {
-        L.event("contains_competitor_name", true);
+        Laminar.event("contains_competitor_name", true);
         return "Sorry, I can't answer that.";
     }
 

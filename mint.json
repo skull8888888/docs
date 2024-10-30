@@ -81,7 +81,8 @@
     {
       "group": "Labels",
       "pages": [
-        "labels/introduction"
+        "labels/introduction",
+        "labels/manually-label"
       ]
     },
     {

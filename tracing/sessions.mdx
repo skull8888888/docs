@@ -28,17 +28,17 @@ Simply call the `Laminar.set_session(session_id="session123")` within or outside
 All the subsequent spans will be associated with the session.
 
 ```python
-from lmnr import Laminar as L, observe
+from lmnr import Laminar, observe
 
 Laminar.initialize(project_api_key=os.environ["LMNR_PROJECT_API_KEY"])
 
 @observe()
 def my_function():
-    L.set_session(session_id="session123")
+    Laminar.set_session(session_id="session123")
     # your code here
 
     # optionally, at the end of the session, you can clear the session id
-    L.clear_session()
+    Laminar.clear_session()
 ```
 </Tab>
 <Tab title="JavaScript/TypeScript">
@@ -47,10 +47,9 @@ Use the `Laminar.contextWithSession` within to create a context with a sessionId
 All the spans within the context will be associated with the session.
 
 ```javascript
-import { Laminar as L } from "@lmnr-ai/lmnr";
-
+import { Laminar } from "@lmnr-ai/lmnr";
 import { context as contextApi } from '@opentelemetry/api';
-import { Laminar } from '@lmnr-ai/laminar';
+
 const context = Laminar.contextWithSession({ sessionId: "session123"});
 contextApi.with(context, () => {
     // Your code here
