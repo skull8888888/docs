@@ -1,16 +1,12 @@
-# Mintlify Starter Kit
+# Laminar Documentation
 
-Click on `Use this template` to copy the Mintlify starter kit. The starter kit contains examples including
-
-- Guide pages
-- Navigation
-- Customizations
-- API Reference pages
-- Use of popular components
+Welcome to the Laminar documentation!
 
 ### Development
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the documentation changes locally. To install, use the following command
+This repo uses [Mintlify](https://www.mintlify.com/) to build the documentation.
+
+To get started, install the [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the documentation changes locally. To install, use the following command
 
 ```
 npm i -g mintlify
@@ -22,11 +18,11 @@ Run the following command at the root of your documentation (where mint.json is)
 mintlify dev
 ```
 
-### Publishing Changes
+Before committing, make sure to run `mintlify dev` to check that the changes are rendered correctly.
+Also run
 
-Install our Github App to autopropagate changes from youre repo to your deployment. Changes will be deployed to production automatically after pushing to the default branch. Find the link to install on your dashboard. 
+```
+mintlify broken-links
+```
 
-#### Troubleshooting
-
-- Mintlify dev isn't running - Run `mintlify install` it'll re-install dependencies.
-- Page loads as a 404 - Make sure you are running in a folder with `mint.json`
+to verify that there are no broken links. This only works for full page links, not anchors, but it's better than nothing.
