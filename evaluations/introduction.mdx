@@ -27,9 +27,18 @@ to the existing one.
 - Executor – the function being evaluated, often your prompt or (to-be-)production logic
 - Evaluator - the function evaluating the results
 - Dataset - collection of datapoints to run executors and evaluators against
-- Datapoint – two fixed JSON maps: `data` and `target` each with any keys.
-  - `data` – data sent to the executor.
-  - `target` – data sent to the evaluator. Usually, contains the expected or target outputs of certain parts of your executor.
+- Datapoint – two values: `data` and `target` each represented as JSON.
+  - `data` – data sent to the executor. Required.
+  - `target` – data sent to the evaluator. Usually, contains the expected or target outputs of certain parts of your executor. Optional.
+
+### Example datapoint
+
+```json
+{
+  "data": {"topic": "flowers"},
+  "target": "This is a good poem about flowers"
+}
+```
 
 ## Flow overview
 
@@ -153,11 +162,9 @@ npx lmnr eval my-first-evaluation.ts
 To run the evaluation directly from code, simply call the `evaluate` function, i.e. import or
 run the file created in the previous step.
 
-### Concepts
-
-- Executor takes in a `Map<string, any>` (set to the value of `data`) parameter and returns anything
-- Evaluator takes in a `Map<string, any` (set to the value of `target`) parameter and the output of the executor
-- Evaluator returns either a single numeric score or a JSON object / dict, with string keys and numeric values for multiple scores
+<Tip>
+Evaluator returns either a single numeric score or a JSON object / dict, with string keys and numeric values for multiple scores
+</Tip>
 
 ## Viewing evaluation results and traces
 

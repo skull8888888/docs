@@ -120,9 +120,3 @@ When call to endpoint is made, set "stream" to true in request params, so that L
 
 Note that, when running pipelines in pipeline builder, LLM node will be streamed whenever possible regardless of this flag.
 
-## Tool calling
-
-To specify tools to the model, use model params input.
-
-If you specify tools, and the model decides to use them, we replace the model's output with the tool calls array. (This is currently only supported for OpenAI)
-To make use of tool calls, use [Tool call node](/nodes/tool-call)
